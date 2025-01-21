@@ -13,27 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Specify your Node.js version
+          node-version: 22.13.0
           cache: 'npm'
 
-      # 3. Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 4. Run lint
       - name: Run ESLint
         run: npm run lint
 
-      # 5. Run tests
-
-      # 6. (Optional) Build the project
       - name: Build Next.js
         run: npm run build
