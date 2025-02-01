@@ -1,4 +1,4 @@
-import SideBarMenu, { MenuItem } from "@/components/SideBarMenu";
+import SideBarMenu, { MenuItem } from "@/components/cicd/SideBarMenu";
 
 export default function ImagesListPage() {
   return (

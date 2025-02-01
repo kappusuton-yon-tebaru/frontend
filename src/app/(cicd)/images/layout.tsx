@@ -1,4 +1,4 @@
-import SideBarMenu, { MenuItem } from "@/components/SideBarMenu";
+import SideBarMenu, { MenuItem } from "@/components/cicd/SideBarMenu";
 import React from "react"; // Update the path accordingly
 
 const menuItems: MenuItem[] = [
