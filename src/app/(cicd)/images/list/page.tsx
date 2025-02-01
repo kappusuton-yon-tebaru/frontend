@@ -7,7 +7,7 @@ const searchUrl = "http://localhost:3001/users";
 export default function ImagesListPage() {
   const renderEntity = (entity: { id: string; name: string }) => {
     return (
-      <div className="flex flex-row bg-ci-modal-black px-6 py-3 border-y border-x border-ci-modal-grey gap-x-12">
+      <div className="flex flex-row bg-ci-modal-black hover:bg-ci-modal-blue px-6 py-3 border-y border-x border-ci-modal-grey gap-x-12">
         <Image
           src={"/images/cicd/hard-disk.svg"}
           alt={"disk"}
@@ -22,7 +22,7 @@ export default function ImagesListPage() {
     );
   };
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-24">
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
         topic={"Services List"}
         searchUrl={searchUrl}
