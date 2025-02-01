@@ -22,7 +22,7 @@ export default function SideBarMenu({ menuItems }: { menuItems: MenuItem[] }) {
 
   return (
     <div className="flex">
-      <aside className="h-full w-64 bg-ci-bg-dark-blue text-white">
+      <aside className="h-full w-64 bg-ci-modal-black text-white">
         <nav className="py-10 px-6">
           <ul>
             {menuItems.map((item) => (

@@ -9,11 +9,13 @@ interface Entity {
 }
 
 interface EntityIndexProps {
+  topic: string;
   searchUrl: string;
   renderEntity: (entity: Entity) => React.ReactNode;
 }
 
 export default function EntityIndex({
+  topic,
   searchUrl,
   renderEntity,
 }: EntityIndexProps) {
@@ -49,14 +51,11 @@ export default function EntityIndex({
   }
 
   return (
-    <div>
-      <h2>Entities</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="flex flex-col gap-y-8">
+      <h2 className="text-xl font-bold">{topic}</h2>
+      <div className="flex flex-col">
         {entities.map((entity) => (
-          <div key={entity.id} className="p-4 border rounded shadow">
-            {/* Use the renderEntity callback to render the child component */}
-            {renderEntity(entity)}
-          </div>
+          <div key={entity.id}>{renderEntity(entity)}</div>
         ))}
       </div>
     </div>
