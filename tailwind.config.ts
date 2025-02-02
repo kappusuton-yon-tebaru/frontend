@@ -20,6 +20,7 @@ export default {
         "ci-modal-cyan-blue" : "#4691A9",
         "ci-modal-grey" : "#999999",
         "ci-modal-red" : "#AB3030",
+        "ci-modal-light-red" : "#C43D3D",
 
         //For background
         "ci-bg-dark-blue" : "#1A335F",

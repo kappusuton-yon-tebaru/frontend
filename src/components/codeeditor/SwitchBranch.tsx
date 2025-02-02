@@ -32,7 +32,7 @@ export default function SwitchBranch({
               branch === selectedBranch
                 ? "bg-ci-modal-blue text-white"
                 : "text-ci-modal-white"
-            }`}
+            } ${index === branches.length - 1 ? "rounded-b-md" : ""}`}
             onClick={() => {
               onSelectBranch(branch);
               onClose();
