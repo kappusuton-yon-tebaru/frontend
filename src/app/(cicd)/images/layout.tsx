@@ -19,6 +19,10 @@ const menuItems: MenuItem[] = [
       { name: "Deployment Setting", href: "" },
     ],
   },
+  {
+    name: "Operarion",
+    href: "http://localhost:3000/operation",
+  },
 ];
 
 export default function RootLayout({
