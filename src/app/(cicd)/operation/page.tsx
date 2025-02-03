@@ -12,6 +12,7 @@ const operationOptions: SelectorOption[] = [
 ];
 
 const projectSearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`;
+const registrySearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/regproviders`;
 
 export default function AddImageRegistryPage() {
   const searchParams = useSearchParams();
@@ -19,10 +20,18 @@ export default function AddImageRegistryPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [projectOptions, setProjectOptions] = useState<SelectorOption[]>([]);
+  const [registryOptions, setRegistryOptions] = useState<SelectorOption[]>([]);
+
   const [selectedOperation, setSelectedOperation] = useState<SelectorOption>(
     operationOptions[0]
   );
-  const [projectOptions, setProjectOption] = useState<SelectorOption[]>([]);
+  const [selectedProject, setSelectedProject] = useState<SelectorOption>(
+    projectOptions[0]
+  );
+  const [selectedRegistry, setSelectedRegistry] = useState<SelectorOption>(
+    registryOptions[0]
+  );
 
   useEffect(() => {
     const type = searchParams.get("ops");
@@ -40,18 +49,33 @@ export default function AddImageRegistryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(projectSearchUrl);
-        if (!response.ok) {
+        const [projectRes, registryRes] = await Promise.all([
+          fetch(projectSearchUrl),
+          fetch(registrySearchUrl),
+        ]);
+
+        if (!projectRes.ok || !registryRes.ok) {
           throw new Error("Failed to fetch data");
         }
-        const data = await response.json();
-        const selectorOptions: SelectorOption[] = data.map(
-          (item: { resource_name: any; id: any }) => ({
+
+        const [projectData, registryData] = await Promise.all([
+          projectRes.json(),
+          registryRes.json(),
+        ]);
+
+        setProjectOptions(
+          projectData.map((item: { resource_name: string; id: string }) => ({
             label: item.resource_name,
             id: item.id,
-          })
+          }))
         );
-        setProjectOption(selectorOptions);
+
+        setRegistryOptions(
+          registryData.map((item: { name: string; id: string }) => ({
+            label: item.name,
+            id: item.id,
+          }))
+        );
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -95,9 +119,24 @@ export default function AddImageRegistryPage() {
             <Selector
               options={projectOptions}
               initialOption={projectOptions[0]}
-              onSelect={setSelectedOperation}
+              onSelect={setSelectedProject}
             />
           </div>
+          {selectedOperation.type === "BUILD" && (
+            <>
+              <div className="col-span-2 flex flex-col gap-y-6">
+                <label className="text-base font-semibold">
+                  Select Registry
+                </label>
+                <Selector
+                  options={registryOptions}
+                  initialOption={registryOptions[0]}
+                  onSelect={setSelectedRegistry}
+                />
+              </div>
+              <div className="col-span-4"></div>
+            </>
+          )}
           <div className="col-start-6 ">
             <button className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full">
               Proceed

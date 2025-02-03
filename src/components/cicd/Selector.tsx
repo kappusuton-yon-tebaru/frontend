@@ -42,7 +42,7 @@ export default function Selector({
         <span>{isOpen ? "▲" : "▼"}</span>
       </button>
       {isOpen && (
-        <ul className="absolute left-0 w-full mt-1 bg-ci-modal-black rounded-lg shadow-lg">
+        <ul className="absolute left-0 w-full z-30 mt-1 bg-ci-modal-black rounded-lg shadow-lg">
           {options.map((option) => (
             <li
               key={option.label}

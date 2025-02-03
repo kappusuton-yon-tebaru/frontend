@@ -13,6 +13,7 @@ export default function AddImageRegistryPage() {
     options[0]
   );
   const [registryData, setRegistryData] = useState({
+    name: "",
     registryUrl: "",
     accessKey: "",
     secretKey: "",
@@ -28,7 +29,14 @@ export default function AddImageRegistryPage() {
       <div className="flex flex-col gap-y-16">
         <h2 className="text-xl font-bold">Add New Registry Provider</h2>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
-          {/* Registry Selector */}
+          <div className="col-span-6">
+            <InputField
+              label="Registry Name"
+              placeholder="Name"
+              value={registryData.registryUrl}
+              onChange={(value) => handleChange("name", value)}
+            />
+          </div>
           <div className="col-span-2 flex flex-col gap-y-6">
             <label className="text-base font-semibold">
               Container Registry
