@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Entity {
   id: string;
@@ -11,17 +12,23 @@ interface Entity {
 interface EntityIndexProps {
   topic: string;
   searchUrl: string;
+  operationTopic: string;
+  operationUrl: string;
   renderEntity: (entity: Entity) => React.ReactNode;
 }
 
 export default function EntityIndex({
   topic,
   searchUrl,
+  operationTopic,
+  operationUrl,
   renderEntity,
 }: EntityIndexProps) {
   const [entities, setEntities] = useState<Entity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,11 +59,31 @@ export default function EntityIndex({
 
   return (
     <div className="flex flex-col gap-y-8">
-      <h2 className="text-xl font-bold">{topic}</h2>
+      <div className="flex flex-row justify-between font-bold items-center">
+        <h2 className="text-xl">{topic}</h2>
+        <button
+          className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
+          onClick={() => router.push(operationUrl)}
+        >
+          {operationTopic}
+        </button>
+      </div>
       <div className="flex flex-col">
-        {entities.map((entity) => (
-          <div key={entity.id}>{renderEntity(entity)}</div>
-        ))}
+        {entities.map((entity, index) => {
+          const isFirst = index === 0;
+          const isLast = index === entities.length - 1;
+
+          return (
+            <div
+              key={entity.id}
+              className={`${isFirst ? "rounded-t-lg" : ""} ${
+                isLast ? "rounded-b-lg" : ""
+              } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
+            >
+              {renderEntity(entity)}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

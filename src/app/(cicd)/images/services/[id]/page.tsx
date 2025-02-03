@@ -2,12 +2,16 @@
 import EntityIndex from "@/components/cicd/EntityIndex";
 import Image from "next/image";
 
-const searchUrl = "http://localhost:3001/users";
+const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
 
-export default function ImagesListPage() {
+export default function ImagesListPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const renderEntity = (entity: { id: string; name: string }) => {
     return (
-      <div className="flex flex-row bg-ci-modal-black hover:bg-ci-modal-blue px-6 py-3 border-y border-x border-ci-modal-grey gap-x-12">
+      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none">
         <Image
           src={"/images/cicd/hard-disk.svg"}
           alt={"disk"}
@@ -24,8 +28,10 @@ export default function ImagesListPage() {
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
-        topic={"Services List"}
+        topic={"Services List 2"}
         searchUrl={searchUrl}
+        operationTopic={"Build Image"}
+        operationUrl={"/operation?ops=build"}
         renderEntity={renderEntity}
       />
     </div>

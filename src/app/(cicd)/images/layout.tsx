@@ -6,8 +6,9 @@ const menuItems: MenuItem[] = [
     name: "Images",
     href: "#",
     subMenu: [
-      { name: "Services List", href: "" },
-      { name: "Images Setting", href: "" },
+      { name: "Services List", href: "http://localhost:3000/images/services" },
+      { name: "Registry List", href: "http://localhost:3000/images/registry" },
+      { name: "Images Setting", href: "http://localhost:3000/images/settings" },
     ],
   },
   {
