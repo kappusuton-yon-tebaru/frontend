@@ -2,23 +2,31 @@
 
 import { useState } from "react";
 
-const options = [
-  { label: "ECR", icon: "🟧" },
-  { label: "Docker Hub", icon: "🐳" },
-];
+export interface SelectorOption {
+  label: string;
+  icon?: string;
+  id?: string;
+  type?: string;
+}
 
-export default function RegistrySelector({
+export default function Selector({
+  options,
+  initialOption,
   onSelect,
 }: {
-  onSelect: (label: string) => void;
+  options: SelectorOption[];
+  initialOption: SelectorOption | null;
+  onSelect: (option: SelectorOption) => void;
 }) {
-  const [selected, setSelected] = useState(options[0]);
+  const [selected, setSelected] = useState<SelectorOption | null>(
+    initialOption
+  );
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSelect = (option: { label: string; icon: string }) => {
+  const handleSelect = (option: SelectorOption) => {
     setSelected(option);
     setIsOpen(false);
-    onSelect(option.label); // Notify parent component
+    onSelect(option);
   };
 
   return (
@@ -28,7 +36,8 @@ export default function RegistrySelector({
         className="flex items-center justify-between w-full px-4 py-2 bg-ci-modal-black hover:bg-ci-modal border border-ci-modal-grey rounded-lg text-base"
       >
         <span className="flex items-center">
-          <span className="mr-2">{selected.icon}</span> {selected.label}
+          {selected?.icon && <span className="mr-2">{selected.icon}</span>}
+          {selected?.label}
         </span>
         <span>{isOpen ? "▲" : "▼"}</span>
       </button>
@@ -40,7 +49,8 @@ export default function RegistrySelector({
               onClick={() => handleSelect(option)}
               className="px-4 py-2 cursor-pointer hover:bg-ci-modal-blue rounded-lg"
             >
-              <span className="mr-2">{option.icon}</span> {option.label}
+              {option.icon ? <span className="mr-2">{option.icon}</span> : null}
+              {option.label}
             </li>
           ))}
         </ul>

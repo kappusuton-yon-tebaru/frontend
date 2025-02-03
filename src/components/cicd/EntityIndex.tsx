@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ClipLoader } from "react-spinners";
 
 interface Entity {
   id: string;
@@ -50,7 +51,18 @@ export default function EntityIndex({
   }, [searchUrl]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
+        <ClipLoader
+          size={100}
+          color={"#245FA1"}
+          cssOverride={{
+            borderWidth: "10px",
+          }}
+          loading={loading}
+        />
+      </div>
+    );
   }
 
   if (error) {

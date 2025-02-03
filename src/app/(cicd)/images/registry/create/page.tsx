@@ -1,66 +1,93 @@
 "use client";
-import RegistrySelector from "@/components/cicd/RegistrySelection";
+import InputField from "@/components/cicd/InputField";
+import Selector, { SelectorOption } from "@/components/cicd/Selector";
 import { useState } from "react";
 
-const InputField = ({
-  label,
-  placeholder,
-}: {
-  label: string;
-  placeholder: string;
-}) => (
-  <div className="flex flex-col gap-y-6">
-    <label className="text-base font-semi-bold">{label}</label>
-    <input
-      className="px-4 py-2 bg-ci-modal-black hover:bg-ci-modal border border-ci-modal-grey rounded-lg text-base placeholder:text-sm"
-      type="text"
-      placeholder={placeholder}
-    />
-  </div>
-);
+const options: SelectorOption[] = [
+  { label: "ECR", icon: "🟧" },
+  { label: "Docker Hub", icon: "🐳" },
+];
 
 export default function AddImageRegistryPage() {
-  const [selectedRegistry, setSelectedRegistry] = useState("ECR");
+  const [selectedRegistry, setSelectedRegistry] = useState<SelectorOption>(
+    options[0]
+  );
+  const [registryData, setRegistryData] = useState({
+    registryUrl: "",
+    accessKey: "",
+    secretKey: "",
+    dockerToken: "",
+  });
+
+  const handleChange = (field: keyof typeof registryData, value: string) => {
+    setRegistryData((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <div className="flex flex-col gap-y-16">
         <h2 className="text-xl font-bold">Add New Registry Provider</h2>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
+          {/* Registry Selector */}
           <div className="col-span-2 flex flex-col gap-y-6">
-            <label className="text-base font-semi-bold">
+            <label className="text-base font-semibold">
               Container Registry
             </label>
-            <RegistrySelector onSelect={setSelectedRegistry} />
+            <Selector
+              options={options}
+              onSelect={setSelectedRegistry}
+              initialOption={options[0]}
+            />
           </div>
+
+          {/* Registry URL */}
           <div className="col-span-4">
             <InputField
               label="Container Registry URL"
               placeholder="Image Registry Link"
+              value={registryData.registryUrl}
+              onChange={(value) => handleChange("registryUrl", value)}
             />
           </div>
-          {selectedRegistry === "ECR" && (
+
+          {/* ECR Fields */}
+          {selectedRegistry.label === "ECR" && (
             <>
               <div className="col-span-3">
-                <InputField label="Access Key" placeholder="Access Key" />
+                <InputField
+                  label="Access Key"
+                  placeholder="Access Key"
+                  value={registryData.accessKey}
+                  onChange={(value) => handleChange("accessKey", value)}
+                />
               </div>
               <div className="col-span-3">
                 <InputField
                   label="Secret Access Key"
                   placeholder="Secret Access Key"
+                  value={registryData.secretKey}
+                  onChange={(value) => handleChange("secretKey", value)}
                 />
               </div>
             </>
           )}
 
-          {selectedRegistry === "Docker Hub" && (
+          {/* Docker Hub Fields */}
+          {selectedRegistry.label === "Docker Hub" && (
             <>
               <div className="col-span-3">
-                <InputField label="Token" placeholder="Docker Hub Token" />
+                <InputField
+                  label="Token"
+                  placeholder="Docker Hub Token"
+                  value={registryData.dockerToken}
+                  onChange={(value) => handleChange("dockerToken", value)}
+                />
               </div>
               <div className="col-span-3"></div>
             </>
           )}
+
+          {/* Submit Button */}
           <div className="col-start-6 ">
             <button className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full">
               Add Registry

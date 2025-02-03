@@ -1,9 +1,8 @@
 "use client";
 import InputField from "@/components/cicd/InputField";
-import RegistrySelector from "@/components/cicd/RegistrySelection";
 import { useState } from "react";
 
-export default function AddImageRegistryPage() {
+export default function ImageWorkerSettingPage() {
   const [worker, setWorker] = useState(1);
 
   return (
@@ -12,7 +11,12 @@ export default function AddImageRegistryPage() {
         <h2 className="text-xl font-bold">Image Builder Setting</h2>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
           <div className="col-span-3">
-            <InputField label="Max Worker" placeholder="Max Worker" />
+            <InputField
+              label="Max Worker"
+              placeholder="Max Worker"
+              value={worker}
+              onChange={setWorker}
+            />
           </div>
           <div className="col-span-3"></div>
           <div className="col-start-6 ">

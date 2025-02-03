@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
-const operationUrl = "/operation?ops=build";
+const operationUrl = "/operation?ops=BUILD";
 
 export default function ImagesListPage() {
   const router = useRouter();

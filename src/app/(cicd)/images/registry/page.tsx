@@ -25,6 +25,7 @@ export default function ImagesRegistryPage() {
       </div>
     );
   };
+
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
