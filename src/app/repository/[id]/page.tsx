@@ -1,3 +1,4 @@
+import BranchManager from "@/app/components/BranchManager";
 import Image from "next/image";
 
 export default function Repository() {
@@ -33,6 +34,8 @@ export default function Repository() {
       type: "file",
     },
   ];
+
+  const branches = ["main", "branch 1", "branch 2"];
   const itemArr = folders.concat(files);
   return (
     <div>
@@ -40,20 +43,14 @@ export default function Repository() {
         <h1 className="font-bold text-[24px]">Repositories</h1>
         <div className="relative">
           <Image
-                src={`/git-branch-icon.svg`}
-                alt={`git-branch-icon`}
-                width={24}
-                height={24}
-                className="absolute top-1/2 transform -translate-y-1/2 left-2"
-              />
-          <select className="truncate border border-ci-modal-grey px-7 py-2 bg-ci-modal-black rounded-md font-bold text-white w-full">
-            <option value="1">Option 123456789</option>
-            <option value="2">Option 2</option>
-          </select>
+            src={`/git-branch-icon.svg`}
+            alt={`git-branch-icon`}
+            width={24}
+            height={24}
+            className="absolute top-1/2 transform -translate-y-1/2 left-2"
+          />
+          <BranchManager branches={branches} />
         </div>
-        <button className="border border-ci-modal-grey px-8 py-1 bg-ci-modal-black rounded-md font-bold">
-          Merge
-        </button>
       </div>
       <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey">
         <div className="divide-y divide-ci-modal-grey">
