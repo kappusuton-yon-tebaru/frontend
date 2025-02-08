@@ -1,17 +1,28 @@
 "use client";
 import EntityIndex from "@/components/cicd/EntityIndex";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 
 const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
 
-export default function ImagesListPage({
+export default function ServicesListPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { projectId: string };
 }) {
+  const router = useRouter();
+  const { projectSpaceId, projectId } = useParams();
+
   const renderEntity = (entity: { id: string; name: string }) => {
     return (
-      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none">
+      <div
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none"
+        onClick={() =>
+          router.push(
+            `/images/projectSpaces/${projectSpaceId}/projects/${projectId}/services/${entity.id}`
+          )
+        }
+      >
         <Image
           src={"/images/cicd/hard-disk.svg"}
           alt={"disk"}
@@ -28,10 +39,10 @@ export default function ImagesListPage({
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
-        topic={"Services List 2"}
+        topic={"Services List"}
         searchUrl={searchUrl}
         operationTopic={"Build Image"}
-        operationUrl={"/operation?ops=build"}
+        operationUrl={"/operation/operate?ops=build"}
         renderEntity={renderEntity}
       />
     </div>

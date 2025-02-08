@@ -6,7 +6,7 @@ const menuItems: MenuItem[] = [
     name: "Images",
     href: "#",
     subMenu: [
-      { name: "Services List", href: "http://localhost:3000/images/services" },
+      { name: "Services List", href: "http://localhost:3000/images/projectSpaces" },
       { name: "Registry List", href: "http://localhost:3000/images/registry" },
       { name: "Images Setting", href: "http://localhost:3000/images/settings" },
     ],
@@ -22,6 +22,10 @@ const menuItems: MenuItem[] = [
   {
     name: "Operarion",
     href: "http://localhost:3000/operation",
+    subMenu: [
+      { name: "Build and Deploy", href: "" },
+      { name: "Jobs Status", href: "" },
+    ],
   },
 ];
 
