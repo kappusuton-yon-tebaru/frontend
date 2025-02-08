@@ -76,8 +76,10 @@ export default function AddImageRegistryPage() {
             id: item.id,
           }))
         );
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error) {
+        const errMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        setError(errMessage);
       } finally {
         setLoading(false);
       }

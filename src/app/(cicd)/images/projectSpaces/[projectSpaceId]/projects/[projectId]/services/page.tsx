@@ -3,15 +3,12 @@ import EntityIndex from "@/components/cicd/EntityIndex";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
-const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
-
-export default function ServicesListPage({
-  params,
-}: {
-  params: { projectId: string };
-}) {
+export default function ServicesListPage() {
   const router = useRouter();
   const { projectSpaceId, projectId } = useParams();
+
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
+  const operationUrl = "/operation/operate?ops=BUILD";
 
   const renderEntity = (entity: { id: string; name: string }) => {
     return (
@@ -42,7 +39,7 @@ export default function ServicesListPage({
         topic={"Services List"}
         searchUrl={searchUrl}
         operationTopic={"Build Image"}
-        operationUrl={"/operation/operate?ops=build"}
+        operationUrl={operationUrl}
         renderEntity={renderEntity}
       />
     </div>

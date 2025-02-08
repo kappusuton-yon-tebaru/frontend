@@ -3,19 +3,22 @@ import EntityIndex from "@/components/cicd/EntityIndex";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
-
-const operationUrl = "/operation/operate?ops=BUILD";
-
 export default function ProjectsListPage() {
   const router = useRouter();
   const { projectSpaceId } = useParams();
+
   const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
+  const operationUrl = "/operation/operate?ops=BUILD";
 
   const renderEntity = (entity: { id: string; name: string }) => {
     return (
       <div
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none"
-        onClick={() => router.push(`/images/projectSpaces/${projectSpaceId}/projects/${entity.id}/services`)}
+        onClick={() =>
+          router.push(
+            `/images/projectSpaces/${projectSpaceId}/projects/${entity.id}/services`
+          )
+        }
       >
         <Image
           src={"/images/cicd/hard-disk.svg"}

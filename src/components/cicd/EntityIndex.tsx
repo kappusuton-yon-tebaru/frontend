@@ -40,8 +40,10 @@ export default function EntityIndex({
         }
         const data = await response.json();
         setEntities(data);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error) {
+        const errMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        setError(errMessage);
       } finally {
         setLoading(false);
       }
