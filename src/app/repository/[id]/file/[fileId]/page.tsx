@@ -148,6 +148,7 @@ export default function File() {
   const [folders, setFolders] = useState(folderData);
   const [code, setCode] = useState("// Start typing...");
   const [currentBranch, setCurrentBranch] = useState(branches[0]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const toggleFolder = (index: number) => {
     setFolders((prevFolders) =>
@@ -222,14 +223,55 @@ export default function File() {
           </button>
         </div>
 
-        <div className="p-4 bg-ci-modal-black rounded-lg border border-ci-modal-grey">
-          <h2 className="text-lg font-bold mb-2">Code Editor</h2>
+        <div className="p-4 bg-ci-modal-black rounded-lg border border-ci-modal-grey h-full">
+          <div className="flex justify-between items-center">
+            <div className="flex flex-row gap-6 items-center">
+              <div>File 1</div>
+              <div className="text-ci-modal-grey">Commit 1</div>
+            </div>
+            <div className="flex flex-row gap-6 items-center">
+              {isEditing && (
+                <>
+                  <button
+                    className="border rounded-md px-4 py-1 bg-ci-modal-light-blue"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    className="border rounded-md px-4 py-1 bg-ci-modal-red"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+              <button
+                className={`border rounded-lg p-2 ${
+                  isEditing && "bg-ci-modal-light-blue"
+                }`}
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+              >
+                <Image
+                  src={`/edit-icon.svg`}
+                  alt={`edit-icon`}
+                  width={16}
+                  height={16}
+                />
+              </button>
+              <div className="text-ci-modal-grey">aaaaa</div>
+              <div className="text-ci-modal-grey">26 Oct 2024, 15:00</div>
+            </div>
+          </div>
           <CodeMirror
             value={code}
-            height="450px"
+            height="660px"
             theme={dracula}
             extensions={[javascript()]}
             onChange={(value) => setCode(value)}
+            className="mt-4"
           />
         </div>
       </div>
