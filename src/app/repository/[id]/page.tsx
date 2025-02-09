@@ -39,7 +39,7 @@ export default function Repository() {
   const itemArr = folders.concat(files);
   return (
     <div>
-      <div className="flex flex-row my-5 gap-x-6">
+      <div className="flex flex-row gap-x-6">
         <h1 className="font-bold text-[24px]">Repositories</h1>
         <div className="relative">
           <Image
@@ -52,7 +52,7 @@ export default function Repository() {
           <BranchManager branches={branches} />
         </div>
       </div>
-      <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey">
+      <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey mt-4">
         <div className="divide-y divide-ci-modal-grey">
           {itemArr.map((item, index) => (
             <div

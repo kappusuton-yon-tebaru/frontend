@@ -7,13 +7,13 @@ export default function ProjectSpace() {
   ];
   return (
     <div>
-      <div className="flex flex-row justify-between my-5">
+      <div className="flex flex-row justify-between">
         <h1 className="font-bold text-[24px]">Repositories</h1>
         <button className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold">
           New Repository
         </button>
       </div>
-      <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey">
+      <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey mt-4">
         <div className="divide-y divide-ci-modal-grey">
           {repositories.map((repo, index) => (
             <div
