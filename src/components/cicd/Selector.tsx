@@ -87,7 +87,7 @@ export default function Selector({
               </span>
             ))
           ) : (
-            <span className="text-gray-500">Select an option</span>
+            <span>Select an option</span>
           )}
           <span className="ml-auto">{isOpen ? "▲" : "▼"}</span>
         </div>

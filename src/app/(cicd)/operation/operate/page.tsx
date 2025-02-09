@@ -1,20 +1,32 @@
 "use client";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
+import { postData } from "@/services/baseRequest";
+import build from "next/dist/build";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
+export interface BuildPayload {
+  repo_url: string;
+  registry_url: string;
+  services: ServiceInfo[];
+}
 export interface ServiceInfo {
-  id: string;
-  docker_file: string;
+  service_name: string;
+  dockerfile: string;
   tag: string;
 }
 
 const operationOptions: SelectorOption[] = [
-  { id: "build", label: "Build Image", type: "BUILD" },
-  { id: "deploy", label: "Deploy", type: "DEPLOY" },
-  { id: "both", label: "Build & Deploy", type: "BOTH" },
+  { id: "build", label: "Build Image", type: "BUILD", data: { url: "/build" } },
+  { id: "deploy", label: "Deploy", type: "DEPLOY", data: { url: "/deploy" } },
+  {
+    id: "both",
+    label: "Build & Deploy",
+    type: "BOTH",
+    data: { url: "/both" },
+  },
 ];
 
 export default function OperationPage() {
@@ -54,6 +66,15 @@ export default function OperationPage() {
     []
   );
 
+  const canSubmitData = () => {
+    return (
+      !selectedProjectSpace ||
+      !selectedProject ||
+      !selectedRegistry ||
+      selectedServices.length === 0
+    );
+  };
+
   const handleChange = (id: string, value: string) => {
     setSelectedServices((prev) => {
       return prev.map((service) =>
@@ -62,6 +83,29 @@ export default function OperationPage() {
           : service
       );
     });
+  };
+
+  const handleSubmit = () => {
+    const serviceInfos: ServiceInfo[] = selectedServices.flatMap(
+      (service) => service.data
+    );
+
+    const buildPayload: BuildPayload = {
+      repo_url: "git://github.com/LiddleChild/lmwn-assignment",
+      registry_url: "public.ecr.aws/r2n4f6g5/testproject",
+      services: [
+        {
+          service_name: "covid-summary",
+          dockerfile: "/Dockerfile",
+          tag: "covid-summary-test12345677",
+        },
+      ],
+    };
+    const operation = postData(
+      baseUrl + selectedOperation.data.url,
+      buildPayload
+    );
+    console.log(operation);
   };
 
   useEffect(() => {
@@ -151,13 +195,13 @@ export default function OperationPage() {
               label: "Select Project Space",
               options: projectSpaceOptions,
               state: setSelectedProjectSpace,
-              initial: projectSpaceOptions[0],
+              initial: null,
             },
             {
               label: "Select Project",
               options: projectOptions,
               state: setSelectedProject,
-              initial: projectOptions[0],
+              initial: null,
             },
           ].map(({ label, options, state, initial }) => (
             <div key={label} className="col-span-2 flex flex-col gap-y-6">
@@ -188,7 +232,7 @@ export default function OperationPage() {
                 </label>
                 <Selector
                   options={registryOptions}
-                  initialOption={registryOptions[0]}
+                  initialOption={null}
                   onSelect={setSelectedRegistry}
                 />
               </div>
@@ -200,7 +244,7 @@ export default function OperationPage() {
                     Image Tag Setting
                   </h2>
                   {selectedServices.map((item: SelectorOption) => (
-                    <div key={item.id} className="col-span-2">
+                    <div key={item.id} className="col-span-2 col-start-1">
                       <InputField
                         label={item.label}
                         placeholder="Image version"
@@ -216,8 +260,11 @@ export default function OperationPage() {
           <div className="col-span-4"></div>
           <div className="col-start-6">
             <button
-              className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full"
-              onClick={() => console.log(selectedServices)}
+              className={`bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full ${
+                canSubmitData() ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={canSubmitData()}
+              onClick={() => handleSubmit()}
             >
               Proceed
             </button>

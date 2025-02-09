@@ -15,7 +15,7 @@ interface EntityIndexProps {
   searchUrl: string;
   operationTopic?: string;
   operationUrl?: string;
-  renderEntity: (entity: Entity) => React.ReactNode;
+  renderEntity: (entity: any) => React.ReactNode;
 }
 
 export default function EntityIndex({
