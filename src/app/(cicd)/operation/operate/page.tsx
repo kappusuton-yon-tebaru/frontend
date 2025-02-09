@@ -11,25 +11,37 @@ const operationOptions: SelectorOption[] = [
   { label: "Build & Deploy", type: "BOTH" },
 ];
 
-const projectSearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`;
-const registrySearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/regproviders`;
-
 export default function AddImageRegistryPage() {
   const searchParams = useSearchParams();
+
+  const projectSearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`;
+  const projectSpaceSearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
+  const registrySearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/regproviders`;
+  const serviceSearchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [projectSpaceOptions, setProjectSpaceOptions] = useState<
+    SelectorOption[]
+  >([]);
   const [projectOptions, setProjectOptions] = useState<SelectorOption[]>([]);
   const [registryOptions, setRegistryOptions] = useState<SelectorOption[]>([]);
+  const [serviceOptions, setServiceOptions] = useState<SelectorOption[]>([]);
 
   const [selectedOperation, setSelectedOperation] = useState<SelectorOption>(
     operationOptions[0]
   );
+  const [selectedProjectSpace, setSelectedProjectSpace] =
+    useState<SelectorOption>(projectSpaceOptions[0]);
   const [selectedProject, setSelectedProject] = useState<SelectorOption>(
     projectOptions[0]
   );
   const [selectedRegistry, setSelectedRegistry] = useState<SelectorOption>(
+    registryOptions[0]
+  );
+
+  const [selectedServices, setSelectedServices] = useState<SelectorOption>(
     registryOptions[0]
   );
 
@@ -49,19 +61,39 @@ export default function AddImageRegistryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [projectRes, registryRes] = await Promise.all([
-          fetch(projectSearchUrl),
-          fetch(registrySearchUrl),
-        ]);
+        const [projectSpaceRes, projectRes, registryRes, serviceRes] =
+          await Promise.all([
+            fetch(projectSpaceSearchUrl),
+            fetch(projectSearchUrl),
+            fetch(registrySearchUrl),
+            fetch(serviceSearchUrl),
+          ]);
 
-        if (!projectRes.ok || !registryRes.ok) {
+        if (
+          !projectSpaceRes.ok ||
+          !projectRes.ok ||
+          !registryRes.ok ||
+          !serviceRes.ok
+        ) {
           throw new Error("Failed to fetch data");
         }
 
-        const [projectData, registryData] = await Promise.all([
-          projectRes.json(),
-          registryRes.json(),
-        ]);
+        const [projectSpaceData, projectData, registryData, serviceData] =
+          await Promise.all([
+            projectSpaceRes.json(),
+            projectRes.json(),
+            registryRes.json(),
+            serviceRes.json(),
+          ]);
+
+        setProjectSpaceOptions(
+          projectSpaceData.map(
+            (item: { resource_name: string; id: string }) => ({
+              label: item.id,
+              id: item.id,
+            })
+          )
+        );
 
         setProjectOptions(
           projectData.map((item: { resource_name: string; id: string }) => ({
@@ -72,6 +104,13 @@ export default function AddImageRegistryPage() {
 
         setRegistryOptions(
           registryData.map((item: { name: string; id: string }) => ({
+            label: item.name,
+            id: item.id,
+          }))
+        );
+
+        setServiceOptions(
+          serviceData.map((item: { name: string; id: string }) => ({
             label: item.name,
             id: item.id,
           }))
@@ -116,12 +155,31 @@ export default function AddImageRegistryPage() {
               onSelect={setSelectedOperation}
             />
           </div>
-          <div className="col-span-4 flex flex-col gap-y-6">
+          <div className="col-span-2 flex flex-col gap-y-6">
+            <label className="text-base font-semibold">
+              Select Project Space
+            </label>
+            <Selector
+              options={projectSpaceOptions}
+              initialOption={projectSpaceOptions[0]}
+              onSelect={setSelectedProjectSpace}
+            />
+          </div>
+          <div className="col-span-2 flex flex-col gap-y-6">
             <label className="text-base font-semibold">Select Project</label>
             <Selector
               options={projectOptions}
               initialOption={projectOptions[0]}
               onSelect={setSelectedProject}
+            />
+          </div>
+          <div className="col-span-6 flex flex-col gap-y-6">
+            <label className="text-base font-semibold">Select Service</label>
+            <Selector
+              options={serviceOptions}
+              initialOption={serviceOptions[0]}
+              onSelect={setSelectedServices}
+              isMultiSelect={true}
             />
           </div>
           {selectedOperation.type === "BUILD" && (
@@ -140,7 +198,10 @@ export default function AddImageRegistryPage() {
             </>
           )}
           <div className="col-start-6 ">
-            <button className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full">
+            <button
+              className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full"
+              onClick={() => console.log(selectedServices)}
+            >
               Proceed
             </button>
           </div>

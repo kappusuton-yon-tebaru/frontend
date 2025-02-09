@@ -13,8 +13,8 @@ interface Entity {
 interface EntityIndexProps {
   topic: string;
   searchUrl: string;
-  operationTopic: string;
-  operationUrl: string;
+  operationTopic?: string;
+  operationUrl?: string;
   renderEntity: (entity: Entity) => React.ReactNode;
 }
 
@@ -75,12 +75,14 @@ export default function EntityIndex({
     <div className="flex flex-col gap-y-8">
       <div className="flex flex-row justify-between font-bold items-center">
         <h2 className="text-xl">{topic}</h2>
-        <button
-          className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
-          onClick={() => router.push(operationUrl)}
-        >
-          {operationTopic}
-        </button>
+        {operationTopic && operationUrl && (
+          <button
+            className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
+            onClick={() => router.push(operationUrl)}
+          >
+            {operationTopic}
+          </button>
+        )}
       </div>
       <div className="flex flex-col">
         {entities.map((entity, index) => {
