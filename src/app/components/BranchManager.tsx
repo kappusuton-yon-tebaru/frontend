@@ -10,6 +10,7 @@ export default function BranchManager({ branches }: { branches: string[] }) {
   return (
     <div className="flex flex-row gap-8">
       <BranchButton
+        wide={true}
         branches={branches}
         currentBranch={currentBranch}
         onSelectBranch={setCurrentBranch}

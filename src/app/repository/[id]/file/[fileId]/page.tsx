@@ -5,6 +5,9 @@ import { useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { dracula } from "@uiw/codemirror-theme-dracula";
+import BranchButton from "@/app/components/BranchButton";
+
+const branches = ["main", "branch 1", "branch 2"];
 
 const folderData = [
   {
@@ -144,6 +147,7 @@ const folderData = [
 export default function File() {
   const [folders, setFolders] = useState(folderData);
   const [code, setCode] = useState("// Start typing...");
+  const [currentBranch, setCurrentBranch] = useState(branches[0]);
 
   const toggleFolder = (index: number) => {
     setFolders((prevFolders) =>
@@ -156,20 +160,15 @@ export default function File() {
   return (
     <div className="">
       <h1 className="font-bold text-[24px] mb-5">Repositories</h1>
-      <div className="grid grid-cols-[30%_70%] gap-4">
+      <div className="grid grid-cols-[25%_75%] gap-4">
         <div className="flex flex-col gap-y-4">
           <div className="relative w-full">
-            <Image
-              src={`/git-branch-icon.svg`}
-              alt="git-branch-icon"
-              width={24}
-              height={24}
-              className="absolute top-1/2 transform -translate-y-1/2 left-2"
+            <BranchButton
+              wide={false}
+              branches={branches}
+              currentBranch={currentBranch}
+              onSelectBranch={setCurrentBranch}
             />
-            <select className="truncate border border-ci-modal-grey px-7 py-2 bg-ci-modal-black rounded-md font-bold text-white w-full">
-              <option value="1">Branch 1</option>
-              <option value="2">Branch 2</option>
-            </select>
           </div>
 
           <div className="border border-ci-modal-grey rounded-lg p-2 overflow-y-auto bg-ci-modal-black h-[30vw]">

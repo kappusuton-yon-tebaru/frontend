@@ -3,18 +3,24 @@
 import { X } from "lucide-react";
 
 export default function SwitchBranch({
+  wide,
   branches,
   selectedBranch,
   onSelectBranch,
   onClose,
 }: {
+  wide: boolean;
   branches: string[];
   selectedBranch: string;
   onSelectBranch: (branch: string) => void;
   onClose: () => void;
 }) {
   return (
-    <div className="absolute w-60 bg-ci-bg-dark-blue border border-ci-modal-white mt-2 rounded-md shadow-lg z-10">
+    <div
+      className={`absolute ${
+        wide ? "w-[200%]" : "w-full"
+      } bg-ci-bg-dark-blue border border-ci-modal-white mt-2 rounded-md shadow-lg z-10`}
+    >
       <div className="flex justify-between items-center px-3 py-2 border-b border-ci-modal-grey">
         <span className="text-ci-modal-white font-medium">Switch Branch</span>
         <X
