@@ -5,8 +5,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 export interface SelectorOption {
   label: string;
   icon?: string;
-  id?: string;
+  id: string;
   type?: string;
+  data?: any;
 }
 
 export default function Selector({
@@ -16,7 +17,7 @@ export default function Selector({
   isMultiSelect = false,
 }: {
   options: SelectorOption[];
-  initialOption?: SelectorOption[] | SelectorOption;
+  initialOption?: SelectorOption[] | SelectorOption | null;
   onSelect: Dispatch<SetStateAction<any>>;
   isMultiSelect?: boolean;
 }) {
@@ -70,7 +71,7 @@ export default function Selector({
             Array.from(selected).map((opt) => (
               <span
                 key={opt.label}
-                className="flex items-center px-3 py-1 bg-gray-300 text-black rounded-full text-sm"
+                className="flex items-center px-3 py-1 bg-gray-300 text-black rounded-lg text-sm"
               >
                 {opt.icon && <span className="mr-1">{opt.icon}</span>}
                 {opt.label}
