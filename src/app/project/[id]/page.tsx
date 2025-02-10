@@ -1,6 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter, useParams } from "next/navigation";
 
 export default function Project() {
+  const router = useRouter();
+  const { id } = useParams();
+
   const projectSpaces = [
     { name: "Project Space 1", date: "31 Feb 2099", time: "14:30" },
     { name: "Project Space 2", date: "31 Feb 2099", time: "10:00" },
@@ -9,7 +15,10 @@ export default function Project() {
     <div>
       <div className="flex flex-row justify-between">
         <h1 className="font-bold text-[24px]">Project Spaces</h1>
-        <button className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold">
+        <button
+          className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue"
+          onClick={() => router.push(`/project/${id}/new-project-space`)}
+        >
           New Project Space
         </button>
       </div>

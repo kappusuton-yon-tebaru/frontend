@@ -24,7 +24,7 @@ export default function NewRepository() {
   const [readme, setReadme] = useState<boolean>(false);
 
   return (
-    <div className="flex flex-col my-5 gap-12">
+    <div className="flex flex-col gap-12">
       <h1 className="font-bold text-[24px]">Create Repository</h1>
       <div>
         <div className="w-1/2">
