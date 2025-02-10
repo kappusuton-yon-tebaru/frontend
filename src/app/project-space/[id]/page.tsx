@@ -1,15 +1,34 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter, useParams } from "next/navigation";
 
 export default function ProjectSpace() {
+  const router = useRouter();
+  const { id } = useParams();
+
   const repositories = [
-    { name: "Repository 1", date: "31 Feb 2099", time: "14:30", msg:"Commit 1"},
-    { name: "Repository 2", date: "31 Feb 2099", time: "10:00", msg:"Commit 1"},
+    {
+      name: "Repository 1",
+      date: "31 Feb 2099",
+      time: "14:30",
+      msg: "Commit 1",
+    },
+    {
+      name: "Repository 2",
+      date: "31 Feb 2099",
+      time: "10:00",
+      msg: "Commit 1",
+    },
   ];
   return (
     <div>
       <div className="flex flex-row justify-between">
         <h1 className="font-bold text-[24px]">Repositories</h1>
-        <button className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold">
+        <button
+          className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue"
+          onClick={() => router.push(`/project-space/${id}/new-repository`)}
+        >
           New Repository
         </button>
       </div>
@@ -29,7 +48,9 @@ export default function ProjectSpace() {
               />
               <div className="grid grid-cols-3 w-full">
                 <div className="font-medium">{repo.name}</div>
-                <div className="text-ci-modal-grey flex justify-center">{repo.msg}</div>
+                <div className="text-ci-modal-grey flex justify-center">
+                  {repo.msg}
+                </div>
                 <div className="text-ci-modal-grey flex justify-end">
                   {repo.date + ", " + repo.time}
                 </div>
