@@ -8,6 +8,10 @@ export default function ManageOrganization() {
   const useGroups = [
     { name: "Project Space 1", people: 99 },
     { name: "Project Space 2", people: 99 },
+    { name: "Project Space 2", people: 99 },
+    { name: "Project Space 2", people: 99 },
+    { name: "Project Space 2", people: 99 },
+    { name: "Project Space 2", people: 99 },
   ];
   const permissions = [{ name: "Permission 1" }, { name: "Permission 2" }];
   return (
@@ -83,7 +87,9 @@ export default function ManageOrganization() {
                 className="mr-3"
               />
               <div className="grid grid-cols-2 w-full">
-                <div className="font-medium flex items-center">{permission.name}</div>
+                <div className="font-medium flex items-center">
+                  {permission.name}
+                </div>
                 <div className="text-ci-modal-grey flex justify-end space-x-4 items-center">
                   <button className="rounded-lg border border-ci-modal-grey px-8 py-2 text-white bg-ci-bg-dark-blue">
                     Edit
@@ -103,6 +109,14 @@ export default function ManageOrganization() {
           className="mr-3"
         />
         Add new permission
+      </div>
+      <div className="right-4 absolute space-x-8 font-bold text-md py-8">
+        <button className="rounded-lg border border-ci-modal-grey px-12 py-1 text-white bg-ci-modal-black">
+          Save
+        </button>
+        <button className="rounded-lg border border-ci-modal-grey px-12 py-1 text-white bg-ci-modal-red">
+          Cancel
+        </button>
       </div>
     </div>
   );
