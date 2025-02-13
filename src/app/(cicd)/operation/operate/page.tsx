@@ -1,10 +1,12 @@
 "use client";
+import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
 import { getData, postData } from "@/services/baseRequest";
 import build from "next/dist/build";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export interface BuildPayload {
@@ -88,27 +90,32 @@ export default function OperationPage() {
   };
 
   const handleSubmit = () => {
-    const services = selectedServices.map(
-      ({ data: { service_name, dockerfile, tag_version } }) => ({
-        service_name: service_name,
-        dockerfile: dockerfile,
-        tag: `${service_name}-${tag_version}`,
-      })
-    );
-    console.log(services);
+    try {
+      const services = selectedServices.map(
+        ({ data: { service_name, dockerfile, tag_version } }) => ({
+          service_name: service_name,
+          dockerfile: dockerfile,
+          tag: `${service_name}-${tag_version}`,
+        })
+      );
+      console.log(services);
 
-    const buildPayload: BuildPayload = {
-      repo_url: `git://github.com/${projectRepo}`,
-      registry_url: "public.ecr.aws/r2n4f6g5/testproject",
-      services: services,
-    };
+      const buildPayload: BuildPayload = {
+        repo_url: `git://github.com/${projectRepo}`,
+        registry_url: "public.ecr.aws/r2n4f6g5/testproject",
+        services: services,
+      };
 
-    console.log(buildPayload);
-    // const operation = postData(
-    //   baseUrl + selectedOperation.data.url,
-    //   buildPayload
-    // );
-    // console.log(operation);
+      console.log(buildPayload);
+      toast.success("Create operation success!");
+      // const operation = postData(
+      //   baseUrl + selectedOperation.data.url,
+      //   buildPayload
+      // );
+      // console.log(operation);
+    } catch (error) {
+      toast.error(`Create operation failed.\n${error}`);
+    }
   };
 
   useEffect(() => {
@@ -205,6 +212,7 @@ export default function OperationPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
+        <CustomToast />
         <ClipLoader
           size={100}
           color={"#245FA1"}

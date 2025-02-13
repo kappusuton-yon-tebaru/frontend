@@ -1,8 +1,10 @@
 "use client";
+import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
 import { postData } from "@/services/baseRequest";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const options: SelectorOption[] = [
   { label: "ECR", icon: "🟧", id: "ECR" },
@@ -28,31 +30,37 @@ export default function AddImageRegistryPage() {
   };
 
   const handleSubmit = () => {
-    const createPayload = {
-      name: registryData.name,
-      providerType: selectedRegistry.id,
-      jsonCredential: JSON.stringify(
-        selectedRegistry.id === "ECR"
-          ? {
-              url: registryData.registryUrl,
-              access_key: registryData.accessKey,
-              secret_access_key: registryData.secretKey,
-            }
-          : selectedRegistry.id === "DOCKER"
-          ? {
-              url: registryData.registryUrl,
-              token: registryData.dockerToken,
-            }
-          : {}
-      ),
-      organizationId: "678fd29c7c67bca50cfae354",
-    };
-    const operation = postData(createUrl, createPayload);
-    console.log(operation);
+    try {
+      const createPayload = {
+        name: registryData.name,
+        providerType: selectedRegistry.id,
+        jsonCredential: JSON.stringify(
+          selectedRegistry.id === "ECR"
+            ? {
+                url: registryData.registryUrl,
+                access_key: registryData.accessKey,
+                secret_access_key: registryData.secretKey,
+              }
+            : selectedRegistry.id === "DOCKER"
+            ? {
+                url: registryData.registryUrl,
+                token: registryData.dockerToken,
+              }
+            : {}
+        ),
+        organizationId: "678fd29c7c67bca50cfae354",
+      };
+      const operation = postData(createUrl, createPayload);
+
+      toast.success("Add registry success!");
+    } catch (error) {
+      toast.error(`Add registry failed.\n${error}`);
+    }
   };
 
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
+      <CustomToast />
       <div className="flex flex-col gap-y-16">
         <h2 className="text-xl font-bold">Add New Registry Provider</h2>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
