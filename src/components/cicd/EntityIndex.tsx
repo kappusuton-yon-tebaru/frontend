@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
+import { getData } from "@/services/baseRequest";
 
 interface Entity {
   id: string;
@@ -34,12 +35,8 @@ export default function EntityIndex({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(searchUrl);
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setEntities(data);
+        const data = await getData(searchUrl);
+        setEntities(data.services ? data.services : data);
       } catch (error) {
         const errMessage =
           error instanceof Error ? error.message : "Unknown error";
@@ -85,21 +82,27 @@ export default function EntityIndex({
         )}
       </div>
       <div className="flex flex-col">
-        {entities.map((entity, index) => {
-          const isFirst = index === 0;
-          const isLast = index === entities.length - 1;
+        {entities &&
+          entities.map((entity, index) => {
+            const isFirst = index === 0;
+            const isLast = index === entities.length - 1;
 
-          return (
-            <div
-              key={entity.id}
-              className={`${isFirst ? "rounded-t-lg" : ""} ${
-                isLast ? "rounded-b-lg" : ""
-              } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
-            >
-              {renderEntity(entity)}
-            </div>
-          );
-        })}
+            return (
+              <div
+                key={index}
+                className={`${isFirst ? "rounded-t-lg" : ""} ${
+                  isLast ? "rounded-b-lg" : ""
+                } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
+              >
+                {renderEntity(entity)}
+              </div>
+            );
+          })}
+        {!entities && (
+          <div className="flex flex-col items-center text-lg font-bold py-4">
+            This directory is empty
+          </div>
+        )}
       </div>
     </div>
   );

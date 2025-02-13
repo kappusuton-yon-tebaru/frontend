@@ -1,7 +1,7 @@
 "use client";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
-import { postData } from "@/services/baseRequest";
+import { getData, postData } from "@/services/baseRequest";
 import build from "next/dist/build";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -32,13 +32,7 @@ const operationOptions: SelectorOption[] = [
 export default function OperationPage() {
   const searchParams = useSearchParams();
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-  const endpoints = {
-    projectSpace: `${baseUrl}/users`,
-    project: `${baseUrl}/resources`,
-    registry: `${baseUrl}/regproviders`,
-    service: `${baseUrl}/users`,
-  };
+  const organizationId = "678fcf897c67bca50cfae34e";
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +59,14 @@ export default function OperationPage() {
   const [selectedServices, setSelectedServices] = useState<SelectorOption[]>(
     []
   );
+  const [projectRepo, setProjectRepo] = useState<String>();
+
+  const endpoints = {
+    projectSpace: `${baseUrl}/resources/children/${organizationId}`,
+    project: `${baseUrl}/resources/children/${selectedProjectSpace?.id}`,
+    registry: `${baseUrl}/regproviders`,
+    service: `${baseUrl}/project/${selectedProject?.id}/services `,
+  };
 
   const canSubmitData = () => {
     return (
@@ -86,26 +88,27 @@ export default function OperationPage() {
   };
 
   const handleSubmit = () => {
-    const serviceInfos: ServiceInfo[] = selectedServices.flatMap(
-      (service) => service.data
+    const services = selectedServices.map(
+      ({ data: { service_name, dockerfile, tag_version } }) => ({
+        service_name: service_name,
+        dockerfile: dockerfile,
+        tag: `${service_name}-${tag_version}`,
+      })
     );
+    console.log(services);
 
     const buildPayload: BuildPayload = {
-      repo_url: "git://github.com/LiddleChild/lmwn-assignment",
+      repo_url: `git://github.com/${projectRepo}`,
       registry_url: "public.ecr.aws/r2n4f6g5/testproject",
-      services: [
-        {
-          service_name: "covid-summary",
-          dockerfile: "/Dockerfile",
-          tag: "covid-summary-test12345677",
-        },
-      ],
+      services: services,
     };
-    const operation = postData(
-      baseUrl + selectedOperation.data.url,
-      buildPayload
-    );
-    console.log(operation);
+
+    console.log(buildPayload);
+    // const operation = postData(
+    //   baseUrl + selectedOperation.data.url,
+    //   buildPayload
+    // );
+    // console.log(operation);
   };
 
   useEffect(() => {
@@ -117,52 +120,87 @@ export default function OperationPage() {
   }, [searchParams]);
 
   useEffect(() => {
-    (async () => {
+    const fetchProjectSpaces = async () => {
       try {
-        const responses = await Promise.all(
-          Object.values(endpoints).map((url) => fetch(url))
-        );
-        if (responses.some((res) => !res.ok))
-          throw new Error("Failed to fetch data");
-
-        const [projectSpaceData, projectData, registryData, serviceData] =
-          await Promise.all(responses.map((res) => res.json()));
-
+        const data = await getData(endpoints.projectSpace);
         setProjectSpaceOptions(
-          projectSpaceData.map((item: { name: string; id: string }) => ({
-            label: item.name,
-            id: item.id,
-            data: item,
-          }))
-        );
-        setProjectOptions(
-          projectData.map((item: { resource_name: string; id: string }) => ({
+          data.map((item: { resource_name: string; id: string }) => ({
             label: item.resource_name,
             id: item.id,
             data: item,
           }))
         );
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Unknown error");
+      }
+    };
+
+    fetchProjectSpaces();
+    setLoading(false);
+  }, [endpoints.projectSpace]);
+
+  useEffect(() => {
+    if (!selectedProjectSpace) return;
+
+    const fetchProjects = async () => {
+      try {
+        const data = await getData(endpoints.project);
+        setProjectOptions(
+          data.map((item: { resource_name: string; id: string }) => ({
+            label: item.resource_name,
+            id: item.id,
+            data: item,
+          }))
+        );
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Unknown error");
+      }
+    };
+
+    fetchProjects();
+  }, [endpoints.project, selectedProjectSpace]);
+
+  useEffect(() => {
+    const fetchRegistries = async () => {
+      try {
+        const data = await getData(endpoints.registry);
         setRegistryOptions(
-          registryData.map((item: { name: string; id: string }) => ({
+          data.map((item: { name: string; id: string }) => ({
             label: item.name,
             id: item.id,
             data: item,
           }))
         );
-        setServiceOptions(
-          serviceData.map((item: { name: string; id: string }) => ({
-            label: item.name,
-            id: item.id,
-            data: { ...item, tag_version: "latest" },
-          }))
-        );
       } catch (error) {
         setError(error instanceof Error ? error.message : "Unknown error");
-      } finally {
-        setLoading(false);
       }
-    })();
-  }, []);
+    };
+
+    fetchRegistries();
+  }, [endpoints.registry]);
+
+  useEffect(() => {
+    if (!selectedProject) return;
+    const fetchServices = async () => {
+      try {
+        const data = await getData(endpoints.service);
+        setServiceOptions(
+          data.services.map(
+            (item: { service_name: string; dockerfile: string }) => ({
+              label: item.service_name,
+              id: item.service_name,
+              data: { ...item, tag_version: "latest" },
+            })
+          )
+        );
+        setProjectRepo(data.repo_url);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Unknown error");
+      }
+    };
+
+    fetchServices();
+  }, [endpoints.service, selectedProject]);
 
   if (loading) {
     return (
@@ -243,8 +281,8 @@ export default function OperationPage() {
                   <h2 className="text-xl font-bold col-span-6">
                     Image Tag Setting
                   </h2>
-                  {selectedServices.map((item: SelectorOption) => (
-                    <div key={item.id} className="col-span-2 col-start-1">
+                  {selectedServices.map((item: SelectorOption, index) => (
+                    <div key={index} className="col-span-2 col-start-1">
                       <InputField
                         label={item.label}
                         placeholder="Image version"

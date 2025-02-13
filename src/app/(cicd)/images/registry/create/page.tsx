@@ -1,14 +1,17 @@
 "use client";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
+import { postData } from "@/services/baseRequest";
 import { useState } from "react";
 
 const options: SelectorOption[] = [
-  { label: "ECR", icon: "🟧" },
-  { label: "Docker Hub", icon: "🐳" },
+  { label: "ECR", icon: "🟧", id: "ECR" },
+  { label: "Docker Hub", icon: "🐳", id: "DOCKER" },
 ];
 
 export default function AddImageRegistryPage() {
+  const createUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/regproviders`;
+
   const [selectedRegistry, setSelectedRegistry] = useState<SelectorOption>(
     options[0]
   );
@@ -24,6 +27,30 @@ export default function AddImageRegistryPage() {
     setRegistryData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleSubmit = () => {
+    const createPayload = {
+      name: registryData.name,
+      providerType: selectedRegistry.id,
+      jsonCredential: JSON.stringify(
+        selectedRegistry.id === "ECR"
+          ? {
+              url: registryData.registryUrl,
+              access_key: registryData.accessKey,
+              secret_access_key: registryData.secretKey,
+            }
+          : selectedRegistry.id === "DOCKER"
+          ? {
+              url: registryData.registryUrl,
+              token: registryData.dockerToken,
+            }
+          : {}
+      ),
+      organizationId: "678fd29c7c67bca50cfae354",
+    };
+    const operation = postData(createUrl, createPayload);
+    console.log(operation);
+  };
+
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <div className="flex flex-col gap-y-16">
@@ -33,7 +60,7 @@ export default function AddImageRegistryPage() {
             <InputField
               label="Registry Name"
               placeholder="Name"
-              value={registryData.registryUrl}
+              value={registryData.name}
               onChange={(value) => handleChange("name", value)}
             />
           </div>
@@ -97,7 +124,10 @@ export default function AddImageRegistryPage() {
 
           {/* Submit Button */}
           <div className="col-start-6 ">
-            <button className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full">
+            <button
+              className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full"
+              onClick={handleSubmit}
+            >
               Add Registry
             </button>
           </div>

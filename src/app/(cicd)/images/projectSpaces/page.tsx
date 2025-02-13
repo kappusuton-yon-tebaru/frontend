@@ -6,10 +6,15 @@ import { useRouter } from "next/navigation";
 export default function ProjectSpaceListPage() {
   const router = useRouter();
 
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
+  const organizationId = "678fcf897c67bca50cfae34e";
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${organizationId}`;
   const operationUrl = "/operation/operate?ops=BUILD";
 
-  const renderEntity = (entity: { id: string; name: string }) => {
+  const renderEntity = (entity: {
+    id: string;
+    resource_name: string;
+    resource_type: string;
+  }) => {
     return (
       <div
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none"
@@ -23,7 +28,7 @@ export default function ProjectSpaceListPage() {
           width={32}
           height={32}
         />
-        <h3 className="text-base w-4/5">{entity.name}</h3>
+        <h3 className="text-base w-4/5">{entity.resource_name}</h3>
         <h3 className="text-base w-1/6 text-ci-modal-grey">
           26 Oct 2024, 15:00
         </h3>

@@ -1,4 +1,24 @@
-export async function postData(url: string, data: any) {
+export async function getData(url: string, token?: string) {
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error posting data:", error);
+    throw error;
+  }
+}
+
+export async function postData(url: string, data: any, token?: string) {
   try {
     const response = await fetch(url, {
       method: "POST",
