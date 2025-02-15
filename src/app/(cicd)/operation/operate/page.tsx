@@ -16,7 +16,7 @@ export interface BuildPayload {
 }
 export interface ServiceInfo {
   service_name: string;
-  dockerfile: string;
+  service_root: string;
   tag: string;
 }
 
@@ -94,7 +94,7 @@ export default function OperationPage() {
       const services = selectedServices.map(
         ({ data: { service_name, dockerfile, tag_version } }) => ({
           service_name: service_name,
-          dockerfile: dockerfile,
+          service_root: dockerfile.replace("/Dockerfile", ""),
           tag: `${service_name}-${tag_version}`,
         })
       );
