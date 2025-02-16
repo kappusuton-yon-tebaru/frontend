@@ -13,7 +13,7 @@ export default function ImagesRegistryPage() {
     return (
       <div
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none"
-        // onClick={() => router.push(`/images/list/${entity.id}`)}
+        onClick={() => router.push(`/images/registry/${entity.id}/edit`)}
       >
         <Image
           src={"/images/cicd/hard-disk.svg"}

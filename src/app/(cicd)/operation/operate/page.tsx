@@ -10,13 +10,14 @@ import toast from "react-hot-toast";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export interface BuildPayload {
-  repo_url: string;
-  registry_url: string;
+  // repo_url: string;
+  // registry_url: string;
+  project_id: string;
   services: ServiceInfo[];
 }
 export interface ServiceInfo {
   service_name: string;
-  service_root: string;
+  // service_root: string;
   tag: string;
 }
 
@@ -43,7 +44,7 @@ export default function OperationPage() {
     SelectorOption[]
   >([]);
   const [projectOptions, setProjectOptions] = useState<SelectorOption[]>([]);
-  const [registryOptions, setRegistryOptions] = useState<SelectorOption[]>([]);
+  // const [registryOptions, setRegistryOptions] = useState<SelectorOption[]>([]);
   const [serviceOptions, setServiceOptions] = useState<SelectorOption[]>([]);
 
   const [selectedOperation, setSelectedOperation] = useState(
@@ -55,9 +56,9 @@ export default function OperationPage() {
   const [selectedProject, setSelectedProject] = useState<
     SelectorOption | undefined
   >();
-  const [selectedRegistry, setSelectedRegistry] = useState<
-    SelectorOption | undefined
-  >();
+  // const [selectedRegistry, setSelectedRegistry] = useState<
+  //   SelectorOption | undefined
+  // >();
   const [selectedServices, setSelectedServices] = useState<SelectorOption[]>(
     []
   );
@@ -74,7 +75,7 @@ export default function OperationPage() {
     return (
       !selectedProjectSpace ||
       !selectedProject ||
-      !selectedRegistry ||
+      // !selectedRegistry ||
       selectedServices.length === 0
     );
   };
@@ -94,15 +95,16 @@ export default function OperationPage() {
       const services = selectedServices.map(
         ({ data: { service_name, dockerfile, tag_version } }) => ({
           service_name: service_name,
-          service_root: dockerfile.replace("/Dockerfile", ""),
+          // service_root: dockerfile.replace("/Dockerfile", ""),
           tag: `${service_name}-${tag_version}`,
         })
       );
       console.log(services);
 
       const buildPayload: BuildPayload = {
-        repo_url: `git://github.com/${projectRepo}`,
-        registry_url: "public.ecr.aws/r2n4f6g5/testproject",
+        // repo_url: `git://github.com/${projectRepo}`,
+        // registry_url: "public.ecr.aws/r2n4f6g5/testproject",
+        project_id: selectedProject?.data.id,
         services: services,
       };
 
@@ -167,24 +169,24 @@ export default function OperationPage() {
     fetchProjects();
   }, [endpoints.project, selectedProjectSpace]);
 
-  useEffect(() => {
-    const fetchRegistries = async () => {
-      try {
-        const data = await getData(endpoints.registry);
-        setRegistryOptions(
-          data.map((item: { name: string; id: string }) => ({
-            label: item.name,
-            id: item.id,
-            data: item,
-          }))
-        );
-      } catch (error) {
-        setError(error instanceof Error ? error.message : "Unknown error");
-      }
-    };
+  // useEffect(() => {
+  //   const fetchRegistries = async () => {
+  //     try {
+  //       const data = await getData(endpoints.registry);
+  //       setRegistryOptions(
+  //         data.map((item: { name: string; id: string }) => ({
+  //           label: item.name,
+  //           id: item.id,
+  //           data: item,
+  //         }))
+  //       );
+  //     } catch (error) {
+  //       setError(error instanceof Error ? error.message : "Unknown error");
+  //     }
+  //   };
 
-    fetchRegistries();
-  }, [endpoints.registry]);
+  //   fetchRegistries();
+  // }, [endpoints.registry]);
 
   useEffect(() => {
     if (!selectedProject) return;
@@ -272,7 +274,7 @@ export default function OperationPage() {
 
           {selectedOperation.type === "BUILD" && (
             <>
-              <div className="col-span-2 flex flex-col gap-y-6">
+              {/* <div className="col-span-2 flex flex-col gap-y-6">
                 <label className="text-base font-semibold">
                   Select Registry
                 </label>
@@ -281,7 +283,7 @@ export default function OperationPage() {
                   initialOption={null}
                   onSelect={setSelectedRegistry}
                 />
-              </div>
+              </div> */}
 
               {selectedServices.length > 0 && (
                 <>

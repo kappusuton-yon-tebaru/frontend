@@ -3,10 +3,10 @@ import EntityIndex from "@/components/cicd/EntityIndex";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 
-const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
-
 export default function ImagesListPage() {
   const { projectSpaceId, projectId, serviceId } = useParams();
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users?project_id=${projectId}&service_name=${serviceId}`;
+
   const renderEntity = (entity: { id: string; name: string }) => {
     return (
       <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none">

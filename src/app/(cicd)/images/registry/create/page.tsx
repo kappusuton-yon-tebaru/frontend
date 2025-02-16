@@ -22,6 +22,7 @@ export default function AddImageRegistryPage() {
     registryUrl: "",
     accessKey: "",
     secretKey: "",
+    awsRegion: "",
     dockerToken: "",
   });
 
@@ -34,16 +35,17 @@ export default function AddImageRegistryPage() {
       const createPayload = {
         name: registryData.name,
         providerType: selectedRegistry.id,
+        uri: registryData.registryUrl,
         jsonCredential: JSON.stringify(
           selectedRegistry.id === "ECR"
             ? {
-                url: registryData.registryUrl,
+
                 access_key: registryData.accessKey,
                 secret_access_key: registryData.secretKey,
+                aws_region: registryData.awsRegion
               }
             : selectedRegistry.id === "DOCKER"
             ? {
-                url: registryData.registryUrl,
                 token: registryData.dockerToken,
               }
             : {}
@@ -112,6 +114,15 @@ export default function AddImageRegistryPage() {
                   onChange={(value) => handleChange("secretKey", value)}
                 />
               </div>
+              <div className="col-span-3">
+                <InputField
+                  label="AWS Region"
+                  placeholder="AWS Region"
+                  value={registryData.secretKey}
+                  onChange={(value) => handleChange("awsRegion", value)}
+                />
+              </div>
+              <div className="col-span-3"></div>
             </>
           )}
 
@@ -131,7 +142,7 @@ export default function AddImageRegistryPage() {
           )}
 
           {/* Submit Button */}
-          <div className="col-start-6 ">
+          <div className="col-start-6">
             <button
               className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full"
               onClick={handleSubmit}
