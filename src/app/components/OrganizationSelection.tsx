@@ -1,3 +1,5 @@
+import { useRouter } from "next/navigation";
+
 export default function OrganizationSelection({
   organization,
   setSelectedOrganization,
@@ -7,13 +9,16 @@ export default function OrganizationSelection({
   setSelectedOrganization: (org: string) => void;
   onClose: () => void;
 }) {
+  const router = useRouter();
+  let orgId = "1";
+
   return (
     <div className="absolute w-full bg-ci-bg-dark-blue border border-ci-modal-white mt-2 rounded-md shadow-lg z-10">
       <div className="max-h-60 overflow-y-auto">
         {organization.map((org, index) => (
           <div
             key={org}
-            className={`flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white            } ${
+            className={`flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white ${
               index === 0 ? "rounded-t-md" : ""
             }`}
             onClick={() => {
@@ -26,20 +31,26 @@ export default function OrganizationSelection({
         ))}
         <hr className="border-ci-modal-white opacity-50 my-2" />
 
-        {["Manage Organization", "New Organization"].map((option, index) => {
-          const optionIndex = organization.length + index;
-          return (
-            <div
-              key={option}
-              className={`flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white ${
-                option === "New Organization" ? "rounded-b-md" : ""
-              }`}
-              //   onClick={() => handleExtraOptionSelect(index)}
-            >
-              <span className="text-sm">{option}</span>
-            </div>
-          );
-        })}
+        <div
+          key="Manage Organization"
+          className="flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white"
+          onClick={() => {
+            router.push(`/organization/manage/${orgId}`);
+            onClose();
+          }}
+        >
+          <span className="text-sm">Manage Organization</span>
+        </div>
+        <div
+          key="New Organization"
+          className="flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white rounded-b-md"
+          onClick={() => {
+            router.push("/organization/create");
+            onClose();
+          }}
+        >
+          <span className="text-sm">New Organization</span>
+        </div>
       </div>
     </div>
   );
