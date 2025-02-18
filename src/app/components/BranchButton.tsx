@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, GitBranch } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 import SwitchBranch from "./SwitchBranch";
 import Image from "next/image";
 
@@ -17,9 +17,27 @@ export default function BranchButton({
   onSelectBranch: (branch: string) => void;
 }) {
   const [isOpened, setIsOpened] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpened(false);
+      }
+    }
+    if (isOpened) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpened]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         className="border-ci-modal-grey border rounded-md px-3 py-2 bg-ci-modal-black w-full flex items-center justify-between"
         onClick={() => setIsOpened(!isOpened)}
