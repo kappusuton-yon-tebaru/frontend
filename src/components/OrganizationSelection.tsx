@@ -1,12 +1,13 @@
 import { useRouter } from "next/navigation";
+import { Resource } from "@/interfaces/workspace";
 
 export default function OrganizationSelection({
   organization,
   setSelectedOrganization,
   onClose,
 }: {
-  organization: string[];
-  setSelectedOrganization: (org: string) => void;
+  organization: Resource[];
+  setSelectedOrganization: (org: Resource) => void;
   onClose: () => void;
 }) {
   const router = useRouter();
@@ -17,16 +18,17 @@ export default function OrganizationSelection({
       <div className="max-h-60 overflow-y-auto">
         {organization.map((org, index) => (
           <div
-            key={org}
+            key={org.resource_name}
             className={`flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white ${
               index === 0 ? "rounded-t-md" : ""
             }`}
             onClick={() => {
               setSelectedOrganization(org);
+              router.push(`/organization/${org.id}`);
               onClose();
             }}
           >
-            <span className="text-sm">{org}</span>
+            <span className="text-sm">{org.resource_name}</span>
           </div>
         ))}
         <hr className="border-ci-modal-white opacity-50 my-2" />

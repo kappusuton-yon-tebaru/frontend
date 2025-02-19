@@ -1,5 +1,5 @@
-export interface ProjectSpace {
-  id: String;
-  resource_name: String;
-  resource_type: String;
+export interface Resource {
+  id: string;
+  resource_name: string;
+  resource_type: string;
 }

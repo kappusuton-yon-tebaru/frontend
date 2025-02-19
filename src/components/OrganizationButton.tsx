@@ -3,16 +3,18 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import OrganizationSelection from "./OrganizationSelection";
+import { Resource } from "@/interfaces/workspace";
 
 export default function OrganizationButton({
   organization,
+  selectedOrganization,
+  setSelectedOrganization,
 }: {
-  organization: string[];
+  organization: Resource[];
+  selectedOrganization: Resource;
+  setSelectedOrganization: (org: Resource) => void;
 }) {
   const [isOpened, setIsOpened] = useState<boolean>(false);
-  const [selectedOrganization, setSelectedOrganization] = useState<string>(
-    organization[0]
-  );
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,12 +37,13 @@ export default function OrganizationButton({
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        className="bg-ci-bg-dark-blue py-3 pl-4 pr-6 rounded-md flex flex-row gap-2"
+        className="bg-ci-bg-dark-blue py-3 pl-4 pr-6 rounded-md grid grid-cols-[25px_80px] gap-2 grid justify-center min-w-36"
         onClick={() => {
           setIsOpened(!isOpened);
         }}
       >
-        {isOpened ? <ChevronUp /> : <ChevronDown />} {selectedOrganization}
+        <div>{isOpened ? <ChevronUp /> : <ChevronDown />} </div>
+        <div className="truncate">{selectedOrganization.resource_name}</div>
       </button>
       {isOpened && (
         <OrganizationSelection
