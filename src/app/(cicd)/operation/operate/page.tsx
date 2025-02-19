@@ -62,7 +62,7 @@ export default function OperationPage() {
   const [selectedServices, setSelectedServices] = useState<SelectorOption[]>(
     []
   );
-  const [projectRepo, setProjectRepo] = useState<String>();
+  const [projectRepo, setProjectRepo] = useState<string>();
 
   const endpoints = {
     projectSpace: `${baseUrl}/resources/children/${organizationId}`,
