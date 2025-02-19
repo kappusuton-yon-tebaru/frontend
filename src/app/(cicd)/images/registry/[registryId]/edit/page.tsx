@@ -70,9 +70,9 @@ export default function EditImageRegistryPage() {
     try {
       const createPayload = {
         name: registryData.name,
-        providerType: selectedRegistry.id,
+        provider_type: selectedRegistry.id,
         uri: registryData.registryUrl,
-        jsonCredential: JSON.stringify(
+        json_credential: JSON.stringify(
           selectedRegistry.id === "ECR"
             ? {
                 access_key: registryData.accessKey,
@@ -85,7 +85,7 @@ export default function EditImageRegistryPage() {
               }
             : {}
         ),
-        organizationId: "678fd29c7c67bca50cfae354",
+        organization_id: "678fd29c7c67bca50cfae354",
       };
       const operation = postData(endpoints.updateRegUrl, createPayload);
 

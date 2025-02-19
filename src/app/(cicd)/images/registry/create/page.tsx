@@ -34,9 +34,9 @@ export default function AddImageRegistryPage() {
     try {
       const createPayload = {
         name: registryData.name,
-        providerType: selectedRegistry.id,
+        provider_type: selectedRegistry.id,
         uri: registryData.registryUrl,
-        jsonCredential: JSON.stringify(
+        json_credential: JSON.stringify(
           selectedRegistry.id === "ECR"
             ? {
 
@@ -50,10 +50,9 @@ export default function AddImageRegistryPage() {
               }
             : {}
         ),
-        organizationId: "678fd29c7c67bca50cfae354",
+        organization_id: "678fd29c7c67bca50cfae354",
       };
       const operation = postData(createUrl, createPayload);
-
       toast.success("Add registry success!");
     } catch (error) {
       toast.error(`Add registry failed.\n${error}`);
@@ -118,7 +117,7 @@ export default function AddImageRegistryPage() {
                 <InputField
                   label="AWS Region"
                   placeholder="AWS Region"
-                  value={registryData.secretKey}
+                  value={registryData.awsRegion}
                   onChange={(value) => handleChange("awsRegion", value)}
                 />
               </div>
