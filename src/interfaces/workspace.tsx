@@ -5,7 +5,12 @@ export interface Resource {
 }
 
 export enum ResourceType {
-    Organization = "ORGANIZATION",
-    ProjectSpace = "PROJECT_SPACE",
-    Project = "PROJECT",
+  Organization = "ORGANIZATION",
+  ProjectSpace = "PROJECT_SPACE",
+  Project = "PROJECT",
+}
+
+export interface User {
+  id: string;
+  name: string;
 }

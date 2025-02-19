@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 
 export default function ProjectSpace() {
   const router = useRouter();
-  const { id } = useParams();
+  const { projSpaceId } = useParams();
 
   const repositories = [
     {
@@ -27,7 +27,7 @@ export default function ProjectSpace() {
         <h1 className="font-bold text-[24px]">Repositories</h1>
         <button
           className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue"
-          onClick={() => router.push(`/project-space/${id}/new-repository`)}
+          onClick={() => router.push(`${projSpaceId}/new-repository`)}
         >
           New Repository
         </button>

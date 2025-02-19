@@ -32,17 +32,6 @@ export default function OrganizationSelection({
           </div>
         ))}
         <hr className="border-ci-modal-white opacity-50 my-2" />
-
-        <div
-          key="Manage Organization"
-          className="flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white"
-          onClick={() => {
-            router.push(`/organization/manage/${orgId}`);
-            onClose();
-          }}
-        >
-          <span className="text-sm">Manage Organization</span>
-        </div>
         <div
           key="New Organization"
           className="flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-ci-modal-blue text-ci-modal-white rounded-b-md"
