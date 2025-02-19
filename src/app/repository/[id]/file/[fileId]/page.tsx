@@ -5,7 +5,7 @@ import { useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { dracula } from "@uiw/codemirror-theme-dracula";
-import BranchButton from "@/app/components/BranchButton";
+import BranchButton from "@/components/BranchButton";
 
 const branches = ["main", "branch 1", "branch 2"];
 

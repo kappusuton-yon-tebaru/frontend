@@ -1,4 +1,4 @@
-import BranchManager from "@/app/components/BranchManager";
+import BranchManager from "@/components/BranchManager";
 import Image from "next/image";
 
 export default function Repository() {

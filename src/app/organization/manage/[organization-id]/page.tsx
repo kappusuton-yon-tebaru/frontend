@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import InputField from "@/app/components/InputField";
+import InputField from "@/components/InputField";
 
 export default function ManageOrganization() {
   const [name, setName] = useState("");

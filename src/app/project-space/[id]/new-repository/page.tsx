@@ -1,7 +1,7 @@
 "use client";
 
-import InputField from "@/app/components/InputField";
-import RadioSelection from "@/app/components/RadioSelection";
+import InputField from "@/components/InputField";
+import RadioSelection from "@/components/RadioSelection";
 import { useState } from "react";
 import { Check } from "lucide-react";
 

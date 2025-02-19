@@ -1,5 +1,5 @@
 "use client";
-import InputField from "@/app/components/InputField";
+import InputField from "@/components/InputField";
 import { useState } from "react";
 
 export default function CreateOrganiazation() {
