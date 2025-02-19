@@ -10,10 +10,7 @@ export default function Organization() {
   const router = useRouter();
   const { orgId } = useParams();
   const [projectSpaces, setProjectSpaces] = useState<Resource[]>([]);
-  // const projectSpaces = [
-  //   { name: "Project Space 1", date: "31 Feb 2099", time: "14:30" },
-  //   { name: "Project Space 2", date: "31 Feb 2099", time: "10:00" },
-  // ];
+
   const getProjectSpaces = async () => {
     const response = await getData(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}`
@@ -43,6 +40,9 @@ export default function Organization() {
               <div
                 key={index}
                 className="flex items-center p-4 transition cursor-pointer"
+                onClick={() =>
+                  router.push(`/project-space/${space.id}`)
+                }
               >
                 <Image
                   src={"/space-icon.svg"}

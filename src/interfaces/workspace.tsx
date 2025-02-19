@@ -3,3 +3,9 @@ export interface Resource {
   resource_name: string;
   resource_type: string;
 }
+
+export enum ResourceType {
+    Organization = "ORGANIZATION",
+    ProjectSpace = "PROJECT_SPACE",
+    Project = "PROJECT",
+}
