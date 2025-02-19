@@ -5,7 +5,7 @@ import Selector, { SelectorOption } from "@/components/cicd/Selector";
 import { getData, postData } from "@/services/baseRequest";
 import build from "next/dist/build";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -32,7 +32,7 @@ const operationOptions: SelectorOption[] = [
   },
 ];
 
-export default function OperationPage() {
+function OperationPage() {
   const searchParams = useSearchParams();
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const organizationId = "678fcf897c67bca50cfae34e";
@@ -320,5 +320,13 @@ export default function OperationPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OperationPage />
+    </Suspense>
   );
 }
