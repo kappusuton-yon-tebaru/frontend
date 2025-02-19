@@ -2,7 +2,7 @@
 import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
-import { getData, postData } from "@/services/baseRequest";
+import { getData, patchData, postData } from "@/services/baseRequest";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -59,9 +59,7 @@ export default function EditImageRegistryPage() {
       const createPayload = {
         registry_provider_id: registryId,
       };
-      //   console.log(createPayload);
-      const operation = postData(endpoints.setProjectToReg, createPayload);
-
+      const operation = patchData(endpoints.setProjectToReg, createPayload);
       toast.success("Edit registry success!");
     } catch (error) {
       toast.error(`Edit registry failed.\n${error}`);

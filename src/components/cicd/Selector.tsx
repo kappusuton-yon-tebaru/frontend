@@ -112,7 +112,7 @@ export default function Selector({
             <li
               key={option.id || option.label}
               onClick={() => handleSelect(option)}
-              className={`px-4 py-2 cursor-pointer hover:bg-ci-modal-blue rounded-lg flex items-center ${
+              className={`px-4 py-2 cursor-pointer hover:bg-ci-modal-blue rounded-lg flex items-center truncate ${
                 selected.has(option) ? "bg-ci-modal-blue" : ""
               }`}
             >

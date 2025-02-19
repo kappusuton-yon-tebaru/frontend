@@ -5,9 +5,9 @@ import { useParams } from "next/navigation";
 
 export default function ImagesListPage() {
   const { projectSpaceId, projectId, serviceId } = useParams();
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users?project_id=${projectId}&service_name=${serviceId}`;
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/ecr/images?project_id=${projectId}&service_name=${serviceId}`;
 
-  const renderEntity = (entity: { id: string; name: string }) => {
+  const renderEntity = (entity: { id: string; image_tag: string }) => {
     return (
       <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none">
         <Image
@@ -16,7 +16,7 @@ export default function ImagesListPage() {
           width={32}
           height={32}
         />
-        <h3 className="text-base w-4/5">{entity.name}</h3>
+        <h3 className="text-base w-4/5">{entity.image_tag}</h3>
         <h3 className="text-base w-1/6 text-ci-modal-grey">
           26 Oct 2024, 15:00
         </h3>

@@ -3,21 +3,17 @@ import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
 import { getData, postData } from "@/services/baseRequest";
-import build from "next/dist/build";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export interface BuildPayload {
-  // repo_url: string;
-  // registry_url: string;
   project_id: string;
   services: ServiceInfo[];
 }
 export interface ServiceInfo {
   service_name: string;
-  // service_root: string;
   tag: string;
 }
 
@@ -34,6 +30,7 @@ const operationOptions: SelectorOption[] = [
 
 function OperationPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const organizationId = "678fcf897c67bca50cfae34e";
 
@@ -44,7 +41,6 @@ function OperationPage() {
     SelectorOption[]
   >([]);
   const [projectOptions, setProjectOptions] = useState<SelectorOption[]>([]);
-  // const [registryOptions, setRegistryOptions] = useState<SelectorOption[]>([]);
   const [serviceOptions, setServiceOptions] = useState<SelectorOption[]>([]);
 
   const [selectedOperation, setSelectedOperation] = useState(
@@ -56,9 +52,6 @@ function OperationPage() {
   const [selectedProject, setSelectedProject] = useState<
     SelectorOption | undefined
   >();
-  // const [selectedRegistry, setSelectedRegistry] = useState<
-  //   SelectorOption | undefined
-  // >();
   const [selectedServices, setSelectedServices] = useState<SelectorOption[]>(
     []
   );
@@ -75,7 +68,6 @@ function OperationPage() {
     return (
       !selectedProjectSpace ||
       !selectedProject ||
-      // !selectedRegistry ||
       selectedServices.length === 0
     );
   };
@@ -90,31 +82,23 @@ function OperationPage() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       const services = selectedServices.map(
         ({ data: { service_name, dockerfile, tag_version } }) => ({
           service_name: service_name,
-          // service_root: dockerfile.replace("/Dockerfile", ""),
           tag: `${service_name}-${tag_version}`,
         })
       );
-      console.log(services);
-
       const buildPayload: BuildPayload = {
-        // repo_url: `git://github.com/${projectRepo}`,
-        // registry_url: "public.ecr.aws/r2n4f6g5/testproject",
         project_id: selectedProject?.data.id,
         services: services,
       };
-
-      console.log(buildPayload);
-      toast.success("Create operation success!");
-      // const operation = postData(
-      //   baseUrl + selectedOperation.data.url,
-      //   buildPayload
-      // );
-      // console.log(operation);
+      const operation = await postData(
+        baseUrl + selectedOperation.data.url,
+        buildPayload
+      );
+      router.push(`/operation/jobs/${operation.parent_id}`)
     } catch (error) {
       toast.error(`Create operation failed.\n${error}`);
     }
@@ -168,25 +152,6 @@ function OperationPage() {
 
     fetchProjects();
   }, [endpoints.project, selectedProjectSpace]);
-
-  // useEffect(() => {
-  //   const fetchRegistries = async () => {
-  //     try {
-  //       const data = await getData(endpoints.registry);
-  //       setRegistryOptions(
-  //         data.map((item: { name: string; id: string }) => ({
-  //           label: item.name,
-  //           id: item.id,
-  //           data: item,
-  //         }))
-  //       );
-  //     } catch (error) {
-  //       setError(error instanceof Error ? error.message : "Unknown error");
-  //     }
-  //   };
-
-  //   fetchRegistries();
-  // }, [endpoints.registry]);
 
   useEffect(() => {
     if (!selectedProject) return;
@@ -274,17 +239,6 @@ function OperationPage() {
 
           {selectedOperation.type === "BUILD" && (
             <>
-              {/* <div className="col-span-2 flex flex-col gap-y-6">
-                <label className="text-base font-semibold">
-                  Select Registry
-                </label>
-                <Selector
-                  options={registryOptions}
-                  initialOption={null}
-                  onSelect={setSelectedRegistry}
-                />
-              </div> */}
-
               {selectedServices.length > 0 && (
                 <>
                   <hr className="border-t border-gray-300 col-span-6" />

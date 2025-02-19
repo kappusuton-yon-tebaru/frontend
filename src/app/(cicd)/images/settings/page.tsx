@@ -35,7 +35,7 @@ export default function ImageWorkerSettingPage() {
   const handleSubmit = async () => {
     try {
       const data = {
-        max_worker: worker,
+        max_worker: Number(worker),
       };
       const post = await postData(updateUrl, data);
       toast.success("Setting max worker success!");
