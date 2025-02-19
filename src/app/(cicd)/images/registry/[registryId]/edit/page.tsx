@@ -47,7 +47,7 @@ export default function EditImageRegistryPage() {
     projectSpace: `${baseUrl}/resources/children/${organizationId}`,
     project: `${baseUrl}/resources/children/${selectedProjectSpace?.id}`,
     updateRegUrl: `${baseUrl}/regproviders`,
-    setProjectUrl: `${baseUrl}/regproviders`,
+    setProjectToReg: `${baseUrl}/projrepos/${selectedProject?.id}`,
   };
 
   const handleChange = (field: keyof typeof registryData, value: string) => {
@@ -57,11 +57,10 @@ export default function EditImageRegistryPage() {
   const handleProjRegSubmit = () => {
     try {
       const createPayload = {
-        project_id: selectedProject?.data.id,
         registry_provider_id: registryId,
       };
       //   console.log(createPayload);
-      const operation = postData(endpoints.setProjectUrl, createPayload);
+      const operation = postData(endpoints.setProjectToReg, createPayload);
 
       toast.success("Edit registry success!");
     } catch (error) {
