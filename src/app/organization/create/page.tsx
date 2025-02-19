@@ -3,6 +3,7 @@ import InputField from "@/components/InputField";
 import { useState } from "react";
 import { postData } from "@/services/baseRequest";
 import { useRouter } from "next/navigation";
+import { ResourceType } from "@/interfaces/workspace";
 
 export default function CreateOrganiazation() {
   const [name, setName] = useState<String>("");
@@ -13,7 +14,7 @@ export default function CreateOrganiazation() {
       try {
         const response = await postData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`, {
           resource_name: name,
-          resource_type: "organization",
+          resource_type: ResourceType.Organization,
         });
         router.push(`/organization/${response.resourceId}`);
       } catch (e) {

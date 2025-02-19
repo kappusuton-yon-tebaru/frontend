@@ -4,6 +4,7 @@ import InputField from "@/components/InputField";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { postData } from "@/services/baseRequest";
+import { ResourceType } from "@/interfaces/workspace";
 
 export default function NewProjectSpace() {
   const [name, setName] = useState<string>("");
@@ -17,10 +18,10 @@ export default function NewProjectSpace() {
           `http://localhost:3001/resources?parent_id=${orgId}`,
           {
             resource_name: name,
-            resource_type: "project_space",
+            resource_type: ResourceType.ProjectSpace,
           }
         );
-        router.push(`/project-space/${response.resourceId}`);
+        router.push(`project-space/${response.resourceId}`);
       } catch (e) {
         console.error(e);
       }

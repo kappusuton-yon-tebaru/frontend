@@ -3,17 +3,14 @@
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ProjectSpace } from "@/interfaces/workspace";
+import { Resource } from "@/interfaces/workspace";
 import { getData } from "@/services/baseRequest";
 
 export default function Organization() {
   const router = useRouter();
   const { orgId } = useParams();
-  const [projectSpaces, setProjectSpaces] = useState<ProjectSpace[]>([]);
-  // const projectSpaces = [
-  //   { name: "Project Space 1", date: "31 Feb 2099", time: "14:30" },
-  //   { name: "Project Space 2", date: "31 Feb 2099", time: "10:00" },
-  // ];
+  const [projectSpaces, setProjectSpaces] = useState<Resource[]>([]);
+
   const getProjectSpaces = async () => {
     const response = await getData(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}`
