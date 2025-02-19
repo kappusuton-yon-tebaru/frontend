@@ -16,7 +16,7 @@ export default function Organization() {
   // ];
   const getProjectSpaces = async () => {
     const response = await getData(
-      `http://localhost:3001/resources/children/${orgId}`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}`
     );
     setProjectSpaces(response);
   };
@@ -43,6 +43,9 @@ export default function Organization() {
               <div
                 key={index}
                 className="flex items-center p-4 transition cursor-pointer"
+                onClick={() =>
+                  router.push(`/project-space/${space.id}`)
+                }
               >
                 <Image
                   src={"/space-icon.svg"}

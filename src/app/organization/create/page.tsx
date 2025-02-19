@@ -11,7 +11,7 @@ export default function CreateOrganiazation() {
   const onClickCreateButton = async () => {
     if (name !== "") {
       try {
-        const response = await postData(`http://localhost:3001/resources`, {
+        const response = await postData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`, {
           resource_name: name,
           resource_type: "organization",
         });
