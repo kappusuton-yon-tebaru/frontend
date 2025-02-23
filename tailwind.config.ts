@@ -20,6 +20,7 @@ export default {
         "ci-modal-cyan-blue": "#4691A9",
         "ci-modal-grey": "#999999",
         "ci-modal-red": "#AB3030",
+        "ci-modal-dark-blue": "#081026",
 
         //For background
         "ci-bg-dark-blue": "#1A335F",
@@ -33,4 +34,7 @@ export default {
     },
   },
   plugins: [],
+  safelist: [
+    "inline-block",
+  ]
 } satisfies Config;

@@ -16,7 +16,7 @@ export default function NavigationBar() {
   const [selectedOrganization, setSelectedOrganization] =
     useState<Resource>(temp);
 
-  const getOrganization = async () => {
+  const getOrganizations = async () => {
     const response = await getData(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`
     );
@@ -27,7 +27,7 @@ export default function NavigationBar() {
   };
 
   useEffect(() => {
-    getOrganization();
+    getOrganizations();
   }, []);
 
   useEffect(() => {
