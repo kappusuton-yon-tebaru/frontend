@@ -41,7 +41,9 @@ export default function Organization() {
                 key={index}
                 className="flex items-center p-4 transition cursor-pointer"
                 onClick={() =>
-                  router.push(`/project-space/${space.id}`)
+                  router.push(
+                    `/organization/${orgId}/project-space/${space.id}`
+                  )
                 }
               >
                 <Image

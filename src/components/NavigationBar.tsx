@@ -9,7 +9,7 @@ import { Resource } from "@/interfaces/workspace";
 export default function NavigationBar() {
   const temp: Resource = {
     id: "0",
-    resource_name: "Select",
+    resource_name: "Organization",
     resource_type: "ORGANIZATION",
   };
   const [organizations, setOrganizations] = useState<Resource[]>([]);
