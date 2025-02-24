@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.2",
+    "@tanstack/react-query": "^5.66.9",
     "@uiw/codemirror-theme-dracula": "^4.23.7",
     "@uiw/react-codemirror": "^4.23.7",
     "antd": "^5.24.1",
