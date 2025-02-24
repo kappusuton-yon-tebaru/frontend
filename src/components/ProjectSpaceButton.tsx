@@ -61,14 +61,14 @@ export default function ProjectSpaceButton({
   }, [rename, del]);
 
   return (
-    <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left">
-      <div className="flex flex-col mx-4 my-2">
+    <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg">
+      <div className="flex flex-col px-4 py-3">
         <div className="font-semibold text-[16px]">
           {projectSpace.resource_name}
         </div>
-        <div className="flex flex-row text-ci-modal-grey font-medium gap-4 text-[14px]">
+        <div className="text-ci-modal-grey font-medium gap-4 text-[14px]">
           <div>{repoNum !== -1 && repoNum} Repositories</div>
-          <div>Owner: user 1</div>
+          <div>Owner: user 1234567890</div>
         </div>
       </div>
 
@@ -80,6 +80,7 @@ export default function ProjectSpaceButton({
         }}
       >
         <Image
+          className="flex-shrink-0"
           src={"/three-point.svg"}
           alt="edit-icon"
           width={24}

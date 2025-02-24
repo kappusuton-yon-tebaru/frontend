@@ -51,10 +51,10 @@ export default function NewRepository() {
           {readme ? (
             <Check
               size={20}
-              className="text-ci-modal-light-blue bg-ci-modal-white border border-4 border-ci-modal-light-blue rounded-sm"
+              className="text-ci-modal-light-blue bg-ci-modal-white border-4 border-ci-modal-light-blue rounded-sm"
             />
           ) : (
-            <div className="w-5 h-5 border border-2 rounded-sm flex justify-center items-center border-gray-400"></div>
+            <div className="w-5 h-5 border-2 rounded-sm flex justify-center items-center border-gray-400"></div>
           )}
 
           <span className="text-ci-modal-white">Add a README file</span>

@@ -37,7 +37,7 @@ export default function OrganizationButton({
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        className="bg-ci-bg-dark-blue py-3 pl-4 pr-6 rounded-md grid grid-cols-[25px_80px] gap-2 grid justify-center min-w-36"
+        className="bg-ci-bg-dark-blue py-3 pl-4 pr-6 rounded-md grid grid-cols-[25px_80px] gap-2 justify-center min-w-36"
         onClick={() => {
           setIsOpened(!isOpened);
         }}

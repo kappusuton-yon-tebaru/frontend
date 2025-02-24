@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <NavigationBar />
         {/* <Sidebar /> */}
-        <main className="flex-1 mx-48 mt-16 p-8">{children}</main>
+        <main className="flex-1 mx-36 mt-16 p-8">{children}</main>
       </body>
     </html>
   );

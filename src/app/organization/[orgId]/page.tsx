@@ -5,13 +5,17 @@ import { useEffect, useState } from "react";
 import { Resource } from "@/interfaces/workspace";
 import { getData } from "@/services/baseRequest";
 import ProjectSpaceButton from "@/components/ProjectSpaceButton";
+import CustomPagination from "@/components/CustomPagination";
+import { Pagination } from "antd";
 
 export default function Organization() {
   const router = useRouter();
   const { orgId } = useParams();
   const [organization, setOrganization] = useState<Resource>();
   const [projectSpaces, setProjectSpaces] = useState<Resource[]>([]);
-
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const pageSize = 2
   const getOrganizationName = async () => {
     const response = await getData(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${orgId}`
@@ -19,16 +23,24 @@ export default function Organization() {
     setOrganization(response);
   };
 
-  const getProjectSpaces = async () => {
+  const getProjectSpaces = async (page: number) => {
     const response = await getData(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}?page=${page}&limit=2`
     );
-    setProjectSpaces(response);
+    setProjectSpaces(response.data);
+    setTotal(response.total)
   };
+
+  const onPageChange = (page: number) => {
+    setPage(page);
+    getProjectSpaces(page);
+  }
+
   useEffect(() => {
-    getProjectSpaces();
+    getProjectSpaces(1);
     getOrganizationName();
   }, []);
+
   return (
     <div>
       <div className="flex flex-row justify-between">
@@ -59,7 +71,7 @@ export default function Organization() {
       </div>
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
       {projectSpaces.length > 0 && (
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {projectSpaces.map((space, index) => (
             <div
               key={index}
@@ -73,6 +85,9 @@ export default function Organization() {
           ))}
         </div>
       )}
+      <div className="mt-4 flex justify-center w-full">
+        <CustomPagination total={total} pageSize={pageSize} onPageChange={onPageChange} />
+      </div>
     </div>
   );
 }
