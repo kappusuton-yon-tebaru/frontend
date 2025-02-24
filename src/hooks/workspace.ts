@@ -1,5 +1,5 @@
 import { getData } from "@/services/baseRequest";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const fetchOrganization = async (orgId: string) => {
   const response = await getData(
@@ -9,7 +9,7 @@ const fetchOrganization = async (orgId: string) => {
 };
 
 export const useOrganization = (orgId: string) => {
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ["organization", orgId],
     queryFn: () => fetchOrganization(orgId),
   });
@@ -29,7 +29,7 @@ const fetchProjectSpaces = async (orgId: string, page: number) => {
   };
 
 export const useProjectSpaces = (orgId: string, page: number) => {
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ["projectSpaces", orgId, page],
     queryFn: () => fetchProjectSpaces(orgId, page),
   });

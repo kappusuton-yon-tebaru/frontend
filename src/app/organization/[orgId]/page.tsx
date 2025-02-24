@@ -25,7 +25,7 @@ export default function Organization() {
       <div className="flex flex-row justify-between">
         <div className="flex flex-col">
           <h1 className="font-bold text-[24px]">
-            {organization.resource_name}
+            {organization?.resource_name}
           </h1>
           <h2 className="font-medium text-[16px] text-ci-modal-grey">
             Owner: user 1
@@ -49,9 +49,9 @@ export default function Organization() {
         </div>
       </div>
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
-      {projectSpaces.data.length > 0 && !isLoading ? (
+      {projectSpaces?.data.length > 0 && !isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {projectSpaces.data.map((space: Resource, index: number) => (
+          {projectSpaces?.data.map((space: Resource, index: number) => (
             <div
               key={index}
               onClick={() =>
@@ -69,7 +69,7 @@ export default function Organization() {
       <div className="mt-4 flex justify-center w-full">
         <Pagination
           current={page}
-          total={projectSpaces.total}
+          total={projectSpaces?.total}
           pageSize={pageSize}
           onChange={setPage}
         />

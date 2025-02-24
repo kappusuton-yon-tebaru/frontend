@@ -10,13 +10,9 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
     <ConfigProvider
     theme={{
         token: {
-            colorPrimary: "#006DF5",
-            colorLink: "#245FA1",
             colorText: "#FFFFFF",
-            colorTextSecondary: "#999999",
             colorBgContainer: "#081026",
-            controlItemBgHover: "#245FA1",
-            controlItemBgActive: "#006DF5",
+            colorBorder: "#999999",
           },
     }}
   >

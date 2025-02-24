@@ -2,9 +2,10 @@
 import Image from "next/image";
 import { useState } from "react";
 import InputField from "@/components/InputField";
+import { useOrganization } from "@/hooks/workspace";
+import { useParams } from "next/navigation";
 
 export default function ManageOrganization() {
-  const [name, setName] = useState("");
   const useGroups = [
     { name: "Project Space 1", people: 99 },
     { name: "Project Space 2", people: 99 },
@@ -13,15 +14,20 @@ export default function ManageOrganization() {
     { name: "Project Space 2", people: 99 },
     { name: "Project Space 2", people: 99 },
   ];
+
+  const { orgId } = useParams();
+
+  if (typeof orgId === "undefined" || Array.isArray(orgId)) {
+    throw new Error("Invalid orgId");
+  }
+  const { data: organization } = useOrganization(orgId);
+  const [name, setName] = useState(organization?.resource_name);
+
   const permissions = [{ name: "Permission 1" }, { name: "Permission 2" }];
   return (
     <div>
-      <div className="flex flex-row justify-between">
-        <h1 className="font-bold text-[24px]">Manage Organization</h1>
-        <button className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold">
-          Manage Organization
-        </button>
-      </div>
+      <h1 className="font-bold text-[24px]">Manage Organization</h1>
+
       <div className="w-1/2 mt-12">
         <InputField
           label={"Organization Name"}
