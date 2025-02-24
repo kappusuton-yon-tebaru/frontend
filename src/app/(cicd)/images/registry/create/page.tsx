@@ -36,20 +36,18 @@ export default function AddImageRegistryPage() {
         name: registryData.name,
         provider_type: selectedRegistry.id,
         uri: registryData.registryUrl,
-        json_credential: JSON.stringify(
+        credential:
           selectedRegistry.id === "ECR"
             ? {
-
                 access_key: registryData.accessKey,
                 secret_access_key: registryData.secretKey,
-                aws_region: registryData.awsRegion
+                aws_region: registryData.awsRegion,
               }
             : selectedRegistry.id === "DOCKER"
             ? {
                 token: registryData.dockerToken,
               }
-            : {}
-        ),
+            : {},
         organization_id: "678fd29c7c67bca50cfae354",
       };
       const operation = postData(createUrl, createPayload);
