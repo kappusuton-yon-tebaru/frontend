@@ -10,6 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@tanstack/react-query": "^5.66.9",
+    "@uiw/codemirror-theme-dracula": "^4.23.7",
+    "@uiw/react-codemirror": "^4.23.7",
+    "antd": "^5.24.1",
+    "codemirror": "^6.0.1",
     "lucide-react": "^0.474.0",
     "next": "15.1.4",
     "react": "^19.0.0",
