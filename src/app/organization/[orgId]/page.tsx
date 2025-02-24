@@ -49,7 +49,7 @@ export default function Organization() {
         </div>
       </div>
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
-      {projectSpaces?.data.length > 0 && !isLoading ? (
+      {projectSpaces && !isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {projectSpaces?.data.map((space: Resource, index: number) => (
             <div
