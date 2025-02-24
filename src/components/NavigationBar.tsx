@@ -5,6 +5,7 @@ import OrganizationButton from "./OrganizationButton";
 import { getData } from "@/services/baseRequest";
 import { useState, useEffect } from "react";
 import { Resource } from "@/interfaces/workspace";
+import { Select } from "antd";
 
 export default function NavigationBar() {
   const temp: Resource = {

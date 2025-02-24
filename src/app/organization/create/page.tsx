@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ResourceType } from "@/interfaces/workspace";
 
 export default function CreateOrganiazation() {
-  const [name, setName] = useState<String>("");
+  const [name, setName] = useState<string>("");
   const router = useRouter();
 
   const onClickCreateButton = async () => {

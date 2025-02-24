@@ -13,6 +13,8 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
             colorText: "#FFFFFF",
             colorBgContainer: "#081026",
             colorBorder: "#999999",
+            colorBgTextHover: "#006DF5",
+            colorBgTextActive: "#999999",
           },
     }}
   >

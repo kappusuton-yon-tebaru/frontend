@@ -2,9 +2,6 @@
 
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
-import { getData } from "@/services/baseRequest";
-import { useEffect, useState } from "react";
-import { Resource } from "@/interfaces/workspace";
 
 export default function ProjectSpace() {
   const router = useRouter();
@@ -12,12 +9,12 @@ export default function ProjectSpace() {
   // const [repositories, setRepositories] = useState<Resource[]>([]);
 
 
-  const getRepositories = async () => {
-    const response = await getData(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projSpaceId}`
-    );
+  // const getRepositories = async () => {
+  //   const response = await getData(
+  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projSpaceId}`
+  //   );
+  // };
 
-  };
   const repositories = [
     {
       name: "Repository 1",

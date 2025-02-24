@@ -32,20 +32,20 @@ export default function Organization() {
           </h2>
         </div>
         <div className="flex gap-8 my-2">
-          <button
+          <Button
             className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() => router.push(`/organization/${orgId}/manage`)}
           >
             Manage Organization
-          </button>
-          <button
+          </Button>
+          <Button
             className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() =>
               router.push(`/organization/${orgId}/new-project-space`)
             }
           >
             New Project Space
-          </button>
+          </Button>
         </div>
       </div>
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
