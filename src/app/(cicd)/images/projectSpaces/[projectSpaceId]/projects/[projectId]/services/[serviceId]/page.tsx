@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 export default function ImagesListPage() {
   const { projectSpaceId, projectId, serviceId } = useParams();
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/ecr/images?project_id=${projectId}&service_name=${serviceId}`;
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/ecr/images?project_id=${projectId}&service_name=${serviceId}&`;
 
   const renderEntity = (entity: { id: string; image_tag: string }) => {
     return (
@@ -27,6 +27,7 @@ export default function ImagesListPage() {
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
         topic={"Images List"}
+        description={`This is the list of all images of ${serviceId}.`}
         searchUrl={searchUrl}
         operationTopic={"Build Image"}
         operationUrl={"/operation/operate?ops=build"}

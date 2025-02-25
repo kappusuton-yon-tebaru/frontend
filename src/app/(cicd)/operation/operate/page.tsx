@@ -193,8 +193,15 @@ function OperationPage() {
 
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
-      <div className="flex flex-col gap-y-16">
-        <h2 className="text-xl font-bold">Build and Deploy</h2>
+      <div className="flex flex-col gap-y-8">
+        <div className="flex flex-col gap-y-4">
+          <h2 className="text-2xl font-bold">Build and Deploy</h2>
+          <div className="text-lg text-ci-modal-grey">
+            You can select the operation, project space, project, service(s)
+            that you want to perform in this page
+          </div>
+          <hr className="border-t border-gray-300 col-span-6" />
+        </div>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
           {[
             {
