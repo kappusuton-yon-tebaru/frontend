@@ -31,6 +31,7 @@ export default function ImagesListPage() {
         operationTopic={"Build Image"}
         operationUrl={"/operation/operate?ops=build"}
         renderEntity={renderEntity}
+        queryKey="image"
       />
     </div>
   );

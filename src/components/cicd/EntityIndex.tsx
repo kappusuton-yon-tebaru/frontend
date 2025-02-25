@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
 import { getData } from "@/services/baseRequest";
+import { Pagination } from "antd";
+import { useQuery } from "@tanstack/react-query";
 
 interface Entity {
   id: string;
@@ -17,6 +19,7 @@ interface EntityIndexProps {
   operationTopic?: string;
   operationUrl?: string;
   renderEntity: (entity: any) => React.ReactNode;
+  queryKey: string;
 }
 
 export default function EntityIndex({
@@ -25,44 +28,45 @@ export default function EntityIndex({
   operationTopic,
   operationUrl,
   renderEntity,
+  queryKey,
 }: EntityIndexProps) {
-  const [entities, setEntities] = useState<Entity[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [page, setPage] = useState(1);
+  const pageSize = 2;
 
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getData(searchUrl);
-        setEntities(data.services ? data.services : data);
-      } catch (error) {
-        const errMessage =
-          error instanceof Error ? error.message : "Unknown error";
-        setError(errMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async (page: number) => {
+    try {
+      const data = await getData(searchUrl);
+      return data.data;
+    } catch (error) {
+      const errMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      setError(errMessage);
+    }
+  };
 
-    fetchData();
-  }, [searchUrl]);
+  const { data: entities, isLoading } = useQuery({
+    queryKey: [queryKey, page],
+    queryFn: async () => await fetchData(page),
+  });
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
-        <ClipLoader
-          size={100}
-          color={"#245FA1"}
-          cssOverride={{
-            borderWidth: "10px",
-          }}
-          loading={loading}
-        />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
+  //       <ClipLoader
+  //         size={100}
+  //         color={"#245FA1"}
+  //         cssOverride={{
+  //           borderWidth: "10px",
+  //         }}
+  //         loading={isLoading}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -83,27 +87,39 @@ export default function EntityIndex({
       </div>
       <div className="flex flex-col">
         {entities &&
-          entities.map((entity, index) => {
-            const isFirst = index === 0;
-            const isLast = index === entities.length - 1;
+          entities.map(
+            (entity: Entity, index: React.Key | null | undefined) => {
+              const isFirst = index === 0;
+              const isLast = index === entities.length - 1;
 
-            return (
-              <div
-                key={index}
-                className={`${isFirst ? "rounded-t-lg" : ""} ${
-                  isLast ? "rounded-b-lg" : ""
-                } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
-              >
-                {renderEntity(entity)}
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={index}
+                  className={`${isFirst ? "rounded-t-lg" : ""} ${
+                    isLast ? "rounded-b-lg" : ""
+                  } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
+                >
+                  {renderEntity(entity)}
+                </div>
+              );
+            }
+          )}
         {!entities && (
           <div className="flex flex-col items-center text-lg font-bold py-4">
             This directory is empty
           </div>
         )}
       </div>
+      {entities && (
+        <div className="mt-4 flex justify-center w-full">
+          <Pagination
+            current={page}
+            total={entities?.length}
+            pageSize={pageSize}
+            onChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,12 @@
+"use client";
 import SideBarMenu, { MenuItem } from "@/components/cicd/SideBarMenu";
 import React from "react"; // Update the path accordingly
+import { ConfigProvider, ThemeConfig } from "antd";
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryClientConfig,
+} from "@tanstack/react-query";
 
 const menuItems: MenuItem[] = [
   {
@@ -35,17 +42,35 @@ const menuItems: MenuItem[] = [
   },
 ];
 
+const theme: ThemeConfig = {
+  token: {
+    colorText: "#FFFFFF",
+    colorBgContainer: "#081026",
+    colorBorder: "#999999",
+    colorBgTextHover: "#006DF5",
+    colorBgTextActive: "#999999",
+  },
+};
+
+const config: QueryClientConfig = {};
+
+const queryClient = new QueryClient(config);
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex">
-      <SideBarMenu menuItems={menuItems} />
-      <div className="flex-1">
-        <main>{children}</main>
-      </div>
-    </div>
+    <ConfigProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <div className="flex">
+          <SideBarMenu menuItems={menuItems} />
+          <div className="flex-1">
+            <main>{children}</main>
+          </div>
+        </div>
+      </QueryClientProvider>
+    </ConfigProvider>
   );
 }

@@ -45,6 +45,7 @@ export default function ServicesListPage() {
         operationTopic={"Build Image"}
         operationUrl={operationUrl}
         renderEntity={renderEntity}
+        queryKey="service"
       />
     </div>
   );
