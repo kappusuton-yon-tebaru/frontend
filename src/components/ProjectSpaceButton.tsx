@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Resource } from "@/interfaces/workspace";
-import { getData } from "@/services/baseRequest";
+import { useRepositories } from "@/hooks/workspace";
 
 export default function ProjectSpaceButton({
   projectSpace,
@@ -18,15 +18,11 @@ export default function ProjectSpaceButton({
   const renameModalRef = useRef<HTMLDivElement>(null);
   const deleteModalRef = useRef<HTMLDivElement>(null);
 
+  const { data: repositories } = useRepositories(projectSpace.id, 1);
+
   useEffect(() => {
-    const getRepositories = async () => {
-      const response = await getData(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpace.id}`
-      );
-      setRepoNum(response.length);
-    };
-    getRepositories();
-  }, [projectSpace.id]);
+    setRepoNum(repositories?.total);
+  }, [repositories]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -61,7 +57,7 @@ export default function ProjectSpaceButton({
   }, [rename, del]);
 
   return (
-    <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg">
+    <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg hover:bg-ci-modal-blue">
       <div className="flex flex-col px-4 py-3">
         <div className="font-semibold text-[16px]">
           {projectSpace.resource_name}

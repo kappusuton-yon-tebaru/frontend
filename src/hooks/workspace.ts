@@ -34,3 +34,24 @@ export const useProjectSpaces = (orgId: string, page: number) => {
     queryFn: () => fetchProjectSpaces(orgId, page),
   });
 };
+
+
+const fetchRepositories = async (projectSpaceId: string, page: number) => {
+  const response = await getData(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}?page=${page}&limit=2`
+    );
+
+    return {
+      data: response.data,
+      total: response.total,
+      limit: response.limit,
+      page: response.page,
+    };
+}
+
+export const useRepositories = (projectSpaceId: string, page: number) => {
+  return useQuery({
+    queryKey: ["repositories", projectSpaceId, page],
+    queryFn: () => fetchRepositories(projectSpaceId, page),
+  })
+}
