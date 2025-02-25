@@ -78,11 +78,11 @@ export default function ProjectSpaceButton({
         }}
       >
         <Image
-          className="flex-shrink-0"
+          className="flex-shrink-0 hover:bg-[#336FB2] rounded-full my-auto mr-1"
           src={"/three-point.svg"}
           alt="edit-icon"
-          width={24}
-          height={24}
+          width={32}
+          height={32}
         />
 
         {option && (

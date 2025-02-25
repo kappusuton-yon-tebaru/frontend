@@ -33,13 +33,13 @@ export default function Organization() {
         </div>
         <div className="flex gap-8 my-2">
           <Button
-            className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+            className="h-full text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() => router.push(`/organization/${orgId}/manage`)}
           >
             Manage Organization
           </Button>
           <Button
-            className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+            className="h-full text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() =>
               router.push(`/organization/${orgId}/new-project-space`)
             }
