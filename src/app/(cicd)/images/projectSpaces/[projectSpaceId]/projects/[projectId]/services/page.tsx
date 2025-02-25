@@ -41,6 +41,7 @@ export default function ServicesListPage() {
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
         topic={"Services List"}
+        description={`This is the list of all services from project ID: ${projectId}.`}
         searchUrl={searchUrl}
         operationTopic={"Build Image"}
         operationUrl={operationUrl}

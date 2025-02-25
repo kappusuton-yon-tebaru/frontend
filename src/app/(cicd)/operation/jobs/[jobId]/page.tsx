@@ -14,16 +14,25 @@ export default function SubJobsListPage() {
     created_at: string;
   }) => {
     return (
-      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none">
+      <div
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center"
+        onClick={() => router.push(`/operation/jobs/${entity.id}`)}
+      >
         <Image
-          src={"/images/cicd/hard-disk.svg"}
+          src={"/images/cicd/jobs.svg"}
           alt={"disk"}
           width={32}
           height={32}
         />
-        <h3 className="text-base w-4/5">{entity.id}</h3>
+        <h3 className="text-base w-full">{entity.id}</h3>
+        <Image
+          src={`/images/cicd/${entity.job_status}.svg`}
+          alt={"disk"}
+          width={32}
+          height={32}
+        />
         <h3 className="text-base w-1/6 text-ci-modal-grey">
-          Status: {entity.job_status}
+          {entity.job_status}
         </h3>
       </div>
     );
@@ -32,8 +41,10 @@ export default function SubJobsListPage() {
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
         topic={"Sub Jobs List"}
+        description={`This is the list of all sub-jobs from job ID: ${jobId}.`}
         searchUrl={searchUrl}
         renderEntity={renderEntity}
+        queryKey="subJobs"
       />
     </div>
   );

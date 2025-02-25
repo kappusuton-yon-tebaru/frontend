@@ -15,15 +15,17 @@ interface Entity {
 
 interface EntityIndexProps {
   topic: string;
+  description?: string;
   searchUrl: string;
   operationTopic?: string;
   operationUrl?: string;
   renderEntity: (entity: any) => React.ReactNode;
-  queryKey: string;
+  queryKey?: string;
 }
 
 export default function EntityIndex({
   topic,
+  description,
   searchUrl,
   operationTopic,
   operationUrl,
@@ -33,14 +35,14 @@ export default function EntityIndex({
   const [error, setError] = useState<string | null>(null);
 
   const [page, setPage] = useState(1);
-  const pageSize = 2;
+  const pageSize = 5;
 
   const router = useRouter();
 
   const fetchData = async (page: number) => {
     try {
-      const data = await getData(searchUrl);
-      return data.data;
+      const data = await getData(`${searchUrl}?page=${page}&limit=${pageSize}`);
+      return data;
     } catch (error) {
       const errMessage =
         error instanceof Error ? error.message : "Unknown error";
@@ -49,24 +51,24 @@ export default function EntityIndex({
   };
 
   const { data: entities, isLoading } = useQuery({
-    queryKey: [queryKey, page],
+    queryKey: [queryKey ? queryKey : "entity", page],
     queryFn: async () => await fetchData(page),
   });
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
-  //       <ClipLoader
-  //         size={100}
-  //         color={"#245FA1"}
-  //         cssOverride={{
-  //           borderWidth: "10px",
-  //         }}
-  //         loading={isLoading}
-  //       />
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
+        <ClipLoader
+          size={100}
+          color={"#245FA1"}
+          cssOverride={{
+            borderWidth: "10px",
+          }}
+          loading={isLoading}
+        />
+      </div>
+    );
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -74,20 +76,26 @@ export default function EntityIndex({
 
   return (
     <div className="flex flex-col gap-y-8">
-      <div className="flex flex-row justify-between font-bold items-center">
-        <h2 className="text-xl">{topic}</h2>
-        {operationTopic && operationUrl && (
-          <button
-            className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
-            onClick={() => router.push(operationUrl)}
-          >
-            {operationTopic}
-          </button>
+      <div className="flex flex-col gap-y-4">
+        <div className="flex flex-row justify-between font-bold items-center">
+          <h2 className="text-2xl">{topic}</h2>
+          {operationTopic && operationUrl && (
+            <button
+              className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
+              onClick={() => router.push(operationUrl)}
+            >
+              {operationTopic}
+            </button>
+          )}
+        </div>
+        {description && (
+          <div className="text-lg text-ci-modal-grey">{description}</div>
         )}
+        <hr className="border-t border-gray-300 col-span-6" />
       </div>
       <div className="flex flex-col">
-        {entities &&
-          entities.map(
+        {entities.data &&
+          entities.data.map(
             (entity: Entity, index: React.Key | null | undefined) => {
               const isFirst = index === 0;
               const isLast = index === entities.length - 1;
@@ -104,7 +112,7 @@ export default function EntityIndex({
               );
             }
           )}
-        {!entities && (
+        {!entities && !isLoading && (
           <div className="flex flex-col items-center text-lg font-bold py-4">
             This directory is empty
           </div>
@@ -114,7 +122,7 @@ export default function EntityIndex({
         <div className="mt-4 flex justify-center w-full">
           <Pagination
             current={page}
-            total={entities?.length}
+            total={entities.total}
             pageSize={pageSize}
             onChange={setPage}
           />

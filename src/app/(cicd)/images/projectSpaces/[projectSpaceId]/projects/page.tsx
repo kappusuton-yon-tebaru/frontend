@@ -37,6 +37,7 @@ export default function ProjectsListPage() {
       <EntityIndex
         topic={"Projects List"}
         searchUrl={searchUrl}
+        description={`This is the list of all projects from project space ID: ${projectSpaceId}.`}
         operationTopic={"Build Image"}
         operationUrl={operationUrl}
         renderEntity={renderEntity}

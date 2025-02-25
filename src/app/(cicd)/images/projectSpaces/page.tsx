@@ -34,6 +34,7 @@ export default function ProjectSpaceListPage() {
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
       <EntityIndex
         topic={"Project Spaces List"}
+        description={`This is the list of all project spaces from organization ID: ${organizationId}.`}
         searchUrl={searchUrl}
         operationTopic={"Build Image"}
         operationUrl={operationUrl}
