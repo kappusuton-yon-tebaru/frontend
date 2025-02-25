@@ -17,19 +17,14 @@ export default function ProjectsListPage() {
   }) => {
     return (
       <div
-        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none"
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center"
         onClick={() =>
           router.push(
             `/images/projectSpaces/${projectSpaceId}/projects/${entity.id}/services`
           )
         }
       >
-        <Image
-          src={"/images/cicd/hard-disk.svg"}
-          alt={"disk"}
-          width={32}
-          height={32}
-        />
+        <Image src={"/repo-icon.svg"} alt={"disk"} width={32} height={32} />
         <h3 className="text-base w-4/5">{entity.resource_name}</h3>
         <h3 className="text-base w-1/6 text-ci-modal-grey">
           26 Oct 2024, 15:00
@@ -45,6 +40,7 @@ export default function ProjectsListPage() {
         operationTopic={"Build Image"}
         operationUrl={operationUrl}
         renderEntity={renderEntity}
+        queryKey="proj"
       />
     </div>
   );

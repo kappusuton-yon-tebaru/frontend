@@ -66,9 +66,7 @@ function OperationPage() {
 
   const canSubmitData = () => {
     return (
-      !selectedProjectSpace ||
-      !selectedProject ||
-      selectedServices.length === 0
+      !selectedProjectSpace || !selectedProject || selectedServices.length === 0
     );
   };
 
@@ -94,11 +92,12 @@ function OperationPage() {
         project_id: selectedProject?.data.id,
         services: services,
       };
+      console.log(buildPayload);
       const operation = await postData(
         baseUrl + selectedOperation.data.url,
         buildPayload
       );
-      router.push(`/operation/jobs/${operation.parent_id}`)
+      router.push(`/operation/jobs/${operation.parent_id}`);
     } catch (error) {
       toast.error(`Create operation failed.\n${error}`);
     }
@@ -117,7 +116,7 @@ function OperationPage() {
       try {
         const data = await getData(endpoints.projectSpace);
         setProjectSpaceOptions(
-          data.map((item: { resource_name: string; id: string }) => ({
+          data.data.map((item: { resource_name: string; id: string }) => ({
             label: item.resource_name,
             id: item.id,
             data: item,
@@ -139,7 +138,7 @@ function OperationPage() {
       try {
         const data = await getData(endpoints.project);
         setProjectOptions(
-          data.map((item: { resource_name: string; id: string }) => ({
+          data.data.map((item: { resource_name: string; id: string }) => ({
             label: item.resource_name,
             id: item.id,
             data: item,
@@ -159,7 +158,7 @@ function OperationPage() {
       try {
         const data = await getData(endpoints.service);
         setServiceOptions(
-          data.services.map(
+          data.data.map(
             (item: { service_name: string; dockerfile: string }) => ({
               label: item.service_name,
               id: item.service_name,
