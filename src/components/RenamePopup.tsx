@@ -16,7 +16,7 @@ export default function RenamePopup({
 }) {
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default z-30"
       onClick={(e) => e.stopPropagation()}
     >
       <div
