@@ -22,6 +22,7 @@ export default function ProjectSpace() {
 
   const [page, setPage] = useState(1);
   const pageSize = 2;
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: organization } = useOrganization(orgId);
   const { data: projectSpace } = useOrganization(projSpaceId);
@@ -71,21 +72,35 @@ export default function ProjectSpace() {
         </div>
       </div>
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+        className="border p-2 rounded w-full mb-4 border-ci-modal-grey bg-ci-modal-black"
+      />
       {repositories && !isLoading ? (
         <div className="grid grid-cols-2 gap-8">
-          {repositories?.data.map((repo: Resource, index: number) => (
-            <div
-              key={index}
-              onClick={() =>
-                router.push(
-                  `/organization/${orgId}/project-space/${projSpaceId}/repository/${repo.id}`
-                )
-              }
-              className="cursor-pointer"
-            >
-              <RepositoryButton repository={repo} />
-            </div>
-          ))}
+          {repositories?.data.data.map((repo: Resource, index: number) => {
+            const isMatch = repo.resource_name
+              .toLowerCase()
+              .includes(searchTerm);
+            if (isMatch) {
+              return (
+                <div
+                  key={index}
+                  onClick={() =>
+                    router.push(
+                      `/organization/${orgId}/project-space/${projSpaceId}/repository/${repo.id}`
+                    )
+                  }
+                  className="cursor-pointer"
+                >
+                  <RepositoryButton repository={repo} />
+                </div>
+              );
+            }
+          })}
         </div>
       ) : (
         <Spin />

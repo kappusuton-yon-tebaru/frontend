@@ -32,8 +32,8 @@ export default function RepositoryButton({
         );
       }
       const data = await response.json();
-      setBranches(data);
-      setBranchNum(data.length);
+      setBranches(data.data);
+      setBranchNum(data.data.length);
     };
     getBranches();
   }, []);
@@ -52,7 +52,14 @@ export default function RepositoryButton({
         <div className="flex flex-row text-ci-modal-grey font-medium gap-4 text-[14px]">
           <div>{branchNum !== -1 && branchNum} Branches</div>
           <div>Owner: user 1234567890</div>
-          <div>Last Update: 25 Feb 2025</div>
+          <div>
+            Last Update:{" "}
+            {new Date(repository.updated_at).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
         </div>
       </div>
     </div>
