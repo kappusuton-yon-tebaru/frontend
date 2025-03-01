@@ -12,6 +12,7 @@ export default function Organization() {
   const { orgId } = useParams();
   const [page, setPage] = useState(1);
   const pageSize = 2;
+  const [searchTerm, setSearchTerm] = useState("");
 
   if (typeof orgId === "undefined" || Array.isArray(orgId)) {
     throw new Error("Invalid orgId");
@@ -33,13 +34,13 @@ export default function Organization() {
         </div>
         <div className="flex gap-8 my-2">
           <Button
-            className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+            className="h-full text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() => router.push(`/organization/${orgId}/manage`)}
           >
             Manage Organization
           </Button>
           <Button
-            className="border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-bold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+            className="h-full text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() =>
               router.push(`/organization/${orgId}/new-project-space`)
             }
@@ -49,19 +50,35 @@ export default function Organization() {
         </div>
       </div>
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+        className="border p-2 rounded w-full mb-4 border-ci-modal-grey bg-ci-modal-black"
+      />
       {projectSpaces && !isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {projectSpaces?.data.map((space: Resource, index: number) => (
-            <div
-              key={index}
-              onClick={() =>
-                router.push(`/organization/${orgId}/project-space/${space.id}`)
-              }
-              className="cursor-pointer"
-            >
-              <ProjectSpaceButton projectSpace={space} />
-            </div>
-          ))}
+          {projectSpaces?.data.data.map((space: Resource, index: number) => {
+            const isMatch = space.resource_name
+              .toLowerCase()
+              .includes(searchTerm);
+            if (isMatch) {
+              return (
+                <div
+                  key={index}
+                  onClick={() =>
+                    router.push(
+                      `/organization/${orgId}/project-space/${space.id}`
+                    )
+                  }
+                  className="cursor-pointer"
+                >
+                  <ProjectSpaceButton projectSpace={space} />
+                </div>
+              );
+            }
+          })}
         </div>
       ) : (
         <Spin />

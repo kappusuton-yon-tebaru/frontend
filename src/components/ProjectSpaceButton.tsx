@@ -1,32 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Resource } from "@/interfaces/workspace";
-import { getData } from "@/services/baseRequest";
+import { useRepositories } from "@/hooks/workspace";
+import RenamePopup from "./RenamePopup";
+import DeletePopup from "./DeletePopup";
 
 export default function ProjectSpaceButton({
   projectSpace,
 }: {
   projectSpace: Resource;
 }) {
-  const [option, setOption] = useState(false);
-  const [rename, setRename] = useState(false);
-  const [del, setDel] = useState(false);
-  const [newName, setNewName] = useState(projectSpace.resource_name);
+  const [option, setOption] = useState<boolean>(false);
+  const [rename, setRename] = useState<boolean>(false);
+  const [del, setDel] = useState<boolean>(false);
+  const [newName, setNewName] = useState<string>(projectSpace.resource_name);
   const [repoNum, setRepoNum] = useState<number>(-1);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const renameModalRef = useRef<HTMLDivElement>(null);
   const deleteModalRef = useRef<HTMLDivElement>(null);
 
+  const { data: repositories } = useRepositories(projectSpace.id, 1);
+
   useEffect(() => {
-    const getRepositories = async () => {
-      const response = await getData(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpace.id}`
-      );
-      setRepoNum(response.length);
-    };
-    getRepositories();
-  }, [projectSpace.id]);
+    setRepoNum(repositories?.total);
+  }, [repositories]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -61,7 +59,7 @@ export default function ProjectSpaceButton({
   }, [rename, del]);
 
   return (
-    <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg">
+    <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg hover:bg-ci-modal-blue">
       <div className="flex flex-col px-4 py-3">
         <div className="font-semibold text-[16px]">
           {projectSpace.resource_name}
@@ -80,11 +78,11 @@ export default function ProjectSpaceButton({
         }}
       >
         <Image
-          className="flex-shrink-0"
+          className="flex-shrink-0 hover:bg-[#336FB2] rounded-full my-auto mr-1"
           src={"/three-point.svg"}
           alt="edit-icon"
-          width={24}
-          height={24}
+          width={32}
+          height={32}
         />
 
         {option && (
@@ -115,83 +113,21 @@ export default function ProjectSpaceButton({
       </div>
 
       {rename && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div
-            className="flex flex-col bg-ci-modal-dark-blue p-6 rounded-md shadow-lg w-[700px] h-[400px] gap-8 justify-center"
-            ref={renameModalRef}
-          >
-            <div className="flex text-4xl font-bold text-ci-modal-white mb-3 justify-center">
-              Rename Project Space
-            </div>
-            <input
-              type="text"
-              className="mx-16 px-3 py-2 font-medium border border-ci-modal-grey rounded-md focus:outline-none bg-ci-bg-dark-blue"
-              placeholder={projectSpace.resource_name}
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-            <div className="flex mx-16 mt-4 gap-8">
-              <button
-                className="px-4 py-2 text-white font-semibold bg-ci-bg-dark-blue rounded-md w-full"
-                onClick={() => {
-                  console.log("Renaming to:", newName);
-                  setRename(false);
-                }}
-              >
-                Confirm
-              </button>
-              <button
-                className="px-4 py-2 text-white font-semibold bg-ci-modal-red rounded-md w-full"
-                onClick={() => setRename(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <RenamePopup
+          renameModalRef={renameModalRef}
+          projectSpace={projectSpace}
+          newName={newName}
+          setNewName={setNewName}
+          setRename={setRename}
+        />
       )}
 
       {del && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div
-            className="flex flex-col bg-ci-modal-dark-blue p-6 rounded-md shadow-lg w-[700px] h-[400px] gap-8 justify-center"
-            ref={deleteModalRef}
-          >
-            <div className="flex text-4xl font-bold text-ci-modal-white mb-3 justify-center">
-              Delete Project
-            </div>
-            <div className="flex text-xl font-bold text-ci-modal-white mb-3 justify-center">
-              Are you sure you want to delete&nbsp;
-              <span className="text-ci-modal-light-blue inline-block">
-                {projectSpace.resource_name}
-              </span>
-              &nbsp;?
-            </div>
-            <div className="flex mx-16 mt-4 gap-8">
-              <button
-                className="px-4 py-2 text-white font-semibold bg-ci-bg-dark-blue rounded-md w-full"
-                onClick={() => setDel(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 text-white font-semibold bg-ci-modal-red rounded-md w-full"
-                onClick={() => {
-                  console.log("Project Deleted");
-                  setDel(false);
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeletePopup
+          deleteModalRef={deleteModalRef}
+          projectSpace={projectSpace}
+          setDel={setDel}
+        />
       )}
     </div>
   );

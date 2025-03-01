@@ -5,13 +5,14 @@ import OrganizationButton from "./OrganizationButton";
 import { getData } from "@/services/baseRequest";
 import { useState, useEffect } from "react";
 import { Resource } from "@/interfaces/workspace";
-import { Select } from "antd";
 
 export default function NavigationBar() {
   const temp: Resource = {
     id: "0",
     resource_name: "Organization",
     resource_type: "ORGANIZATION",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
   const [organizations, setOrganizations] = useState<Resource[]>([]);
   const [selectedOrganization, setSelectedOrganization] =
