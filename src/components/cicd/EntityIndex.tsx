@@ -38,7 +38,7 @@ export default function EntityIndex({
 }: EntityIndexProps) {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("ASC");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [sortBy, setSortBy] = useState<SelectorOption | null>(
     sortByOptions ? sortByOptions[0] : null
   );
@@ -52,11 +52,15 @@ export default function EntityIndex({
 
   const fetchData = async (page: number) => {
     try {
-      const data = await getData(
-        `${searchUrl}?page=${page}&limit=${pageSize}&search=${searchTerm}&sort_by=${
-          sortBy ? sortBy.label : ""
-        }&sort_order=${sortOrder}`
-      );
+      const params = new URLSearchParams();
+
+      if (page) params.append("page", page.toString());
+      if (pageSize) params.append("limit", pageSize.toString());
+      if (searchTerm) params.append("query", searchTerm);
+      if (sortBy?.label) params.append("sort_by", sortBy.label);
+      if (sortOrder) params.append("sort_order", sortOrder);
+
+      const data = await getData(`${searchUrl}?${params.toString()}`);
       setData(data);
       return data;
     } catch (error) {
@@ -134,11 +138,11 @@ export default function EntityIndex({
                   </label>
                   <button
                     onClick={() =>
-                      setSortOrder(sortOrder === "ASC" ? "DESC" : "ASC")
+                      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
                     }
                     className="items-center w-full px-4 bg-ci-modal-black border border-ci-modal-grey rounded-lg text-base cursor-pointer min-h-[40px] text-left"
                   >
-                    {sortOrder === "ASC" ? "Descending" : "Ascending"}
+                    {sortOrder === "asc" ? "Descending" : "Ascending"}
                   </button>
                 </div>
                 <div className="flex flex-col w-1/6 gap-y-2">
