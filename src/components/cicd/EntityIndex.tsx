@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
 import { getData } from "@/services/baseRequest";
-import { Pagination } from "antd";
+import { Button, Input, Pagination } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
+import Selector, { SelectorOption } from "./Selector";
 
 interface Entity {
   id: string;
@@ -21,6 +23,7 @@ interface EntityIndexProps {
   operationUrl?: string;
   renderEntity: (entity: any) => React.ReactNode;
   queryKey?: string;
+  sortByOptions?: SelectorOption[];
 }
 
 export default function EntityIndex({
@@ -31,17 +34,30 @@ export default function EntityIndex({
   operationUrl,
   renderEntity,
   queryKey,
+  sortByOptions,
 }: EntityIndexProps) {
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("ASC");
+  const [sortBy, setSortBy] = useState<SelectorOption | null>(
+    sortByOptions ? sortByOptions[0] : null
+  );
+
+  const [data, setData] = useState();
 
   const [page, setPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 10;
 
   const router = useRouter();
 
   const fetchData = async (page: number) => {
     try {
-      const data = await getData(`${searchUrl}?page=${page}&limit=${pageSize}`);
+      const data = await getData(
+        `${searchUrl}?page=${page}&limit=${pageSize}&search=${searchTerm}&sort_by=${
+          sortBy ? sortBy.label : ""
+        }&sort_order=${sortOrder}`
+      );
+      setData(data);
       return data;
     } catch (error) {
       const errMessage =
@@ -50,25 +66,21 @@ export default function EntityIndex({
     }
   };
 
-  const { data: entities, isLoading } = useQuery({
-    queryKey: [queryKey ? queryKey : "entity", page],
-    queryFn: async () => await fetchData(page),
+  const {
+    data: entities,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      queryKey ? queryKey : "entity",
+      page,
+      searchTerm,
+      sortBy,
+      sortOrder,
+    ],
+    queryFn: async () => await fetchData(page), // This ensures that the old data is used while fetching
+    initialData: data,
   });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
-        <ClipLoader
-          size={100}
-          color={"#245FA1"}
-          cssOverride={{
-            borderWidth: "10px",
-          }}
-          loading={isLoading}
-        />
-      </div>
-    );
-  }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -91,10 +103,63 @@ export default function EntityIndex({
         {description && (
           <div className="text-lg text-ci-modal-grey">{description}</div>
         )}
+        <div className="flex flex-col justify-between items-center mb-4 gap-x-4 gap-y-6">
+          <div className="flex flex-row w-full gap-x-4 items-end">
+            <Input.Search
+              placeholder="Search..."
+              allowClear
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={(value) => {
+                setSearchTerm(value);
+                setPage(1);
+                refetch();
+              }}
+              size="large"
+              className="w-full"
+              enterButton={
+                <Button
+                  type="primary"
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-2 flex items-center justify-center"
+                >
+                  <SearchOutlined className="text-lg" />
+                </Button>
+              }
+            />
+            {sortByOptions && (
+              <>
+                <div className="flex flex-col w-1/6 gap-y-2">
+                  <label className="text-base font-semibold ">
+                    Sort Order:{" "}
+                  </label>
+                  <button
+                    onClick={() =>
+                      setSortOrder(sortOrder === "ASC" ? "DESC" : "ASC")
+                    }
+                    className="items-center w-full px-4 bg-ci-modal-black border border-ci-modal-grey rounded-lg text-base cursor-pointer min-h-[40px] text-left"
+                  >
+                    {sortOrder === "ASC" ? "Descending" : "Ascending"}
+                  </button>
+                </div>
+                <div className="flex flex-col w-1/6 gap-y-2">
+                  <label className="text-base font-semibold">
+                    Sort Order:{" "}
+                  </label>
+                  <Selector
+                    options={sortByOptions}
+                    onSelect={setSortBy}
+                    initialOption={sortByOptions[0] || null}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </div>
         <hr className="border-t border-gray-300 col-span-6" />
       </div>
       <div className="flex flex-col">
-        {entities.data &&
+        {entities &&
+          entities.data &&
           entities.data.map(
             (entity: Entity, index: React.Key | null | undefined) => {
               const isFirst = index === 0;

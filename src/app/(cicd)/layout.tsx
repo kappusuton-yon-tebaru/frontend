@@ -50,6 +50,13 @@ const theme: ThemeConfig = {
     colorBgTextHover: "#006DF5",
     colorBgTextActive: "#999999",
   },
+  components: {
+    Input: {
+      colorTextPlaceholder: "#999999",
+      borderRadius: 8,
+      colorBgContainer: "#161F3A",
+    },
+  },
 };
 
 const config: QueryClientConfig = {};

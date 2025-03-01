@@ -16,7 +16,7 @@ export default function Selector({
   onSelect,
   isMultiSelect = false,
 }: {
-  options: SelectorOption[];
+  options?: SelectorOption[];
   initialOption?: SelectorOption[] | SelectorOption | null;
   onSelect: Dispatch<SetStateAction<any>>;
   isMultiSelect?: boolean;
@@ -106,7 +106,7 @@ export default function Selector({
         </button>
       )}
 
-      {isOpen && (
+      {isOpen && options && (
         <ul className="absolute left-0 w-full z-30 mt-1 bg-ci-modal-black rounded-lg shadow-lg overflow-y-auto max-h-60">
           {options.map((option) => (
             <li
