@@ -9,7 +9,7 @@ export default function ImagesListPage() {
 
   const renderEntity = (entity: { id: string; image_tag: string }) => {
     return (
-      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none">
+      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center">
         <Image
           src={"/images/cicd/hard-disk.svg"}
           alt={"disk"}

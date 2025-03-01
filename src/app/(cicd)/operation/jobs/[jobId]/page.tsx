@@ -28,8 +28,8 @@ export default function SubJobsListPage() {
         <Image
           src={`/images/cicd/${entity.job_status}.svg`}
           alt={"disk"}
-          width={32}
-          height={32}
+          width={20}
+          height={20}
         />
         <h3 className="text-base w-1/6 text-ci-modal-grey">
           {entity.job_status}
