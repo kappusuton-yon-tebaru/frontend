@@ -46,8 +46,8 @@ export default function BranchButton({
           <Image
             src={`/git-branch-icon.svg`}
             alt="git-branch-icon"
-            width={24}
-            height={24}
+            width={20}
+            height={20}
           />
           <div className="text-ci-modal-white text-sm">{currentBranch}</div>
         </div>

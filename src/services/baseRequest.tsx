@@ -1,9 +1,17 @@
 export async function getData(url: string, token?: string) {
   try {
+    let authToken;
+    if (token) {
+      authToken = token || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      if (!authToken) {
+        throw new Error("No valid token provided");
+      }
+    }
+
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
     });

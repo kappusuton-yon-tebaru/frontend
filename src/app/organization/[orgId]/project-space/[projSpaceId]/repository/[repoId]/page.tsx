@@ -1,5 +1,10 @@
+"use client";
+
 import BranchManager from "@/components/BranchManager";
+import { useProjectRepo, useResource } from "@/hooks/workspace";
+import { Spin } from "antd";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Repository() {
   const folders = [
@@ -35,20 +40,68 @@ export default function Repository() {
     },
   ];
 
+  const router = useRouter();
+  const { orgId, projSpaceId, repoId } = useParams();
+
+  if (typeof orgId === "undefined" || Array.isArray(orgId)) {
+    throw new Error("Invalid orgId");
+  }
+
+  if (typeof projSpaceId === "undefined" || Array.isArray(projSpaceId)) {
+    throw new Error("Invalid projSpaceId");
+  }
+
+  if (typeof repoId === "undefined" || Array.isArray(repoId)) {
+    throw new Error("Invalid repoId");
+  }
+
+  const { data: projectRepo, isLoading } = useProjectRepo(repoId);
+  const gitRepoUrl = projectRepo?.git_repo_url;
+  const owner = gitRepoUrl?.split("/").at(-2);
+  const repo = gitRepoUrl?.split("/").at(-1);
+
+  const { data: organization } = useResource(orgId);
+  const { data: projectSpace } = useResource(projSpaceId);
+  const { data: repository } = useResource(repoId);
+
   const branches = ["main", "branch 1", "branch 2"];
   const itemArr = folders.concat(files);
+
+  if (isLoading) {
+    return <Spin />;
+  }
   return (
     <div>
       <div className="flex flex-row gap-x-6">
-        <h1 className="font-bold text-[24px]">Repositories</h1>
+        <div className="flex flex-col">
+          <div className="flex flex-row font-bold text-[24px] ml-[-8px]">
+            <h1
+              className="cursor-pointer px-2 hover:bg-ci-modal-black rounded-md"
+              onClick={() => {
+                router.push(`/organization/${orgId}/`);
+              }}
+            >
+              {organization?.resource_name}
+            </h1>
+            <h1 className="mx-1">/</h1>
+            <h1
+              className="cursor-pointer px-2 hover:bg-ci-modal-black rounded-md"
+              onClick={() => {
+                router.push(
+                  `/organization/${orgId}/project-space/${projSpaceId}`
+                );
+              }}
+            >
+              {projectSpace?.resource_name}
+            </h1>
+            <h1 className="mx-1">/</h1>
+            <h1 className="px-2">{repository?.resource_name}</h1>
+          </div>
+          <h2 className="font-medium text-[16px] text-ci-modal-grey">
+            Owner: user 1
+          </h2>
+        </div>
         <div className="relative">
-          <Image
-            src={`/git-branch-icon.svg`}
-            alt={`git-branch-icon`}
-            width={24}
-            height={24}
-            className="absolute top-1/2 transform -translate-y-1/2 left-2"
-          />
           <BranchManager branches={branches} />
         </div>
       </div>
