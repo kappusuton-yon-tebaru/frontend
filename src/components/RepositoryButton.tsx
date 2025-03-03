@@ -1,6 +1,7 @@
-// import { useBranches } from "@/hooks/github";
+import { useBranches } from "@/hooks/github";
+import { useProjectRepo } from "@/hooks/workspace";
 import { Resource } from "@/interfaces/workspace";
-// import { getData } from "@/services/baseRequest";
+import { Spin } from "antd";
 import { useEffect, useState } from "react";
 
 export default function RepositoryButton({
@@ -8,36 +9,26 @@ export default function RepositoryButton({
 }: {
   repository: Resource;
 }) {
-  const owner = "oreo10baht";
-  const repo = "network-final-project";
-  const [branchNum, setBranchNum] = useState<number>(-1);
-  const [branches, setBranches] = useState();
-  //   const { data: branches } = useBranches(owner, repo);
+  const [branchNum, setBranchNum] = useState(-1);
   const token = localStorage.getItem("access_token");
+  const { data: projectRepo, isLoading } = useProjectRepo(repository.id);
+  const gitRepoUrl = projectRepo?.git_repo_url;
+  const owner = gitRepoUrl?.split("/").at(-2);
+  const repo = gitRepoUrl?.split("/").at(-1);
+
+  let tokenAuth = "";
+  if (token !== null) {
+    tokenAuth = token;
+  }
+  const { data: branches } = useBranches(owner, repo, tokenAuth);
 
   useEffect(() => {
-    const getBranches = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/branches`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    if (typeof branches !== "undefined" && branches.data) {
+      setBranchNum(branches.data.length);
+    }
+  }, [branches]);
 
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching metadata: ${response.status} - ${response.statusText}`
-        );
-      }
-      const data = await response.json();
-      setBranches(data.data);
-      setBranchNum(data.data.length);
-    };
-    getBranches();
-  }, []);
-
+  if (isLoading || !owner || !repo) return <Spin />;
   return (
     <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg hover:bg-ci-modal-blue">
       <div className="flex flex-col px-4 py-3 gap-2">

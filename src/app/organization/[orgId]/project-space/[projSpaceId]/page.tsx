@@ -2,7 +2,7 @@
 
 import RenamePopup from "@/components/RenamePopup";
 import RepositoryButton from "@/components/RepositoryButton";
-import { useOrganization, useRepositories } from "@/hooks/workspace";
+import { useResource, useRepositories } from "@/hooks/workspace";
 import { Resource } from "@/interfaces/workspace";
 import { Pagination, Spin, Button } from "antd";
 import { useRouter, useParams } from "next/navigation";
@@ -24,13 +24,30 @@ export default function ProjectSpace() {
   const pageSize = 2;
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: organization } = useOrganization(orgId);
-  const { data: projectSpace } = useOrganization(projSpaceId);
+  const { data: organization } = useResource(orgId);
+  const { data: projectSpace } = useResource(projSpaceId);
   const { data: repositories, isLoading } = useRepositories(projSpaceId, page);
 
   const [rename, setRename] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>(projectSpace?.resource_name);
   const renameModalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        rename &&
+        renameModalRef.current &&
+        !renameModalRef.current.contains(event.target as Node)
+      ) {
+        setRename(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [rename]);
 
   return (
     <div>
@@ -81,7 +98,7 @@ export default function ProjectSpace() {
       />
       {repositories && !isLoading ? (
         <div className="grid grid-cols-2 gap-8">
-          {repositories?.data.data.map((repo: Resource, index: number) => {
+          {repositories?.data.map((repo: Resource, index: number) => {
             const isMatch = repo.resource_name
               .toLowerCase()
               .includes(searchTerm);

@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { Resource } from "@/interfaces/workspace";
 import ProjectSpaceButton from "@/components/ProjectSpaceButton";
-import { useOrganization, useProjectSpaces } from "@/hooks/workspace";
+import { useResource, useProjectSpaces } from "@/hooks/workspace";
 import { Pagination, Spin, Button } from "antd";
 
 export default function Organization() {
@@ -18,7 +18,7 @@ export default function Organization() {
     throw new Error("Invalid orgId");
   }
 
-  const { data: organization } = useOrganization(orgId);
+  const { data: organization } = useResource(orgId);
   const { data: projectSpaces, isLoading } = useProjectSpaces(orgId, page);
 
   return (
@@ -59,7 +59,7 @@ export default function Organization() {
       />
       {projectSpaces && !isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {projectSpaces?.data.data.map((space: Resource, index: number) => {
+          {projectSpaces?.data.map((space: Resource, index: number) => {
             const isMatch = space.resource_name
               .toLowerCase()
               .includes(searchTerm);
