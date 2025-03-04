@@ -17,14 +17,32 @@ export const useBranches = (owner: string, repo: string, token: string) => {
 
 const fetchRepoContents = async (owner: string, repo: string, token: string | null, path?: string, branch?: string) => {
     if (owner === undefined || repo === undefined) return {data:null}
+    if (path === undefined) path = ""
+    if (branch === undefined) branch = ""
     if (token === null) return new Error("token is null")
     const response = await getData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/contents?path=${path}&branch=${branch}`, token);
-    return response
+    return response.data
 }
 
-export const useRepoContents = (owner: string, repo: string, token: string, path: string, branch: string) => {
+export const useRepoContents = (owner: string, repo: string, token: string, path?: string, branch?: string) => {
     return useQuery({
         queryKey: ["repoContents", owner, repo, token, path, branch],
         queryFn: () => fetchRepoContents(owner, repo, token, path, branch),
+      });
+}
+
+const fetchCommitMetadata = async (owner: string, repo: string, token: string | null, path?: string, branch?: string) => {
+    if (owner === undefined || repo === undefined) return {data:null}
+    if (path === undefined) path = ""
+    if (branch === undefined) branch = ""
+    if (token === null) return new Error("token is null")
+    const response = await getData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/commit-metadata?path=${path}&branch=${branch}`, token);
+    return response.data
+}
+
+export const useCommitMetadata = (owner: string, repo: string, token: string, path?: string, branch?: string) => {
+    return useQuery({
+        queryKey: ["repoContents", owner, repo, token, path, branch],
+        queryFn: () => fetchCommitMetadata(owner, repo, token, path, branch),
       });
 }

@@ -17,3 +17,16 @@ export interface Branch {
     object: BranchObject;
     commit: Commit;
 }
+
+export interface Content {
+    name: string;
+    path: string;
+    sha: string;
+    size: number;
+    download_url: string;
+}
+
+export interface CommitMetadata {
+    lastEditTime: string;
+    commitMessage: string;
+}

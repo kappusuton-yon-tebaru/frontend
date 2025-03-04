@@ -1,48 +1,19 @@
 "use client";
 
 import BranchManager from "@/components/BranchManager";
-import { useBranches } from "@/hooks/github";
+import RepoItem from "@/components/RepoItem";
+import {
+  useBranches,
+  useCommitMetadata,
+  useRepoContents,
+} from "@/hooks/github";
 import { useProjectRepo, useResource } from "@/hooks/workspace";
-import { Branch } from "@/interfaces/github";
+import { Branch, CommitMetadata, Content } from "@/interfaces/github";
 import { Spin } from "antd";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Repository() {
-  const folders = [
-    {
-      name: "Folder 1",
-      date: "31 Feb 2099",
-      time: "14:30",
-      msg: "Commit 1",
-      type: "folder",
-    },
-    {
-      name: "Folder 2",
-      date: "31 Feb 2099",
-      time: "10:00",
-      msg: "Commit 1",
-      type: "folder",
-    },
-  ];
-  const files = [
-    {
-      name: "File 1",
-      date: "31 Feb 2099",
-      time: "14:30",
-      msg: "Commit 1",
-      type: "file",
-    },
-    {
-      name: "File 2",
-      date: "31 Feb 2099",
-      time: "10:00",
-      msg: "Commit 1",
-      type: "file",
-    },
-  ];
-
   const router = useRouter();
   const { orgId, projSpaceId, repoId } = useParams();
 
@@ -74,18 +45,45 @@ export default function Repository() {
   }
   const { data: branches } = useBranches(owner, repo, tokenAuth);
   const [branchesStr, setBranchesStr] = useState<string[]>([]);
+  const [currentBranch, setCurrentBranch] = useState<string>("");
   useEffect(() => {
     let branchList: string[] = [];
     if (typeof branches !== "undefined" && branches.data) {
       branches.data.map((br: Branch) => {
-        branchList.push(br.name);
+        if (br.name === "main") {
+          branchList.unshift(br.name);
+        } else {
+          branchList.push(br.name);
+        }
       });
       setBranchesStr(branchList);
+      setCurrentBranch(branchList[0]);
     }
   }, [branches]);
-  const itemArr = folders.concat(files);
 
-  if (isLoading || !owner || !repo) {
+  const { data: repoContents } = useRepoContents(
+    owner,
+    repo,
+    tokenAuth,
+    "",
+    currentBranch
+  );
+  const [contents, setContents] = useState<Content[]>([]);
+  const [commitData, setCommitData] = useState<
+    Record<string, CommitMetadata | null>
+  >({});
+  useEffect(() => {
+    if (Array.isArray(repoContents)) {
+      const sortedContents = [...repoContents].sort((a, b) => {
+        return a.download_url === "" && b.download_url !== "" ? -1 : 1;
+      });
+      setContents(sortedContents);
+    } else {
+      setContents([]);
+    }
+  }, [repoContents]);
+
+  if (isLoading || !owner || !repo || !repoContents) {
     return <Spin />;
   }
   return (
@@ -121,7 +119,11 @@ export default function Repository() {
         </div>
         <div className="relative">
           {!isLoading && branches ? (
-            <BranchManager branches={branchesStr} />
+            <BranchManager
+              branches={branchesStr}
+              currentBranch={currentBranch}
+              setCurrentBranch={setCurrentBranch}
+            />
           ) : (
             <Spin />
           )}
@@ -129,28 +131,15 @@ export default function Repository() {
       </div>
       <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey mt-4">
         <div className="divide-y divide-ci-modal-grey">
-          {itemArr.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center p-4 transition cursor-pointer"
-            >
-              <Image
-                src={`/${item.type}-icon.svg`}
-                alt={`${item.type}-icon`}
-                width={24}
-                height={24}
-                className="mr-3"
-              />
-              <div className="grid grid-cols-3 w-full">
-                <div className="font-medium">{item.name}</div>
-                <div className="text-ci-modal-grey flex justify-center">
-                  {item.msg}
-                </div>
-                <div className="text-ci-modal-grey flex justify-end">
-                  {item.date + ", " + item.time}
-                </div>
-              </div>
-            </div>
+          {contents.map((item: Content) => (
+            <RepoItem
+              key={item.path}
+              item={item}
+              owner={owner}
+              repo={repo}
+              tokenAuth={tokenAuth}
+              currentBranch={currentBranch}
+            />
           ))}
         </div>
       </div>
