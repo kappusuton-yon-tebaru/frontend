@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import InputField from "@/components/InputField";
-import { useOrganization } from "@/hooks/workspace";
+import { useResource } from "@/hooks/workspace";
 import { useParams } from "next/navigation";
 
 export default function ManageOrganization() {
@@ -20,7 +20,7 @@ export default function ManageOrganization() {
   if (typeof orgId === "undefined" || Array.isArray(orgId)) {
     throw new Error("Invalid orgId");
   }
-  const { data: organization } = useOrganization(orgId);
+  const { data: organization } = useResource(orgId);
   const [name, setName] = useState(organization?.resource_name);
 
   const permissions = [{ name: "Permission 1" }, { name: "Permission 2" }];
