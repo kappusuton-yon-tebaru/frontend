@@ -60,7 +60,10 @@ export default function EntityIndex({
       if (sortBy?.label) params.append("sort_by", sortBy.label);
       if (sortOrder) params.append("sort_order", sortOrder);
 
-      const data = await getData(`${searchUrl}?${params.toString()}`);
+      const data = await getData(
+        `${searchUrl}?${params.toString()}`,
+        process.env.NEXT_PUBLIC_GITHUB_TOKEN //wait for auth
+      );
       setData(data);
       return data;
     } catch (error) {
@@ -146,9 +149,7 @@ export default function EntityIndex({
                   </button>
                 </div>
                 <div className="flex flex-col w-1/6 gap-y-2">
-                  <label className="text-base font-semibold">
-                    Sort Order:{" "}
-                  </label>
+                  <label className="text-base font-semibold">Sort By: </label>
                   <Selector
                     options={sortByOptions}
                     onSelect={setSortBy}

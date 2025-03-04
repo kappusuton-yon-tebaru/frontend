@@ -156,7 +156,10 @@ function OperationPage() {
     if (!selectedProject) return;
     const fetchServices = async () => {
       try {
-        const data = await getData(endpoints.service);
+        const data = await getData(
+          endpoints.service,
+          process.env.NEXT_PUBLIC_GITHUB_TOKEN //wait for auth
+        );
         setServiceOptions(
           data.data.map(
             (item: { service_name: string; dockerfile: string }) => ({
