@@ -15,7 +15,7 @@ export const useBranches = (owner: string, repo: string, token: string) => {
       });
 }
 
-const fetchRepoContents = async (owner: string, repo: string, token: string | null, path?: string, branch?: string) => {
+export const fetchRepoContents = async (owner: string, repo: string, token: string | null, path?: string, branch?: string) => {
     if (owner === undefined || repo === undefined) return {data:null}
     if (path === undefined) path = ""
     if (branch === undefined) branch = ""

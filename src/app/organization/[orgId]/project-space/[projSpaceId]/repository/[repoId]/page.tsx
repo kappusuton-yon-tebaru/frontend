@@ -2,13 +2,9 @@
 
 import BranchManager from "@/components/BranchManager";
 import RepoItem from "@/components/RepoItem";
-import {
-  useBranches,
-  useCommitMetadata,
-  useRepoContents,
-} from "@/hooks/github";
+import { useBranches, useRepoContents } from "@/hooks/github";
 import { useProjectRepo, useResource } from "@/hooks/workspace";
-import { Branch, CommitMetadata, Content } from "@/interfaces/github";
+import { Branch, Content } from "@/interfaces/github";
 import { Spin } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -69,9 +65,6 @@ export default function Repository() {
     currentBranch
   );
   const [contents, setContents] = useState<Content[]>([]);
-  const [commitData, setCommitData] = useState<
-    Record<string, CommitMetadata | null>
-  >({});
   useEffect(() => {
     if (Array.isArray(repoContents)) {
       const sortedContents = [...repoContents].sort((a, b) => {
@@ -83,7 +76,7 @@ export default function Repository() {
     }
   }, [repoContents]);
 
-  if (isLoading || !owner || !repo || !repoContents) {
+  if (isLoading || !owner || !repo || !repoContents || !currentBranch) {
     return <Spin />;
   }
   return (
@@ -129,19 +122,33 @@ export default function Repository() {
           )}
         </div>
       </div>
-      <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey mt-4">
-        <div className="divide-y divide-ci-modal-grey">
-          {contents.map((item: Content) => (
+      <div className="bg-ci-modal-black text-white rounded-lg w-full mt-4">
+        <div className="grid grid-cols-[40%_46%_14%] w-full h-12 px-4 items-center border border-ci-modal-grey rounded-t-lg">
+          <div className="text-ci-modal-grey">Name</div>
+          <div className="text-ci-modal-grey">Last Commit Message</div>
+          <div className="text-ci-modal-grey">Last Commit Date</div>
+        </div>
+        {contents.map((item: Content, index) => (
+          <div
+            className={`border border-ci-modal-grey ${
+              index === contents.length - 1 ? "rounded-b-lg" : ""
+            }`}
+            key={item.path}
+            onClick={() => {
+              router.push(
+                `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${item.path}`
+              );
+            }}
+          >
             <RepoItem
-              key={item.path}
               item={item}
               owner={owner}
               repo={repo}
               tokenAuth={tokenAuth}
               currentBranch={currentBranch}
             />
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
