@@ -33,7 +33,7 @@ export default function MergeButton({
           onClick={handleClose}
         >
           <div
-            className="bg-ci-bg-dark-blue border border-ci-modal-white p-4 rounded-md w-80 shadow-lg"
+            className="bg-ci-bg-dark-blue border border-ci-modal-white p-4 rounded-md w-1/3 h-1/2 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-center items-center border-b border-ci-modal-grey pb-2 whitespace-nowrap">
@@ -44,7 +44,7 @@ export default function MergeButton({
                 </span>
               </span>
             </div>
-            <div className="max-h-40 overflow-y-auto mt-2">
+            <div className="max-h-80 overflow-y-auto mt-2">
               {branches.map((branch) => (
                 <div
                   key={branch}

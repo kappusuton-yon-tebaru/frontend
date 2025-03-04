@@ -1,10 +1,13 @@
 "use client";
 
 import BranchManager from "@/components/BranchManager";
+import { useBranches } from "@/hooks/github";
 import { useProjectRepo, useResource } from "@/hooks/workspace";
+import { Branch } from "@/interfaces/github";
 import { Spin } from "antd";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Repository() {
   const folders = [
@@ -64,10 +67,25 @@ export default function Repository() {
   const { data: projectSpace } = useResource(projSpaceId);
   const { data: repository } = useResource(repoId);
 
-  const branches = ["main", "branch 1", "branch 2"];
+  const token = localStorage.getItem("access_token");
+  let tokenAuth = "";
+  if (token !== null) {
+    tokenAuth = token;
+  }
+  const { data: branches } = useBranches(owner, repo, tokenAuth);
+  const [branchesStr, setBranchesStr] = useState<string[]>([]);
+  useEffect(() => {
+    let branchList: string[] = [];
+    if (typeof branches !== "undefined" && branches.data) {
+      branches.data.map((br: Branch) => {
+        branchList.push(br.name);
+      });
+      setBranchesStr(branchList);
+    }
+  }, [branches]);
   const itemArr = folders.concat(files);
 
-  if (isLoading) {
+  if (isLoading || !owner || !repo) {
     return <Spin />;
   }
   return (
@@ -102,7 +120,11 @@ export default function Repository() {
           </h2>
         </div>
         <div className="relative">
-          <BranchManager branches={branches} />
+          {!isLoading && branches ? (
+            <BranchManager branches={branchesStr} />
+          ) : (
+            <Spin />
+          )}
         </div>
       </div>
       <div className="bg-ci-modal-black text-white rounded-lg w-full border border-ci-modal-grey mt-4">

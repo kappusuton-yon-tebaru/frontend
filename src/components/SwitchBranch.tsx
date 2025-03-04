@@ -52,7 +52,7 @@ export default function SwitchBranch({
             </span>
 
             <div className="flex items-center gap-2">
-              {index === 0 && (
+              {branch === "main" && (
                 <span className="text-xs px-2 py-1 border border-ci-modal-grey rounded-full">
                   default
                 </span>

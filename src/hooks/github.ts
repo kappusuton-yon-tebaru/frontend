@@ -14,3 +14,17 @@ export const useBranches = (owner: string, repo: string, token: string) => {
         queryFn: () => fetchBranches(owner, repo, token),
       });
 }
+
+const fetchRepoContents = async (owner: string, repo: string, token: string | null, path?: string, branch?: string) => {
+    if (owner === undefined || repo === undefined) return {data:null}
+    if (token === null) return new Error("token is null")
+    const response = await getData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/contents?path=${path}&branch=${branch}`, token);
+    return response
+}
+
+export const useRepoContents = (owner: string, repo: string, token: string, path: string, branch: string) => {
+    return useQuery({
+        queryKey: ["repoContents", owner, repo, token, path, branch],
+        queryFn: () => fetchRepoContents(owner, repo, token, path, branch),
+      });
+}
