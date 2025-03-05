@@ -13,12 +13,8 @@ export default function BranchManager({
   currentBranch: string;
   setCurrentBranch: (branch: string) => void;
 }) {
-  useEffect(() => {
-    setCurrentBranch(branches[0]);
-  }, [branches]);
-
   return (
-    <div className="flex flex-row gap-8">
+    <div className="flex flex-row gap-6">
       <BranchButton
         wide={true}
         branches={branches}

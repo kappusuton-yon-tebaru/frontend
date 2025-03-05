@@ -44,7 +44,7 @@ export default function MergeButton({
                 </span>
               </span>
             </div>
-            <div className="max-h-80 overflow-y-auto mt-2">
+            <div className="h-2/3 overflow-y-auto mt-2">
               {branches.map((branch) => (
                 <div
                   key={branch}

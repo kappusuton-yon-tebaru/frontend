@@ -121,9 +121,23 @@ export default function Repository() {
             <Spin />
           )}
         </div>
+        <div>
+          <button
+            className="border-ci-modal-grey border rounded-md bg-ci-modal-black flex items-center px-3 py-2 text-sm"
+            onClick={() => {
+              window.open(
+                `https://github.com/${owner}/${repo}`,
+                "_blank",
+                "noopener,noreferrer"
+              );
+            }}
+          >
+            Go to GitHub
+          </button>
+        </div>
       </div>
       <div className="bg-ci-modal-black text-white rounded-lg w-full mt-4">
-        <div className="grid grid-cols-[40%_46%_14%] w-full h-12 px-4 items-center border border-ci-modal-grey rounded-t-lg">
+        <div className="grid grid-cols-[35%_48%_27%] w-full h-12 px-4 items-center border border-ci-modal-grey rounded-t-lg">
           <div className="text-ci-modal-grey">Name</div>
           <div className="text-ci-modal-grey">Last Commit Message</div>
           <div className="text-ci-modal-grey">Last Commit Date</div>

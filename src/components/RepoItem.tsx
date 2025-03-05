@@ -27,7 +27,7 @@ export default function RepoItem({
 
   return (
     <div key={item.path} className="flex items-center p-4 cursor-pointer">
-      <div className="grid grid-cols-[40%_46%_14%] w-full">
+      <div className="grid grid-cols-[35%_48%_27%] w-full">
         <div className="font-medium flex flex-row items-center">
           <Image
             src={
@@ -40,10 +40,10 @@ export default function RepoItem({
           />
           {item.name}
         </div>
-        <div className="text-ci-modal-grey">
+        <div className="flex text-ci-modal-grey items-center">
           {commitInfo ? commitInfo.commitMessage : "Loading..."}
         </div>
-        <div className="text-ci-modal-grey">
+        <div className="flex text-ci-modal-grey items-center">
           {commitInfo
             ? new Date(commitInfo.lastEditTime).toLocaleString("en-US", {
                 dateStyle: "medium",
