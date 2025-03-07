@@ -137,7 +137,7 @@ export default function EditImageRegistryPage() {
   }, [endpoints.project, selectedProjectSpace]);
 
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
       <CustomToast />
       <div className="col-span-2"></div>
       <div className="flex flex-col gap-y-16">

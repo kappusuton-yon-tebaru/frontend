@@ -9,7 +9,7 @@ export default function ServicesListPage() {
   const organizationId = "678fcf897c67bca50cfae34e";
 
   const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/project/${projectId}/services`;
-  const operationUrl = "/operation/operate?ops=BUILD";
+  const operationUrl = "/cicd/operation/operate?ops=BUILD";
 
   const renderEntity = (entity: {
     service_name: string;
@@ -20,7 +20,7 @@ export default function ServicesListPage() {
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none"
         onClick={() =>
           router.push(
-            `/images/projectSpaces/${projectSpaceId}/projects/${projectId}/services/${entity.service_name}`
+            `/cicd/images/projectSpaces/${projectSpaceId}/projects/${projectId}/services/${entity.service_name}`
           )
         }
       >
@@ -38,7 +38,7 @@ export default function ServicesListPage() {
     );
   };
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-4">
       <EntityIndex
         topic={"Services List"}
         description={`This is the list of all services from project ID: ${projectId}.`}

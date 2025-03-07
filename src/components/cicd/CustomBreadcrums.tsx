@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 
 const CustomBreadcrumbs = () => {
   const pathname = usePathname();
@@ -10,18 +11,20 @@ const CustomBreadcrumbs = () => {
     .split("/")
     .filter((segment) => segment && !segment.startsWith("["));
 
+  const isMongoObjectId = (segment: string) => /^[a-f\d]{24}$/i.test(segment);
+
   return (
-    <nav aria-label="breadcrumb" className="text-ci-white px-16 pt-20 text-lg">
-      <button
-        onClick={() => router.back()}
-        className="text-ci-white hover:underline mb-4"
-      >
-        ← Back
-      </button>
-      <ol className="flex space-x-2">
+    <nav
+      aria-label="breadcrumb"
+      className="flex items-center space-x-2 bg-ci-modal-black px-8 py-4 fixed w-full border-b border-ci-modal-grey z-100"
+    >
+      <ol className="flex items-center space-x-2">
         <li>
-          <Link href="/" className="hover:underline">
-            Home
+          <Link
+            href="/cicd"
+            className="underline font-bold text-base underline-offset-4"
+          >
+            Image and Deployment
           </Link>
         </li>
         {pathSegments.map((segment, index) => {
@@ -29,12 +32,19 @@ const CustomBreadcrumbs = () => {
           const isLast = index === pathSegments.length - 1;
 
           return (
-            <li key={path} className="flex items-center">
-              <span className="mx-2">/</span>
-              {isLast ? (
-                <span className="text-ci-modal-blue">{segment}</span>
+            <li key={path} className="flex items-center space-x-2">
+              <ChevronRight className="w-4 h-4 text-gray-400" />
+              {isMongoObjectId(segment) ? (
+                <span className="font-medium text-ci-modal-grey">
+                  {segment}
+                </span>
+              ) : isLast ? (
+                <span className="font-bold">{segment}</span>
               ) : (
-                <Link href={path} className="hover:underline">
+                <Link
+                  href={path}
+                  className="underline font-medium text-base underline-offset-4"
+                >
                   {segment}
                 </Link>
               )}

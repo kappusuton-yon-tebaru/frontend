@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/regproviders`;
-const operationUrl = "/images/registry/create";
+const operationUrl = "/cicd/images/registry/create";
 
 export default function ImagesRegistryPage() {
   const organizationId = "678fcf897c67bca50cfae34e";
@@ -14,7 +14,7 @@ export default function ImagesRegistryPage() {
     return (
       <div
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none"
-        onClick={() => router.push(`/images/registry/${entity.id}/edit`)}
+        onClick={() => router.push(`/cicd/images/registry/${entity.id}/edit`)}
       >
         <Image
           src={"/images/cicd/hard-disk.svg"}
@@ -28,7 +28,7 @@ export default function ImagesRegistryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16">
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
       <EntityIndex
         topic={"Registry List"}
         description={`This is the list of all registry of organization Id: ${organizationId}.`}

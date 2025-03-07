@@ -1,15 +1,14 @@
 "use client";
-import CustomBreadcrumbs from "@/components/cicd/CustomBreadcrums";
 import EntityIndex from "@/components/cicd/EntityIndex";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-export default function ProjectSpaceListPage() {
+export default function ProjectsListPage() {
   const router = useRouter();
+  const { projectSpaceId } = useParams();
 
-  const organizationId = "678fcf897c67bca50cfae34e";
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${organizationId}`;
-  const operationUrl = "/operation/operate?ops=BUILD";
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}`;
+  const operationUrl = "/cicd/operation/operate?ops=BUILD";
 
   const renderEntity = (entity: {
     id: string;
@@ -20,10 +19,12 @@ export default function ProjectSpaceListPage() {
       <div
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center"
         onClick={() =>
-          router.push(`/images/projectSpaces/${entity.id}/projects`)
+          router.push(
+            `/cicd/images/projectSpaces/${projectSpaceId}/projects/${entity.id}/services`
+          )
         }
       >
-        <Image src={"/space-icon.svg"} alt={"disk"} width={32} height={32} />
+        <Image src={"/repo-icon.svg"} alt={"disk"} width={32} height={32} />
         <h3 className="text-base w-4/5">{entity.resource_name}</h3>
         <h3 className="text-base w-1/6 text-ci-modal-grey">
           26 Oct 2024, 15:00
@@ -32,16 +33,15 @@ export default function ProjectSpaceListPage() {
     );
   };
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
-      <CustomBreadcrumbs />
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-4">
       <EntityIndex
-        topic={"Project Spaces List"}
-        description={`This is the list of all project spaces from organization ID: ${organizationId}.`}
+        topic={"Projects List"}
         searchUrl={searchUrl}
+        description={`This is the list of all projects from project space ID: ${projectSpaceId}.`}
         operationTopic={"Build Image"}
         operationUrl={operationUrl}
         renderEntity={renderEntity}
-        queryKey="projSpace"
+        queryKey="proj"
       />
     </div>
   );

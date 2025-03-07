@@ -46,7 +46,7 @@ export default function ImageWorkerSettingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
+      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8 flex justify-center items-center">
         <ClipLoader
           size={100}
           color={"#245FA1"}

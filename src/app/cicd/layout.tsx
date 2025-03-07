@@ -16,10 +16,16 @@ const menuItems: MenuItem[] = [
     subMenu: [
       {
         name: "Services List",
-        href: "http://localhost:3000/images/projectSpaces",
+        href: "http://localhost:3000/cicd/images/projectSpaces",
       },
-      { name: "Registry List", href: "http://localhost:3000/images/registry" },
-      { name: "Images Setting", href: "http://localhost:3000/images/settings" },
+      {
+        name: "Registry List",
+        href: "http://localhost:3000/cicd/images/registry",
+      },
+      {
+        name: "Images Setting",
+        href: "http://localhost:3000/cicd/images/settings",
+      },
     ],
   },
   {
@@ -32,13 +38,16 @@ const menuItems: MenuItem[] = [
   },
   {
     name: "Operarion",
-    href: "http://localhost:3000/operation",
+    href: "http://localhost:3000/cicd/operation",
     subMenu: [
       {
         name: "Build and Deploy",
-        href: "http://localhost:3000/operation/operate",
+        href: "http://localhost:3000/cicd/operation/operate",
       },
-      { name: "Jobs Status", href: "http://localhost:3000/operation/jobs" },
+      {
+        name: "Jobs Status",
+        href: "http://localhost:3000/cicd/operation/jobs",
+      },
     ],
   },
 ];
@@ -72,13 +81,11 @@ export default function RootLayout({
   return (
     <ConfigProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
+        <CustomBreadcrumbs />
         <div className="flex">
           <SideBarMenu menuItems={menuItems} />
           <div className="flex-1">
-            <main>
-              <CustomBreadcrumbs />
-              {children}
-            </main>
+            <main className="mt-20">{children}</main>
           </div>
         </div>
       </QueryClientProvider>
