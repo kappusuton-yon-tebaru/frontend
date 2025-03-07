@@ -35,7 +35,7 @@ export default function CicdHomePage() {
           text: "**Optional: you can adjust max worker for image building in",
           hasLink: true,
           link: {
-            href: "http://localhost:3000/cicd/images/setting",
+            href: "http://localhost:3000/cicd/images/settings",
             label: "Image Setting",
             imageSrc: "/images/cicd/link.svg",
             imageAlt: "link logo",

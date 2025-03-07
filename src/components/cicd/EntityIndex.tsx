@@ -8,10 +8,7 @@ import { Button, Input, Pagination } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import Selector, { SelectorOption } from "./Selector";
-<<<<<<< HEAD
 import CustomBreadcrumbs from "./CustomBreadcrums";
-=======
->>>>>>> origin/fix/change-design-and-misc
 
 interface Entity {
   id: string;
@@ -64,14 +61,10 @@ export default function EntityIndex({
       if (sortBy?.label) params.append("sort_by", sortBy.label);
       if (sortOrder) params.append("sort_order", sortOrder);
 
-<<<<<<< HEAD
       const data = await getData(
         `${searchUrl}?${params.toString()}`,
         process.env.NEXT_PUBLIC_GITHUB_TOKEN //wait for auth
       );
-=======
-      const data = await getData(`${searchUrl}?${params.toString()}`);
->>>>>>> origin/fix/change-design-and-misc
       setData(data);
       return data;
     } catch (error) {
@@ -157,13 +150,7 @@ export default function EntityIndex({
                   </button>
                 </div>
                 <div className="flex flex-col w-1/6 gap-y-2">
-<<<<<<< HEAD
                   <label className="text-base font-semibold">Sort By: </label>
-=======
-                  <label className="text-base font-semibold">
-                    Sort Order:{" "}
-                  </label>
->>>>>>> origin/fix/change-design-and-misc
                   <Selector
                     options={sortByOptions}
                     onSelect={setSortBy}
@@ -207,11 +194,7 @@ export default function EntityIndex({
           </div>
         )}
       </div>
-<<<<<<< HEAD
       {entities && entities.data.length != 0 && (
-=======
-      {entities && (
->>>>>>> origin/fix/change-design-and-misc
         <div className="mt-4 flex justify-center w-full">
           <Pagination
             current={page}
