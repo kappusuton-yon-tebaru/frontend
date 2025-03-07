@@ -5,6 +5,7 @@ import OrganizationButton from "./OrganizationButton";
 import { getData } from "@/services/baseRequest";
 import { useState, useEffect } from "react";
 import { Resource } from "@/interfaces/workspace";
+import Link from "next/link";
 
 export default function NavigationBar() {
   const temp: Resource = {
@@ -41,7 +42,9 @@ export default function NavigationBar() {
       <div className="flex flex-row gap-x-12 items-center h-12">
         <Image src={"/logo.svg"} alt="logo" width={44} height={44} />
         <div>Project</div>
-        <div>Image and Deployment</div>
+        <div>
+          <Link href={"/images/projectSpaces"}>Image and Deployment</Link>
+        </div>
       </div>
       <div className="flex flex-row gap-x-12 items-center">
         {selectedOrganization && (

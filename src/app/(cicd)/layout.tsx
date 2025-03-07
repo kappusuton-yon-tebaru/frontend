@@ -7,6 +7,7 @@ import {
   QueryClientProvider,
   QueryClientConfig,
 } from "@tanstack/react-query";
+import CustomBreadcrumbs from "@/components/cicd/CustomBreadcrums";
 
 const menuItems: MenuItem[] = [
   {
@@ -74,7 +75,10 @@ export default function RootLayout({
         <div className="flex">
           <SideBarMenu menuItems={menuItems} />
           <div className="flex-1">
-            <main>{children}</main>
+            <main>
+              <CustomBreadcrumbs />
+              {children}
+            </main>
           </div>
         </div>
       </QueryClientProvider>

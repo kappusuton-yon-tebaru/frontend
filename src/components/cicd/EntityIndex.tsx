@@ -8,6 +8,7 @@ import { Button, Input, Pagination } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import Selector, { SelectorOption } from "./Selector";
+import CustomBreadcrumbs from "./CustomBreadcrums";
 
 interface Entity {
   id: string;
@@ -187,8 +188,13 @@ export default function EntityIndex({
             This directory is empty
           </div>
         )}
+        {entities && entities.data.length == 0 && (
+          <div className="flex flex-col items-center text-lg font-bold py-4">
+            No results found. Try refining your search or checking for typos.
+          </div>
+        )}
       </div>
-      {entities && (
+      {entities && entities.data.length != 0 && (
         <div className="mt-4 flex justify-center w-full">
           <Pagination
             current={page}

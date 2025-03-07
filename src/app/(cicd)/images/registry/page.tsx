@@ -28,7 +28,7 @@ export default function ImagesRegistryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16">
       <EntityIndex
         topic={"Registry List"}
         description={`This is the list of all registry of organization Id: ${organizationId}.`}

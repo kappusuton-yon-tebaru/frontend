@@ -100,7 +100,7 @@ export default function EditImageRegistryPage() {
       try {
         const data = await getData(endpoints.projectSpace);
         setProjectSpaceOptions(
-          data.map((item: { resource_name: string; id: string }) => ({
+          data.data.map((item: { resource_name: string; id: string }) => ({
             label: item.resource_name,
             id: item.id,
             data: item,
@@ -122,7 +122,7 @@ export default function EditImageRegistryPage() {
       try {
         const data = await getData(endpoints.project);
         setProjectOptions(
-          data.map((item: { resource_name: string; id: string }) => ({
+          data.data.map((item: { resource_name: string; id: string }) => ({
             label: item.resource_name,
             id: item.id,
             data: item,

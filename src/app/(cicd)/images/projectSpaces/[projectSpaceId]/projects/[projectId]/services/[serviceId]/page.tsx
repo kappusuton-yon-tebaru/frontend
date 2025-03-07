@@ -24,7 +24,7 @@ export default function ImagesListPage() {
     );
   };
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-4">
       <EntityIndex
         topic={"Images List"}
         description={`This is the list of all images of ${serviceId}.`}

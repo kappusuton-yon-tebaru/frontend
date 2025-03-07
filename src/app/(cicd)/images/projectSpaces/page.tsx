@@ -1,4 +1,5 @@
 "use client";
+import CustomBreadcrumbs from "@/components/cicd/CustomBreadcrums";
 import EntityIndex from "@/components/cicd/EntityIndex";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -32,6 +33,7 @@ export default function ProjectSpaceListPage() {
   };
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
+      <CustomBreadcrumbs />
       <EntityIndex
         topic={"Project Spaces List"}
         description={`This is the list of all project spaces from organization ID: ${organizationId}.`}
