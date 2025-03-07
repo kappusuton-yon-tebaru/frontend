@@ -195,7 +195,11 @@ function OperationPage() {
   }
 
   return (
+<<<<<<< HEAD:src/app/cicd/operation/operate/page.tsx
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
+=======
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
+>>>>>>> origin/fix/change-design-and-misc:src/app/(cicd)/operation/operate/page.tsx
       <div className="flex flex-col gap-y-8">
         <div className="flex flex-col gap-y-4">
           <h2 className="text-2xl font-bold">Build and Deploy</h2>
