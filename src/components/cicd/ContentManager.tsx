@@ -3,6 +3,10 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+export interface Header {
+  label: string;
+  desc: string;
+}
 export interface Service {
   name: string;
   path: string;
@@ -30,8 +34,10 @@ export interface ContentManagerProps {
 }
 
 export default function ContentManager({
+  header,
   topic,
 }: {
+  header: Header;
   topic: ContentManagerProps[];
 }) {
   const router = useRouter();
@@ -39,10 +45,8 @@ export default function ContentManager({
   return (
     <div className="px-16 py-8 flex flex-col gap-y-8">
       <div className="flex flex-col gap-y-4 w-full items-center">
-        <h2 className="text-3xl font-bold">Snapping Service CICD</h2>
-        <div className="text-xl">
-          Let's your build and deploy process easier.
-        </div>
+        <h2 className="text-3xl font-bold">{header.label}</h2>
+        <div className="text-xl">{header.desc}</div>
       </div>
       <hr className="border-t border-gray-300 col-span-6" />
       <div className="min-h-screen w-full bg-ci-bg-dark-blue flex flex-col gap-y-8">

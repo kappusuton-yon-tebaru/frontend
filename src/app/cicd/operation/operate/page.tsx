@@ -97,7 +97,7 @@ function OperationPage() {
         baseUrl + selectedOperation.data.url,
         buildPayload
       );
-      router.push(`/operation/jobs/${operation.parent_id}`);
+      router.push(`/cicd/operation/jobs/${operation.parent_id}`);
     } catch (error) {
       toast.error(`Create operation failed.\n${error}`);
     }

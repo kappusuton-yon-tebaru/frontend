@@ -44,14 +44,14 @@ export default function SubJobsListPage() {
         <h3 className="text-base text-ci-modal-grey">
           Created at: {entity.created_at}
         </h3>
-        <div className="flex flex-row gap-x-12 items-center px-8">
+        <div className="flex flex-row gap-x-12 items-center px-8 justify-around w-1/5">
           <Image
             src={`/images/cicd/${entity.job_status}.svg`}
             alt={"disk"}
             width={20}
             height={20}
           />
-          <h3 className="text-base w-1/6 text-ci-modal-grey">
+          <h3 className="text-base w-1/2 text-ci-modal-grey">
             {entity.job_status}
           </h3>
         </div>

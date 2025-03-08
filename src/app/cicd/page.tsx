@@ -7,6 +7,11 @@ import { useRouter } from "next/navigation";
 export default function CicdHomePage() {
   const router = useRouter();
 
+  const header = {
+    label: "Snapping Service CICD",
+    desc: "Let's your build and deploy process easier.",
+  };
+
   const topic = [
     {
       title: "Available Services",
@@ -14,7 +19,7 @@ export default function CicdHomePage() {
       services: [
         {
           name: "Image Services",
-          path: "/cicd/images/projectSpaces",
+          path: "/cicd/images",
           description:
             "Find your image that you have built, add registry and link to project and set the max worker for image builder here.",
         },
@@ -88,7 +93,7 @@ export default function CicdHomePage() {
 
   return (
     <div className="min-h-screen w-full bg-ci-bg-dark-blue">
-      <ContentManager topic={topic} />
+      <ContentManager header={header} topic={topic} />
     </div>
   );
 }

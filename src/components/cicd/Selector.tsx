@@ -61,7 +61,7 @@ export default function Selector({
   };
 
   return (
-    <div className="relative w-full z-1">
+    <div className="relative w-full">
       {isMultiSelect ? (
         <div
           onClick={() => setIsOpen(!isOpen)}
@@ -107,7 +107,7 @@ export default function Selector({
       )}
 
       {isOpen && options && (
-        <ul className="absolute left-0 w-full z-1 mt-1 bg-ci-modal-black rounded-lg shadow-lg overflow-y-auto max-h-60">
+        <ul className="absolute left-0 w-full mt-1 bg-ci-modal-black rounded-lg shadow-lg overflow-y-auto max-h-60">
           {options.map((option) => (
             <li
               key={option.id || option.label}
