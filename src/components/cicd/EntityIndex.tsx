@@ -59,7 +59,7 @@ export default function EntityIndex({
       if (pageSize) params.append("limit", pageSize.toString());
       if (searchTerm) params.append("query", searchTerm);
       if (sortBy?.label) params.append("sort_by", sortBy.label);
-      if (sortOrder) params.append("sort_order", sortOrder);
+      if (sortOrder && sortBy) params.append("sort_order", sortOrder);
 
       const data = await getData(
         `${searchUrl}?${params.toString()}`,
@@ -98,7 +98,7 @@ export default function EntityIndex({
     <div className="flex flex-col gap-y-8">
       <div className="flex flex-col gap-y-4">
         <div className="flex flex-row justify-between font-bold items-center">
-          <h2 className="text-2xl">{topic}</h2>
+          <h2 className="text-xl">{topic}</h2>
           {operationTopic && operationUrl && (
             <button
               className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
@@ -109,33 +109,33 @@ export default function EntityIndex({
           )}
         </div>
         {description && (
-          <div className="text-lg text-ci-modal-grey">{description}</div>
+          <div className="text-base text-ci-modal-grey">{description}</div>
         )}
-        <div className="flex flex-col justify-between items-center mb-4 gap-x-4 gap-y-6">
-          <div className="flex flex-row w-full gap-x-4 items-end">
-            <Input.Search
-              placeholder="Search..."
-              allowClear
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onSearch={(value) => {
-                setSearchTerm(value);
-                setPage(1);
-                refetch();
-              }}
-              size="large"
-              className="w-full"
-              enterButton={
-                <Button
-                  type="primary"
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-2 flex items-center justify-center"
-                >
-                  <SearchOutlined className="text-lg" />
-                </Button>
-              }
-            />
-            {sortByOptions && (
-              <>
+        {sortByOptions && (
+          <>
+            <div className="flex flex-col justify-between items-center mb-4 gap-x-4 gap-y-6">
+              <div className="flex flex-row w-full gap-x-4 items-end">
+                <Input.Search
+                  placeholder="Search..."
+                  allowClear
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onSearch={(value) => {
+                    setSearchTerm(value);
+                    setPage(1);
+                    refetch();
+                  }}
+                  size="large"
+                  className="w-full"
+                  enterButton={
+                    <Button
+                      type="primary"
+                      className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-2 flex items-center justify-center"
+                    >
+                      <SearchOutlined className="text-lg" />
+                    </Button>
+                  }
+                />
                 <div className="flex flex-col w-1/6 gap-y-2">
                   <label className="text-base font-semibold ">
                     Sort Order:{" "}
@@ -157,11 +157,11 @@ export default function EntityIndex({
                     initialOption={sortByOptions[0] || null}
                   />
                 </div>
-              </>
-            )}
-          </div>
-        </div>
-        <hr className="border-t border-gray-300 col-span-6" />
+              </div>
+            </div>
+            <hr className="border-t border-gray-300 col-span-6" />
+          </>
+        )}
       </div>
       <div className="flex flex-col">
         {entities &&
@@ -194,7 +194,7 @@ export default function EntityIndex({
           </div>
         )}
       </div>
-      {entities && entities.data.length != 0 && (
+      {sortByOptions && entities && entities.data.length != 0 && (
         <div className="mt-4 flex justify-center w-full">
           <Pagination
             current={page}

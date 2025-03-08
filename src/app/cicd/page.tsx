@@ -1,12 +1,8 @@
 "use client";
 
 import ContentManager from "@/components/cicd/ContentManager";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 export default function CicdHomePage() {
-  const router = useRouter();
-
   const header = {
     label: "Snapping Service CICD",
     desc: "Let's your build and deploy process easier.",
@@ -31,7 +27,7 @@ export default function CicdHomePage() {
         },
         {
           name: "Operate Service",
-          path: "/cicd/operation/operate",
+          path: "/cicd/operation",
           description:
             "Build and deploy your services and all list of jobs that you had run.",
         },

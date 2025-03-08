@@ -1,14 +1,8 @@
 "use client";
 
 import ContentManager from "@/components/cicd/ContentManager";
-import EntityIndex from "@/components/cicd/EntityIndex";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 export default function ImageHomePage() {
-  const router = useRouter();
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/ecr/images?project_id=67ac131726062e24a5c98a2f&service_name=service1&`;
-
   const header = {
     label: "Image Services",
     desc: "Manage you images and registry here.",

@@ -49,7 +49,7 @@ export default function ContentManager({
         <div className="text-xl">{header.desc}</div>
       </div>
       <hr className="border-t border-gray-300 col-span-6" />
-      <div className="min-h-screen w-full bg-ci-bg-dark-blue flex flex-col gap-y-8">
+      <div className="w-full bg-ci-bg-dark-blue flex flex-col gap-y-8">
         {topic.map(({ title, desc, content, services }, index) => (
           <div key={index} className="flex flex-col gap-y-4 w-full">
             <h2 className="text-xl font-bold">{title}</h2>
@@ -59,7 +59,7 @@ export default function ContentManager({
                 {services.map(({ name, path, description }) => (
                   <div
                     key={name}
-                    className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey rounded-lg w-1/3 cursor-pointer"
+                    className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey rounded-lg w-1/2 cursor-pointer"
                     onClick={() => router.push(path)}
                   >
                     <div className="flex flex-col px-6 py-3 gap-y-4 select-none">
