@@ -16,7 +16,7 @@ const CustomBreadcrumbs = () => {
   return (
     <nav
       aria-label="breadcrumb"
-      className="flex items-center space-x-2 bg-ci-modal-black px-8 py-4 fixed w-full border-b border-ci-modal-grey z-100"
+      className="flex items-center space-x-2 bg-ci-modal-black px-8 py-4 fixed w-full border-b border-ci-modal-grey z-10"
     >
       <ol className="flex items-center space-x-2">
         <li>

@@ -4,7 +4,7 @@ import ContentManager from "@/components/cicd/ContentManager";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function CicdHomePage() {
+export default function ImageHomePage() {
   const router = useRouter();
 
   const topic = [

@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 
 const options: SelectorOption[] = [
   { label: "ECR", icon: "🟧", id: "ECR" },
-  { label: "Docker Hub", icon: "🐳", id: "DOCKER" },
+  // { label: "Docker Hub", icon: "🐳", id: "DOCKER" },
 ];
 
 export default function EditImageRegistryPage() {
