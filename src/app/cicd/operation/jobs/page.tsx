@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const sortBy: SelectorOption[] = [
-  { label: "project.name", id: "name" },
+  { label: "Project Name", id: "project.name" },
   // { label: "status", id: "status" },
-  { label: "created_at", id: "created_at" },
+  { label: "Created At", id: "created_at" },
 ];
 
 export default function JobsListPage() {

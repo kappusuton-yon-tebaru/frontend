@@ -23,7 +23,7 @@ interface EntityIndexProps {
   operationTopic?: string;
   operationUrl?: string;
   renderEntity: (entity: any) => React.ReactNode;
-  queryKey?: string;
+  queryKey?: string | string[];
   sortByOptions?: SelectorOption[];
 }
 
@@ -58,7 +58,7 @@ export default function EntityIndex({
       if (page) params.append("page", page.toString());
       if (pageSize) params.append("limit", pageSize.toString());
       if (searchTerm) params.append("query", searchTerm);
-      if (sortBy?.label) params.append("sort_by", sortBy.label);
+      if (sortBy?.id) params.append("sort_by", sortBy.id);
       if (sortOrder && sortBy) params.append("sort_order", sortOrder);
 
       const data = await getData(
@@ -191,6 +191,18 @@ export default function EntityIndex({
         {entities && entities.data.length == 0 && (
           <div className="flex flex-col items-center text-lg font-bold py-4">
             No results found. Try refining your search or checking for typos.
+          </div>
+        )}
+        {isLoading && (
+          <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8 flex justify-center items-center">
+            <ClipLoader
+              size={100}
+              color={"#245FA1"}
+              cssOverride={{
+                borderWidth: "10px",
+              }}
+              loading={isLoading}
+            />
           </div>
         )}
       </div>

@@ -65,7 +65,7 @@ export default function Selector({
       {isMultiSelect ? (
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="flex flex-wrap items-center gap-2 w-full px-3 py-2 bg-ci-modal-black border border-ci-modal-grey rounded-lg text-base cursor-pointer min-h-[40px]"
+          className="flex flex-wrap items-center gap-2 w-full px-3 py-2 bg-ci-modal-black border border-ci-modal-grey rounded-lg text-base cursor-pointer min-h-[40px] z-1"
         >
           {selected.size > 0 ? (
             Array.from(selected).map((opt) => (
@@ -107,7 +107,7 @@ export default function Selector({
       )}
 
       {isOpen && options && (
-        <ul className="absolute left-0 w-full mt-1 bg-ci-modal-black rounded-lg shadow-lg overflow-y-auto max-h-60">
+        <ul className="absolute left-0 w-full mt-1 bg-ci-modal-black rounded-lg shadow-lg overflow-y-auto max-h-60 z-10">
           {options.map((option) => (
             <li
               key={option.id || option.label}

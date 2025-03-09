@@ -1,8 +1,14 @@
 "use client";
-import CustomBreadcrumbs from "@/components/cicd/CustomBreadcrums";
+
 import EntityIndex from "@/components/cicd/EntityIndex";
+import { SelectorOption } from "@/components/cicd/Selector";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+
+const sortBy: SelectorOption[] = [
+  { label: "Name", id: "resource_name" },
+  { label: "Created At", id: "created_at" },
+];
 
 export default function ProjectSpaceListPage() {
   const router = useRouter();
@@ -41,6 +47,7 @@ export default function ProjectSpaceListPage() {
         operationUrl={operationUrl}
         renderEntity={renderEntity}
         queryKey="projSpace"
+        sortByOptions={sortBy}
       />
     </div>
   );

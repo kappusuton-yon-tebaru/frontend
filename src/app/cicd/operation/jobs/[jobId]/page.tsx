@@ -5,10 +5,10 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
 const sortBy: SelectorOption[] = [
-  { label: "project.name", id: "name" },
-  { label: "servcie_name", id: "servcie_name" },
-  { label: "job_status", id: "job_status" },
-  { label: "created_at", id: "created_at" },
+  { label: "Project Name", id: "project.name" },
+  { label: "Servcie Name", id: "servcie_name" },
+  { label: "Job Status", id: "job_status" },
+  { label: "Created At", id: "created_at" },
 ];
 
 export default function SubJobsListPage() {

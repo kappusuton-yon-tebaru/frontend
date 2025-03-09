@@ -1,7 +1,13 @@
 "use client";
 import EntityIndex from "@/components/cicd/EntityIndex";
+import { SelectorOption } from "@/components/cicd/Selector";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+
+const sortBy: SelectorOption[] = [
+  { label: "Name", id: "resource_name" },
+  { label: "Created At", id: "created_at" },
+];
 
 export default function ProjectsListPage() {
   const router = useRouter();
@@ -42,6 +48,7 @@ export default function ProjectsListPage() {
         operationUrl={operationUrl}
         renderEntity={renderEntity}
         queryKey="proj"
+        sortByOptions={sortBy}
       />
     </div>
   );

@@ -235,7 +235,7 @@ export default function EditImageRegistryPage() {
                 <InputField
                   label="AWS Region"
                   placeholder="AWS Region"
-                  value={registryData.secretKey}
+                  value={registryData.awsRegion}
                   onChange={(value) => handleChange("awsRegion", value)}
                 />
               </div>

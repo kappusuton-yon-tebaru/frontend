@@ -1,10 +1,16 @@
 "use client";
 import EntityIndex from "@/components/cicd/EntityIndex";
+import { SelectorOption } from "@/components/cicd/Selector";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/regproviders`;
 const operationUrl = "/cicd/images/registry/create";
+
+const sortBy: SelectorOption[] = [
+  { label: "Name", id: "name" },
+  { label: "Created At", id: "created_at" },
+];
 
 export default function ImagesRegistryPage() {
   const organizationId = "678fcf897c67bca50cfae34e";
@@ -36,6 +42,7 @@ export default function ImagesRegistryPage() {
         operationTopic={"Add Registry"}
         operationUrl={operationUrl}
         renderEntity={renderEntity}
+        sortByOptions={sortBy}
       />
     </div>
   );

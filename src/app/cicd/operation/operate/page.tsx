@@ -198,8 +198,8 @@ function OperationPage() {
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
       <div className="flex flex-col gap-y-8">
         <div className="flex flex-col gap-y-4">
-          <h2 className="text-2xl font-bold">Build and Deploy</h2>
-          <div className="text-lg text-ci-modal-grey">
+          <h2 className="text-xl font-bold">Build and Deploy</h2>
+          <div className="text-base text-ci-modal-grey">
             You can select the operation, project space, project, service(s)
             that you want to perform in this page
           </div>
@@ -226,7 +226,7 @@ function OperationPage() {
               initial: null,
             },
           ].map(({ label, options, state, initial }) => (
-            <div key={label} className="col-span-2 flex flex-col gap-y-6">
+            <div key={label} className="col-span-2 flex flex-col gap-y-6 z-20">
               <label className="text-base font-semibold">{label}</label>
               <Selector
                 options={options}
@@ -236,7 +236,7 @@ function OperationPage() {
             </div>
           ))}
 
-          <div className="col-span-6 flex flex-col gap-y-6">
+          <div className="col-span-6 flex flex-col gap-y-6 z-10">
             <label className="text-base font-semibold">Select Service</label>
             <Selector
               options={serviceOptions}
