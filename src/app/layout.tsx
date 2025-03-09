@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavigationBar from "../components/NavigationBar";
+import "@ant-design/v5-patch-for-react-19";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,7 @@ export default function RootLayout({
       >
         <NavigationBar />
         {/* <Sidebar /> */}
-        <main className="flex-1 mx-36 mt-16 p-8">{children}</main>
+        <main className="flex-1 mt-16">{children}</main>
       </body>
     </html>
   );

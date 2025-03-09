@@ -4,6 +4,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
 import { getData } from "@/services/baseRequest";
+import { Button, Input, Pagination } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { useQuery } from "@tanstack/react-query";
+import Selector, { SelectorOption } from "./Selector";
+import CustomBreadcrumbs from "./CustomBreadcrums";
 
 interface Entity {
   id: string;
@@ -13,56 +18,77 @@ interface Entity {
 
 interface EntityIndexProps {
   topic: string;
+  description?: string;
   searchUrl: string;
   operationTopic?: string;
   operationUrl?: string;
   renderEntity: (entity: any) => React.ReactNode;
+  queryKey?: string | string[];
+  sortByOptions?: SelectorOption[];
 }
 
 export default function EntityIndex({
   topic,
+  description,
   searchUrl,
   operationTopic,
   operationUrl,
   renderEntity,
+  queryKey,
+  sortByOptions,
 }: EntityIndexProps) {
-  const [entities, setEntities] = useState<Entity[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState<SelectorOption | null>(
+    sortByOptions ? sortByOptions[0] : null
+  );
+
+  const [data, setData] = useState();
+
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getData(searchUrl);
-        setEntities(data.services ? data.services : data);
-      } catch (error) {
-        const errMessage =
-          error instanceof Error ? error.message : "Unknown error";
-        setError(errMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async (page: number) => {
+    try {
+      const params = new URLSearchParams();
 
-    fetchData();
-  }, [searchUrl]);
+      if (page) params.append("page", page.toString());
+      if (pageSize) params.append("limit", pageSize.toString());
+      if (searchTerm) params.append("query", searchTerm);
+      if (sortBy?.id) params.append("sort_by", sortBy.id);
+      if (sortOrder && sortBy) params.append("sort_order", sortOrder);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20 flex justify-center items-center">
-        <ClipLoader
-          size={100}
-          color={"#245FA1"}
-          cssOverride={{
-            borderWidth: "10px",
-          }}
-          loading={loading}
-        />
-      </div>
-    );
-  }
+      const data = await getData(
+        `${searchUrl}?${params.toString()}`,
+        process.env.NEXT_PUBLIC_GITHUB_TOKEN //wait for auth
+      );
+      setData(data);
+      return data;
+    } catch (error) {
+      const errMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      setError(errMessage);
+    }
+  };
+
+  const {
+    data: entities,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      queryKey ? queryKey : "entity",
+      page,
+      searchTerm,
+      sortBy,
+      sortOrder,
+    ],
+    queryFn: async () => await fetchData(page), // This ensures that the old data is used while fetching
+    initialData: data,
+  });
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -70,40 +96,126 @@ export default function EntityIndex({
 
   return (
     <div className="flex flex-col gap-y-8">
-      <div className="flex flex-row justify-between font-bold items-center">
-        <h2 className="text-xl">{topic}</h2>
-        {operationTopic && operationUrl && (
-          <button
-            className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
-            onClick={() => router.push(operationUrl)}
-          >
-            {operationTopic}
-          </button>
+      <div className="flex flex-col gap-y-4">
+        <div className="flex flex-row justify-between font-bold items-center">
+          <h2 className="text-xl">{topic}</h2>
+          {operationTopic && operationUrl && (
+            <button
+              className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey w-1/6 py-2 rounded-lg text-base"
+              onClick={() => router.push(operationUrl)}
+            >
+              {operationTopic}
+            </button>
+          )}
+        </div>
+        {description && (
+          <div className="text-base text-ci-modal-grey">{description}</div>
+        )}
+        {sortByOptions && (
+          <>
+            <div className="flex flex-col justify-between items-center mb-4 gap-x-4 gap-y-6">
+              <div className="flex flex-row w-full gap-x-4 items-end">
+                <Input.Search
+                  placeholder="Search..."
+                  allowClear
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onSearch={(value) => {
+                    setSearchTerm(value);
+                    setPage(1);
+                    refetch();
+                  }}
+                  size="large"
+                  className="w-full"
+                  enterButton={
+                    <Button
+                      type="primary"
+                      className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-2 flex items-center justify-center"
+                    >
+                      <SearchOutlined className="text-lg" />
+                    </Button>
+                  }
+                />
+                <div className="flex flex-col w-1/6 gap-y-2">
+                  <label className="text-base font-semibold ">
+                    Sort Order:{" "}
+                  </label>
+                  <button
+                    onClick={() =>
+                      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                    }
+                    className="items-center w-full px-4 bg-ci-modal-black border border-ci-modal-grey rounded-lg text-base cursor-pointer min-h-[40px] text-left"
+                  >
+                    {sortOrder === "asc" ? "Descending" : "Ascending"}
+                  </button>
+                </div>
+                <div className="flex flex-col w-2/6 gap-y-2">
+                  <label className="text-base font-semibold">Sort By: </label>
+                  <Selector
+                    options={sortByOptions}
+                    onSelect={setSortBy}
+                    initialOption={sortByOptions[0] || null}
+                  />
+                </div>
+              </div>
+            </div>
+            <hr className="border-t border-gray-300 col-span-6" />
+          </>
         )}
       </div>
       <div className="flex flex-col">
         {entities &&
-          entities.map((entity, index) => {
-            const isFirst = index === 0;
-            const isLast = index === entities.length - 1;
+          entities.data &&
+          entities.data.map(
+            (entity: Entity, index: React.Key | null | undefined) => {
+              const isFirst = index === 0;
+              const isLast = index === entities.length - 1;
 
-            return (
-              <div
-                key={index}
-                className={`${isFirst ? "rounded-t-lg" : ""} ${
-                  isLast ? "rounded-b-lg" : ""
-                } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
-              >
-                {renderEntity(entity)}
-              </div>
-            );
-          })}
-        {!entities && (
+              return (
+                <div
+                  key={index}
+                  className={`${isFirst ? "rounded-t-lg" : ""} ${
+                    isLast ? "rounded-b-lg" : ""
+                  } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
+                >
+                  {renderEntity(entity)}
+                </div>
+              );
+            }
+          )}
+        {!entities && !isLoading && (
           <div className="flex flex-col items-center text-lg font-bold py-4">
             This directory is empty
           </div>
         )}
+        {entities && entities.data && entities.data.length == 0 && (
+          <div className="flex flex-col items-center text-lg font-bold py-4">
+            No results found. Try refining your search or checking for typos.
+          </div>
+        )}
+        {isLoading && (
+          <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8 flex justify-center items-center">
+            <ClipLoader
+              size={100}
+              color={"#245FA1"}
+              cssOverride={{
+                borderWidth: "10px",
+              }}
+              loading={isLoading}
+            />
+          </div>
+        )}
       </div>
+      {sortByOptions && entities && entities.data.length != 0 && (
+        <div className="mt-4 flex justify-center w-full">
+          <Pagination
+            current={page}
+            total={entities.total}
+            pageSize={pageSize}
+            onChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

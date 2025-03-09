@@ -21,7 +21,7 @@ export default function SideBarMenu({ menuItems }: { menuItems: MenuItem[] }) {
   };
 
   return (
-    <div className="flex">
+    <div className="flex pt-8">
       <aside className="h-full w-64 bg-ci-modal-black text-white">
         <nav className="py-10 px-6">
           <ul>
