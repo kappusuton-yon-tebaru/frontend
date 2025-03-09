@@ -149,7 +149,7 @@ export default function EntityIndex({
                     {sortOrder === "asc" ? "Descending" : "Ascending"}
                   </button>
                 </div>
-                <div className="flex flex-col w-1/6 gap-y-2">
+                <div className="flex flex-col w-2/6 gap-y-2">
                   <label className="text-base font-semibold">Sort By: </label>
                   <Selector
                     options={sortByOptions}
@@ -188,7 +188,7 @@ export default function EntityIndex({
             This directory is empty
           </div>
         )}
-        {entities && entities.data.length == 0 && (
+        {entities && entities.data && entities.data.length == 0 && (
           <div className="flex flex-col items-center text-lg font-bold py-4">
             No results found. Try refining your search or checking for typos.
           </div>

@@ -1,6 +1,7 @@
 "use client";
 import EntityIndex from "@/components/cicd/EntityIndex";
 import { SelectorOption } from "@/components/cicd/Selector";
+import formatDate from "@/hooks/cicd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -38,7 +39,7 @@ export default function JobsListPage() {
           <h3 className="text-base">{entity.project.name}</h3>
         </div>
         <h3 className="text-base text-ci-modal-grey">
-          Created at: {entity.created_at}
+          Created at: {formatDate(entity.created_at)}
         </h3>
         <div className="flex flex-row gap-x-12 items-center px-8 justify-around w-1/5">
           <Image

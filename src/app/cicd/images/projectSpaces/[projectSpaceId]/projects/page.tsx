@@ -1,11 +1,12 @@
 "use client";
 import EntityIndex from "@/components/cicd/EntityIndex";
 import { SelectorOption } from "@/components/cicd/Selector";
+import formatDate from "@/hooks/cicd";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
 const sortBy: SelectorOption[] = [
-  { label: "Name", id: "resource_name" },
+  { label: "Project Name", id: "resource_name" },
   { label: "Created At", id: "created_at" },
 ];
 
@@ -20,10 +21,12 @@ export default function ProjectsListPage() {
     id: string;
     resource_name: string;
     resource_type: string;
+    created_at: string;
+    updated_at: string;
   }) => {
     return (
       <div
-        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center"
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
         onClick={() =>
           router.push(
             `/cicd/images/projectSpaces/${projectSpaceId}/projects/${entity.id}/services`
@@ -31,9 +34,12 @@ export default function ProjectsListPage() {
         }
       >
         <Image src={"/repo-icon.svg"} alt={"disk"} width={32} height={32} />
-        <h3 className="text-base w-4/5">{entity.resource_name}</h3>
-        <h3 className="text-base w-1/6 text-ci-modal-grey">
-          26 Oct 2024, 15:00
+        <h3 className="text-base w-4/6">{entity.resource_name}</h3>
+        <h3 className="text-base w-1/3 text-ci-modal-grey">
+          Created at: {formatDate(entity.created_at)}
+        </h3>
+        <h3 className="text-base w-1/3 text-ci-modal-grey">
+          Updated at: {formatDate(entity.updated_at)}
         </h3>
       </div>
     );
