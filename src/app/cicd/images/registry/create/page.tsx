@@ -1,10 +1,10 @@
 "use client";
-import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
+import { useToast } from "@/context/ToastContext";
 import { postData } from "@/services/baseRequest";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import toast from "react-hot-toast";
 
 const options: SelectorOption[] = [
   { label: "ECR", icon: "🟧", id: "ECR" },
@@ -13,6 +13,10 @@ const options: SelectorOption[] = [
 
 export default function AddImageRegistryPage() {
   const createUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/regproviders`;
+
+  const router = useRouter();
+
+  const { triggerToast } = useToast();
 
   const [selectedRegistry, setSelectedRegistry] = useState<SelectorOption>(
     options[0]
@@ -30,7 +34,27 @@ export default function AddImageRegistryPage() {
     setRegistryData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
+  const isFormValid = () => {
+    if (!registryData.name) return false;
+    if (!registryData.registryUrl) return false;
+
+    if (selectedRegistry.id === "ECR") {
+      if (
+        !registryData.accessKey ||
+        !registryData.secretKey ||
+        !registryData.awsRegion
+      )
+        return false;
+    }
+
+    if (selectedRegistry.id === "DOCKER") {
+      if (!registryData.dockerToken) return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async () => {
     try {
       const createPayload = {
         name: registryData.name,
@@ -50,16 +74,16 @@ export default function AddImageRegistryPage() {
             : {},
         organization_id: "678fd29c7c67bca50cfae354",
       };
-      const operation = postData(createUrl, createPayload);
-      toast.success("Add registry success!");
+      const operation = await postData(createUrl, createPayload);
+      triggerToast("Add registry success!", "success");
+      router.push("/cicd/images/registry");
     } catch (error) {
-      toast.error(`Add registry failed.\n${error}`);
+      triggerToast(`Add registry failed.\n${error}`, "error");
     }
   };
 
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
-      <CustomToast />
       <div className="flex flex-col gap-y-16">
         <h2 className="text-xl font-bold">Add New Registry Provider</h2>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
@@ -69,6 +93,7 @@ export default function AddImageRegistryPage() {
               placeholder="Name"
               value={registryData.name}
               onChange={(value) => handleChange("name", value)}
+              required={true}
             />
           </div>
           <div className="col-span-2 flex flex-col gap-y-6">
@@ -89,6 +114,7 @@ export default function AddImageRegistryPage() {
               placeholder="Image Registry Link"
               value={registryData.registryUrl}
               onChange={(value) => handleChange("registryUrl", value)}
+              required={true}
             />
           </div>
 
@@ -101,6 +127,7 @@ export default function AddImageRegistryPage() {
                   placeholder="Access Key"
                   value={registryData.accessKey}
                   onChange={(value) => handleChange("accessKey", value)}
+                  required={true}
                 />
               </div>
               <div className="col-span-3">
@@ -109,6 +136,7 @@ export default function AddImageRegistryPage() {
                   placeholder="Secret Access Key"
                   value={registryData.secretKey}
                   onChange={(value) => handleChange("secretKey", value)}
+                  required={true}
                 />
               </div>
               <div className="col-span-3">
@@ -117,6 +145,7 @@ export default function AddImageRegistryPage() {
                   placeholder="AWS Region"
                   value={registryData.awsRegion}
                   onChange={(value) => handleChange("awsRegion", value)}
+                  required={true}
                 />
               </div>
               <div className="col-span-3"></div>
@@ -132,6 +161,7 @@ export default function AddImageRegistryPage() {
                   placeholder="Docker Hub Token"
                   value={registryData.dockerToken}
                   onChange={(value) => handleChange("dockerToken", value)}
+                  required={true}
                 />
               </div>
               <div className="col-span-3"></div>
@@ -141,8 +171,13 @@ export default function AddImageRegistryPage() {
           {/* Submit Button */}
           <div className="col-start-6">
             <button
-              className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full"
+              className={`bg-ci-modal-black border border-ci-modal-grey py-2 rounded-lg text-base w-full ${
+                !isFormValid()
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-ci-modal-blue"
+              }`}
               onClick={handleSubmit}
+              disabled={!isFormValid()}
             >
               Add Registry
             </button>
