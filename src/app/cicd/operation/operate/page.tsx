@@ -2,6 +2,7 @@
 import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
+import { useToast } from "@/context/ToastContext";
 import { getData, postData } from "@/services/baseRequest";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -31,6 +32,8 @@ const operationOptions: SelectorOption[] = [
 function OperationPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { triggerToast } = useToast();
+
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const organizationId = "678fcf897c67bca50cfae34e";
 
@@ -92,14 +95,14 @@ function OperationPage() {
         project_id: selectedProject?.data.id,
         services: services,
       };
-      console.log(buildPayload);
       const operation = await postData(
         baseUrl + selectedOperation.data.url,
         buildPayload
       );
+      triggerToast("Create operation success!", "success");
       router.push(`/cicd/operation/jobs/${operation.parent_id}`);
     } catch (error) {
-      toast.error(`Create operation failed.\n${error}`);
+      triggerToast(`Create operation failed.\n${error}`, "error");
     }
   };
 

@@ -8,6 +8,7 @@ import {
   QueryClientConfig,
 } from "@tanstack/react-query";
 import CustomBreadcrumbs from "@/components/cicd/CustomBreadcrums";
+import { ToastProvider } from "@/context/ToastContext";
 
 const menuItems: MenuItem[] = [
   {
@@ -81,13 +82,15 @@ export default function RootLayout({
   return (
     <ConfigProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <CustomBreadcrumbs />
-        <div className="flex">
-          <SideBarMenu menuItems={menuItems} />
-          <div className="flex-1">
-            <main className="mt-20">{children}</main>
+        <ToastProvider>
+          <CustomBreadcrumbs />
+          <div className="flex">
+            <SideBarMenu menuItems={menuItems} />
+            <div className="flex-1">
+              <main className="mt-20">{children}</main>
+            </div>
           </div>
-        </div>
+        </ToastProvider>
       </QueryClientProvider>
     </ConfigProvider>
   );

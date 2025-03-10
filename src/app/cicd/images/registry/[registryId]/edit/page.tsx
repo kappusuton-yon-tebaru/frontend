@@ -1,11 +1,15 @@
 "use client";
-import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
 import Selector, { SelectorOption } from "@/components/cicd/Selector";
-import { getData, patchData, postData } from "@/services/baseRequest";
-import { useParams } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
+import {
+  deleteData,
+  getData,
+  patchData,
+  postData,
+} from "@/services/baseRequest";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 
 const options: SelectorOption[] = [
   { label: "ECR", icon: "🟧", id: "ECR" },
@@ -14,8 +18,12 @@ const options: SelectorOption[] = [
 
 export default function EditImageRegistryPage() {
   const { registryId } = useParams();
+  const { triggerToast } = useToast();
+
   const organizationId = "678fcf897c67bca50cfae34e";
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,15 +51,35 @@ export default function EditImageRegistryPage() {
     dockerToken: "",
   });
 
+  const [textDelete, setTextDelete] = useState("");
+
   const endpoints = {
     projectSpace: `${baseUrl}/resources/children/${organizationId}`,
     project: `${baseUrl}/resources/children/${selectedProjectSpace?.id}`,
     updateRegUrl: `${baseUrl}/regproviders`,
     setProjectToReg: `${baseUrl}/projrepos/${selectedProject?.id}`,
+    deleteRegistry: `${baseUrl}/regproviders/${registryId}`,
   };
 
   const handleChange = (field: keyof typeof registryData, value: string) => {
     setRegistryData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCanDelete = (value: string) => {
+    if (value === "delete") {
+      return true;
+    }
+    return false;
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await deleteData(endpoints.deleteRegistry);
+      triggerToast("Delete registry success!", "success");
+      router.push("/cicd/images/registry");
+    } catch (error) {
+      triggerToast(`Delete registry failed.\n${error}`, "error");
+    }
   };
 
   const handleProjRegSubmit = () => {
@@ -60,9 +88,9 @@ export default function EditImageRegistryPage() {
         registry_provider_id: registryId,
       };
       const operation = patchData(endpoints.setProjectToReg, createPayload);
-      toast.success("Edit registry success!");
+      triggerToast("Link project to registry success!", "success");
     } catch (error) {
-      toast.error(`Edit registry failed.\n${error}`);
+      triggerToast(`Link project to registry failed.\n${error}`, "error");
     }
   };
 
@@ -89,9 +117,9 @@ export default function EditImageRegistryPage() {
       };
       const operation = postData(endpoints.updateRegUrl, createPayload);
 
-      toast.success("Edit registry success!");
+      triggerToast("Edit registry success!", "success");
     } catch (error) {
-      toast.error(`Edit registry failed.\n${error}`);
+      triggerToast(`Edit registry failed.\n${error}`, "error");
     }
   };
 
@@ -138,7 +166,6 @@ export default function EditImageRegistryPage() {
 
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
-      <CustomToast />
       <div className="col-span-2"></div>
       <div className="flex flex-col gap-y-16">
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
@@ -265,6 +292,32 @@ export default function EditImageRegistryPage() {
               Save
             </button>
           </div>
+          <hr className="border-t border-gray-300 col-span-6" />
+        </div>
+        <div className="grid grid-cols-6 gap-x-12 gap-y-10">
+          <h2 className="text-xl font-bold col-span-6">Delete Registry</h2>
+          <div className="col-span-6">
+            <InputField
+              label="Confirmation"
+              placeholder="Type `delete` to start deleting this registry"
+              value={textDelete}
+              onChange={(value) => setTextDelete(value)}
+            />
+          </div>
+          <div className="col-start-6">
+            <button
+              className={`bg-ci-modal-red border border-ci-modal-grey py-2 rounded-lg text-base w-full ${
+                !handleCanDelete(textDelete)
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-ci-status-red"
+              }`}
+              onClick={handleDelete}
+              disabled={!handleCanDelete(textDelete)}
+            >
+              Delete
+            </button>
+          </div>
+          <hr className="border-t border-gray-300 col-span-6" />
         </div>
       </div>
     </div>

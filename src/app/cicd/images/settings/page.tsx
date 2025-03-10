@@ -1,15 +1,15 @@
 "use client";
-import CustomToast from "@/components/cicd/CustomToast";
 import InputField from "@/components/cicd/InputField";
+import { useToast } from "@/context/ToastContext";
 import { getData, postData } from "@/services/baseRequest";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export default function ImageWorkerSettingPage() {
   const [worker, setWorker] = useState();
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const { triggerToast } = useToast();
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const getUrl = `${baseUrl}/setting/maxworker`;
@@ -23,7 +23,8 @@ export default function ImageWorkerSettingPage() {
       } catch (error) {
         const errMessage =
           error instanceof Error ? error.message : "Unknown error";
-        setError(errMessage);
+        // setError(errMessage);
+        triggerToast(`${errMessage}`, "error");
       } finally {
         setLoading(false);
       }
@@ -38,9 +39,9 @@ export default function ImageWorkerSettingPage() {
         max_worker: Number(worker),
       };
       const post = await postData(updateUrl, data);
-      toast.success("Setting max worker success!");
+      triggerToast("Setting max worker success!", "success");
     } catch (error) {
-      toast.error(`Setting max worker failed.\n${error}`);
+      triggerToast(`Setting max worker failed.\n${error}`, "error");
     }
   };
 
@@ -59,17 +60,8 @@ export default function ImageWorkerSettingPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
-        Error: {error}
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-20">
-      <CustomToast />
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
       <div className="flex flex-col gap-y-16">
         <h2 className="text-xl font-bold">Image Builder Setting</h2>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
