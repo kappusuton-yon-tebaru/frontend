@@ -21,7 +21,7 @@ export default function ProjectSpace() {
   }
 
   const [page, setPage] = useState(1);
-  const pageSize = 2;
+  const pageSize = 4;
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: organization } = useResource(orgId);
@@ -88,14 +88,14 @@ export default function ProjectSpace() {
           </Button>
         </div>
       </div>
-      <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
       <input
         type="text"
         placeholder="Search..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-        className="border p-2 rounded w-full mb-4 border-ci-modal-grey bg-ci-modal-black"
+        className="border p-2 rounded w-full mt-4 border-ci-modal-grey bg-ci-modal-black"
       />
+      <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
       {repositories && !isLoading ? (
         <div className="grid grid-cols-2 gap-8">
           {repositories?.data.map((repo: Resource, index: number) => {

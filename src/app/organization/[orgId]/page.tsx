@@ -11,7 +11,7 @@ export default function Organization() {
   const router = useRouter();
   const { orgId } = useParams();
   const [page, setPage] = useState(1);
-  const pageSize = 2;
+  const pageSize = 8;
   const [searchTerm, setSearchTerm] = useState("");
 
   if (typeof orgId === "undefined" || Array.isArray(orgId)) {
@@ -49,14 +49,14 @@ export default function Organization() {
           </Button>
         </div>
       </div>
-      <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
       <input
         type="text"
         placeholder="Search..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-        className="border p-2 rounded w-full mb-4 border-ci-modal-grey bg-ci-modal-black"
+        className="border p-2 rounded w-full mt-4 border-ci-modal-grey bg-ci-modal-black"
       />
+      <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
       {projectSpaces && !isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {projectSpaces?.data.map((space: Resource, index: number) => {
