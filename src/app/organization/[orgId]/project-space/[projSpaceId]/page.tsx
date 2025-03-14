@@ -74,13 +74,13 @@ export default function ProjectSpace() {
           </div>
           <div className="flex gap-8 my-2">
             <Button
-              className="h-full w-60 text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+              className="h-10 w-60 text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
               onClick={() => setRename(true)}
             >
               Rename Project Space
             </Button>
             <Button
-              className="h-full w-60 text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+              className="h-10 w-60 text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
               onClick={() =>
                 router.push(
                   `/organization/${orgId}/project-space/${projSpaceId}/new-repository`
@@ -91,7 +91,7 @@ export default function ProjectSpace() {
             </Button>
           </div>
         </div>
-        <div className="flex flex-row items-center gap-8 h-full">
+        <div className="flex flex-row items-center gap-8 h-10">
           <div className="flex items-center border p-2 rounded-md border-ci-modal-grey bg-ci-modal-black flex-grow h-full">
             <Image
               src="/search-icon.svg"
