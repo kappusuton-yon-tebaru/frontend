@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import CustomBreadcrumbs from "@/components/cicd/CustomBreadcrums";
 import { ToastProvider } from "@/context/ToastContext";
+import NavigationBar from "@/components/NavigationBar";
 
 const menuItems: MenuItem[] = [
   {
@@ -23,18 +24,16 @@ const menuItems: MenuItem[] = [
         name: "Registry List",
         href: "http://localhost:3000/cicd/images/registry",
       },
-      {
-        name: "Images Setting",
-        href: "http://localhost:3000/cicd/images/settings",
-      },
     ],
   },
   {
     name: "Deployment",
     href: "#",
     subMenu: [
-      { name: "Deployment List", href: "" },
-      { name: "Deployment Setting", href: "" },
+      {
+        name: "Environment",
+        href: "http://localhost:3000/cicd/deployment/environment",
+      },
     ],
   },
   {
@@ -48,6 +47,10 @@ const menuItems: MenuItem[] = [
       {
         name: "Jobs Status",
         href: "http://localhost:3000/cicd/operation/jobs",
+      },
+      {
+        name: "Operation Setting",
+        href: "http://localhost:3000/cicd/operation/settings",
       },
     ],
   },
@@ -82,6 +85,7 @@ export default function RootLayout({
   return (
     <ConfigProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
+        <NavigationBar />
         <ToastProvider>
           <CustomBreadcrumbs />
           <div className="flex">

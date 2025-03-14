@@ -8,7 +8,6 @@ import { Button, Input, Pagination } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import Selector, { SelectorOption } from "./Selector";
-import CustomBreadcrumbs from "./CustomBreadcrums";
 
 interface Entity {
   id: string;
@@ -169,14 +168,14 @@ export default function EntityIndex({
           entities.data.map(
             (entity: Entity, index: React.Key | null | undefined) => {
               const isFirst = index === 0;
-              const isLast = index === entities.length - 1;
+              const isLast = index === entities.data.length - 1;
 
               return (
                 <div
                   key={index}
                   className={`${isFirst ? "rounded-t-lg" : ""} ${
                     isLast ? "rounded-b-lg" : ""
-                  } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey`}
+                  } bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey z-auto`}
                 >
                   {renderEntity(entity)}
                 </div>
