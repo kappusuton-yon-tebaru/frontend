@@ -11,6 +11,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 
 export interface BuildPayload {
   project_id: string;
+  deployment_env?: string;
   services: ServiceInfo[];
 }
 export interface ServiceInfo {
@@ -59,12 +60,14 @@ function OperationPage() {
     []
   );
   const [projectRepo, setProjectRepo] = useState<string>();
+  const [devEnvName, setDevEnvName] = useState<string>("default");
 
   const endpoints = {
     projectSpace: `${baseUrl}/resources/children/${organizationId}`,
     project: `${baseUrl}/resources/children/${selectedProjectSpace?.id}`,
     registry: `${baseUrl}/regproviders`,
     service: `${baseUrl}/project/${selectedProject?.id}/services `,
+    image: `${baseUrl}/ecr/images?project_id=${selectedProject?.id}`,
   };
 
   const canSubmitData = () => {
@@ -73,11 +76,18 @@ function OperationPage() {
     );
   };
 
-  const handleChange = (id: string, value: string) => {
+  const getImageTagByServices = (service_name: string) => {
+    const service = selectedServices.find(
+      (service) => service.id === service_name
+    );
+    return service?.data.image_tags;
+  };
+
+  const handleChange = (id: string, key: string, value: any) => {
     setSelectedServices((prev) => {
       return prev.map((service) =>
         service.id === id
-          ? { ...service, data: { ...service.data, tag_version: value } }
+          ? { ...service, data: { ...service.data, [key]: value } }
           : service
       );
     });
@@ -85,24 +95,47 @@ function OperationPage() {
 
   const handleSubmit = async () => {
     try {
-      const services = selectedServices.map(
-        ({ data: { service_name, dockerfile, tag_version } }) => ({
-          service_name: service_name,
-          tag: `${service_name}-${tag_version}`,
-        })
-      );
-      const buildPayload: BuildPayload = {
-        project_id: selectedProject?.data.id,
-        services: services,
-      };
-      const operation = await postData(
-        baseUrl + selectedOperation.data.url,
-        buildPayload
-      );
-      triggerToast("Create operation success!", "success");
-      router.push(`/cicd/operation/jobs/${operation.parent_id}`);
+      let operationPayload;
+      if (selectedOperation.type === "BUILD") {
+        const services = selectedServices.map(
+          ({ data: { service_name, dockerfile, tag_version } }) => ({
+            service_name: service_name,
+            tag: `${service_name}-${tag_version}`,
+          })
+        );
+        const buildPayload: BuildPayload = {
+          project_id: selectedProject?.data.id,
+          deployment_env: devEnvName,
+          services: services,
+        };
+
+        operationPayload = buildPayload;
+      } else if (selectedOperation.type === "DEPLOY") {
+        const services = selectedServices.map(
+          ({ data: { service_name, tag, port, secret_name } }) => ({
+            service_name: service_name,
+            tag: tag,
+            port: port,
+            secret_name: secret_name,
+          })
+        );
+        const deployPayload: BuildPayload = {
+          project_id: selectedProject?.data.id,
+          deployment_env: devEnvName,
+          services: services,
+        };
+
+        operationPayload = deployPayload;
+      }
+      console.log(operationPayload);
+      // const operation = await postData(
+      //   baseUrl + selectedOperation.data.url,
+      //   operationPayload
+      // );
+      // triggerToast("Create operation success!", "success");
+      // router.push(`/cicd/operation/jobs/${operation.parent_id}`);
     } catch (error) {
-      triggerToast(`Create operation failed.\n${error}`, "error");
+      // triggerToast(`Create operation failed.\n${error}`, "error");
     }
   };
 
@@ -168,7 +201,14 @@ function OperationPage() {
             (item: { service_name: string; dockerfile: string }) => ({
               label: item.service_name,
               id: item.service_name,
-              data: { ...item, tag_version: "latest" },
+              data: {
+                ...item,
+                tag_version: "latest",
+                tag: "",
+                port: "",
+                secret_name: "",
+                image_tags: null,
+              },
             })
           )
         );
@@ -180,6 +220,37 @@ function OperationPage() {
 
     fetchServices();
   }, [endpoints.service, selectedProject]);
+
+  useEffect(() => {
+    if (selectedServices.length === 0) return;
+
+    const fetchData = async () => {
+      try {
+        const services = selectedServices.map(({ data: { service_name } }) => ({
+          service_name: service_name,
+        }));
+
+        for (const service of services) {
+          const data = await getData(
+            endpoints.image + "&service_name=" + service.service_name,
+            process.env.NEXT_PUBLIC_GITHUB_TOKEN //wait for auth
+          );
+
+          const tagSelectOption: SelectorOption = data.data.map(
+            (item: { image_tag: string }) => ({
+              label: item.image_tag,
+              id: service.service_name + item.image_tag,
+            })
+          );
+          handleChange(service.service_name, "image_tags", tagSelectOption);
+        }
+      } catch (error) {
+        console.error("Error fetching ECR data:", error);
+      }
+    };
+
+    fetchData();
+  }, [selectedServices.length]);
 
   if (loading) {
     return (
@@ -198,7 +269,7 @@ function OperationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
+    <div className="min-h-dvh bg-ci-bg-dark-blue px-16 pt-8 py-40">
       <div className="flex flex-col gap-y-8">
         <div className="flex flex-col gap-y-4">
           <h2 className="text-xl font-bold">Build and Deploy</h2>
@@ -239,13 +310,22 @@ function OperationPage() {
             </div>
           ))}
 
-          <div className="col-span-6 flex flex-col gap-y-6 z-10">
+          <div className="col-span-4 flex flex-col gap-y-6 z-10">
             <label className="text-base font-semibold">Select Service</label>
             <Selector
               options={serviceOptions}
               initialOption={null}
               onSelect={setSelectedServices}
               isMultiSelect
+            />
+          </div>
+
+          <div className="col-span-2 flex flex-col gap-y-6 z-10">
+            <InputField
+              label={"Deployment Environment Name"}
+              placeholder="Image version"
+              value={devEnvName}
+              onChange={setDevEnvName}
             />
           </div>
 
@@ -263,8 +343,70 @@ function OperationPage() {
                         label={item.label}
                         placeholder="Image version"
                         value={item.data.tag_version}
-                        onChange={(value) => handleChange(item.id, value)}
+                        onChange={(value) =>
+                          handleChange(item.id, "tag_version", value)
+                        }
                       />
+                    </div>
+                  ))}
+                </>
+              )}
+            </>
+          )}
+
+          {selectedOperation.type === "DEPLOY" && (
+            <>
+              {selectedServices.length > 0 && (
+                <>
+                  <hr className="border-t border-gray-300 col-span-6" />
+                  <h2 className="text-xl font-bold col-span-6">
+                    Service Deployment's Setting
+                  </h2>
+                  {selectedServices.map((item: SelectorOption, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-6 col-span-6 gap-x-8 gap-y-4 bg-ci-modal-timmid-blue py-4 px-6 rounded-xl z-auto"
+                    >
+                      <h2 className="text-lg font-bold col-span-6">
+                        {item.data.service_name}
+                      </h2>
+
+                      <div className="col-span-2 flex flex-col gap-y-6">
+                        <label className="text-base font-semibold">
+                          Service's Image Tag
+                        </label>
+                        <Selector
+                          options={getImageTagByServices(
+                            item.data.service_name
+                          )}
+                          initialOption={null}
+                          onSelect={(e) =>
+                            handleChange(item.data.service_name, "tag", e.label)
+                          }
+                        />
+                      </div>
+                      <div className="col-span-2 col">
+                        <InputField
+                          label={`Port`}
+                          placeholder="Deploy Port"
+                          value={item.data.port}
+                          onChange={(value) =>
+                            handleChange(item.id, "port", value)
+                          }
+                          required={true}
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <InputField
+                          label={`Secret Name`}
+                          placeholder="Secret Name from AWS Secret Manager"
+                          value={item.data.secret_name}
+                          onChange={(value) =>
+                            handleChange(item.id, "secret_name", value)
+                          }
+                          required={true}
+                        />
+                      </div>
                     </div>
                   ))}
                 </>

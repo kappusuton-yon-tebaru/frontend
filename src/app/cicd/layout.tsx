@@ -33,8 +33,18 @@ const menuItems: MenuItem[] = [
     name: "Deployment",
     href: "#",
     subMenu: [
-      { name: "Deployment List", href: "" },
-      { name: "Deployment Setting", href: "" },
+      {
+        name: "Deployment List",
+        href: "http://localhost:3000/cicd/deployment/services",
+      },
+      {
+        name: "Environment",
+        href: "http://localhost:3000/cicd/deployment/environment",
+      },
+      {
+        name: "Deployment Setting",
+        href: "http://localhost:3000/cicd/deployment/settings",
+      },
     ],
   },
   {
