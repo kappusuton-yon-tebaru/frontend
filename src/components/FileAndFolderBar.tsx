@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { Content } from "@/interfaces/github";
 import { fetchRepoContents } from "@/hooks/github";
 import { Spin } from "antd";
@@ -28,16 +28,74 @@ export default function FileAndFolderBar({
 }) {
   const router = useRouter();
   const { orgId, projSpaceId, repoId } = useParams();
+  const pathname = usePathname();
   const [fileTree, setFileTree] = useState<FileOrFolder[]>([]);
   const [folderState, setFolderState] = useState<{
     [key: string]: { isOpen: boolean; isLoading: boolean };
   }>({});
+  const [loading, setLoading] = useState<boolean>(false);
+
+  let filePath = "";
+  if (pathname) {
+    const baseUrl = `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/`;
+    if (pathname.startsWith(baseUrl)) {
+      filePath = pathname.substring(baseUrl.length);
+    }
+  }
 
   useEffect(() => {
     if (Array.isArray(repoContents)) {
       setFileTree(buildTree(repoContents));
     }
   }, [repoContents]);
+
+  useEffect(() => {
+    if (filePath !== "") {
+      openParentFolders(filePath);
+    }
+  }, [pathname, orgId, projSpaceId, repoId]);
+
+  const openParentFolders = async (filePath: string) => {
+    setLoading(true);
+    const pathParts = filePath.split("/");
+    pathParts.pop();
+
+    const folderPaths: string[] = [];
+    let currentPath = "";
+
+    for (const part of pathParts) {
+      currentPath = currentPath ? `${currentPath}/${part}` : part;
+      folderPaths.push(currentPath);
+    }
+
+    for (const folderPath of folderPaths) {
+      const folderLoaded = findFolderInTree(fileTree, folderPath);
+
+      if (!folderLoaded) {
+        try {
+          const contents = await fetchRepoContents(
+            owner,
+            repo,
+            tokenAuth,
+            folderPath,
+            currentBranch
+          );
+
+          setFileTree((prevTree) =>
+            updateTreeWithNewContents(prevTree, folderPath, contents)
+          );
+        } catch (error) {
+          console.error(`Error fetching folder: ${folderPath}`, error);
+        }
+      }
+
+      setFolderState((prev) => ({
+        ...prev,
+        [folderPath]: { isOpen: true, isLoading: false },
+      }));
+    }
+    setLoading(false);
+  };
 
   const buildTree = (contents: Content[]): FileOrFolder[] => {
     const tree: FileOrFolder[] = [];
@@ -74,7 +132,6 @@ export default function FileAndFolderBar({
       folderMap[item.path] = node;
     });
 
-    // Handle nested folders
     Object.values(folderMap).forEach((folder) => {
       if (folder.children && folder.children.length > 0 && folder.path) {
         const parentPath = folder.path.substring(
@@ -96,7 +153,6 @@ export default function FileAndFolderBar({
       }
     });
 
-    // Sort children in each folder (directories first, then files)
     Object.values(folderMap).forEach((folder) => {
       if (folder.children && folder.children.length > 0) {
         folder.children.sort((a, b) => {
@@ -108,7 +164,6 @@ export default function FileAndFolderBar({
       }
     });
 
-    // Return the root level folders, sorted with directories first
     const rootItems = Object.values(folderMap).filter((folder) => {
       if (!folder.path.includes("/")) {
         return true;
@@ -132,11 +187,9 @@ export default function FileAndFolderBar({
   ): FileOrFolder[] => {
     return tree.map((item) => {
       if (item.path === folderPath) {
-        // Convert the fetched contents to FileOrFolder objects directly
         const children: FileOrFolder[] = contents.map((content) => ({
           name: content.name,
           path: content.path,
-          // Determine if it's a directory based on download_url
           type:
             content.download_url === null || content.download_url === ""
               ? "dir"
@@ -147,7 +200,6 @@ export default function FileAndFolderBar({
               : undefined,
         }));
 
-        // Sort children with directories first
         children.sort((a, b) => {
           if (a.type === b.type) {
             return a.name.localeCompare(b.name);
@@ -173,13 +225,10 @@ export default function FileAndFolderBar({
     });
   };
 
-  // Helper function to reset child folder states when parent is closed
   const resetChildFolderStates = (folderPath: string) => {
-    // Find all folder states that start with the parent path
     const newFolderState = { ...folderState };
 
     Object.keys(folderState).forEach((path) => {
-      // Check if this is a child path (starts with parent path + /)
       if (path !== folderPath && path.startsWith(`${folderPath}/`)) {
         newFolderState[path] = {
           isOpen: false,
@@ -191,61 +240,41 @@ export default function FileAndFolderBar({
     setFolderState(newFolderState);
   };
 
-  const handleFolderClick = async (folderPath: string) => {
-    // First, check if the folder has already been loaded and we just need to toggle
-    if (folderState[folderPath]) {
-      const isCurrentlyOpen = folderState[folderPath].isOpen;
+  const handleFolderClick = (folderPath: string) => {
+    router.push(
+      `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${folderPath}`,
+      { scroll: false }
+    );
 
-      // Toggle the folder open/closed
-      setFolderState((prev) => ({
-        ...prev,
-        [folderPath]: {
-          isOpen: !isCurrentlyOpen,
-          isLoading: false,
-        },
-      }));
-
-      // If we're closing the folder, reset child states
-      if (isCurrentlyOpen) {
-        resetChildFolderStates(folderPath);
-        setFolderState((prev) => ({
-          ...prev,
-          [folderPath]: {
-            isOpen: !isCurrentlyOpen,
-            isLoading: false,
-          },
-        }));
-        return;
-      }
-
-      // If the folder has already been loaded, we don't need to fetch its contents again
-      const hasBeenLoaded = fileTree.some((item) => {
-        if (
-          item.path === folderPath &&
-          item.children &&
-          item.children.length > 0
-        ) {
-          return true;
-        }
-        // Check nested items too
-        if (item.children) {
-          return findFolderInTree(item.children, folderPath);
-        }
-        return false;
-      });
-
-      if (hasBeenLoaded) {
-        return;
-      }
-    }
-
-    // If we get here, we need to load the folder contents
     setFolderState((prev) => ({
       ...prev,
-      [folderPath]: {
-        isOpen: prev[folderPath]?.isOpen || false,
-        isLoading: true,
-      },
+      [folderPath]: { isOpen: true, isLoading: false },
+    }));
+  };
+
+  const handleChevronClick = async (folderPath: string) => {
+    const isCurrentlyOpen = folderState[folderPath]?.isOpen;
+
+    setFolderState((prev) => ({
+      ...prev,
+      [folderPath]: { isOpen: !isCurrentlyOpen, isLoading: false },
+    }));
+
+    if (isCurrentlyOpen) {
+      resetChildFolderStates(folderPath);
+      return;
+    }
+
+    const folderExists = fileTree.some(
+      (item) =>
+        item.path === folderPath && item.children && item.children.length > 0
+    );
+
+    if (folderExists) return;
+
+    setFolderState((prev) => ({
+      ...prev,
+      [folderPath]: { isOpen: true, isLoading: true },
     }));
 
     try {
@@ -277,7 +306,6 @@ export default function FileAndFolderBar({
     }
   };
 
-  // Helper function to find a folder in the tree
   const findFolderInTree = (
     items: FileOrFolder[],
     folderPath: string
@@ -307,21 +335,39 @@ export default function FileAndFolderBar({
 
   const renderTree = (items: FileOrFolder[]) => {
     return (
-      <ul className="pl-2">
+      <ul>
         {items.map((item) => (
-          <li key={item.path} className="mt-2">
+          <li key={item.path}>
             <div className="flex items-center">
               {item.type === "dir" ? (
-                <div>
+                <div className="w-full">
                   <button
                     onClick={() => handleFolderClick(item.path)}
-                    className="flex items-center"
+                    className={`flex items-center w-full rounded-md ${
+                      filePath === item.path
+                        ? "bg-ci-modal-blue rounded-md"
+                        : "hover:bg-ci-bg-dark-blue"
+                    } py-1 px-2`}
                     disabled={folderState[item.path]?.isLoading}
                   >
                     {folderState[item.path]?.isOpen ? (
-                      <ChevronDown size={20} className="text-ci-modal-grey" />
+                      <ChevronDown
+                        size={20}
+                        className="text-ci-modal-grey rounded-full mr-1 hover:bg-ci-modal-black"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleChevronClick(item.path);
+                        }}
+                      />
                     ) : (
-                      <ChevronRight size={20} className="text-ci-modal-grey" />
+                      <ChevronRight
+                        size={20}
+                        className="text-ci-modal-grey rounded-full mr-1 hover:bg-ci-modal-black"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleChevronClick(item.path);
+                        }}
+                      />
                     )}
                     <Image
                       src={
@@ -340,20 +386,24 @@ export default function FileAndFolderBar({
                     )}
                   </button>
                   {folderState[item.path]?.isOpen && item.children && (
-                    <div className="ml-1">{renderTree(item.children)}</div>
+                    <div className="ml-2">{renderTree(item.children)}</div>
                   )}
                 </div>
               ) : (
                 <button
                   onClick={() => handleFileClick(item.path)}
-                  className="flex items-center ml-5"
+                  className={`flex items-center w-full rounded-md ${
+                    filePath === item.path
+                      ? "bg-ci-modal-blue rounded-md"
+                      : "hover:bg-ci-bg-dark-blue"
+                  } py-1 px-2`}
                 >
                   <Image
                     src="/file-icon.svg"
                     alt="file-icon"
                     width={20}
                     height={20}
-                    className="mr-2"
+                    className="mr-2 ml-5"
                   />
                   {item.name}
                 </button>
@@ -367,7 +417,7 @@ export default function FileAndFolderBar({
 
   return (
     <div className="border border-ci-modal-grey rounded-lg p-2 overflow-y-auto bg-ci-modal-black h-[30vw]">
-      {renderTree(fileTree)}
+      {loading ? <Spin /> : renderTree(fileTree)}
     </div>
   );
 }
