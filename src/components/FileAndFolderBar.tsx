@@ -5,13 +5,7 @@ import { Content } from "@/interfaces/github";
 import { fetchRepoContents } from "@/hooks/github";
 import { Spin } from "antd";
 import { ChevronRight, ChevronDown } from "lucide-react";
-
-type FileOrFolder = {
-  name: string;
-  path: string;
-  type: "dir" | "file";
-  children?: FileOrFolder[];
-};
+import { FileOrFolder } from "@/interfaces/github";
 
 export default function FileAndFolderBar({
   repoContents,
@@ -262,6 +256,10 @@ export default function FileAndFolderBar({
 
     if (isCurrentlyOpen) {
       resetChildFolderStates(folderPath);
+      setFolderState((prev) => ({
+        ...prev,
+        [folderPath]: { isOpen: !isCurrentlyOpen, isLoading: false },
+      }));
       return;
     }
 

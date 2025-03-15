@@ -30,3 +30,10 @@ export interface CommitMetadata {
     lastEditTime: string;
     commitMessage: string;
 }
+
+export interface FileOrFolder {
+    name: string;
+    path: string;
+    type: "dir" | "file";
+    children?: FileOrFolder[];
+}
