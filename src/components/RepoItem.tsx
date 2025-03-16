@@ -41,15 +41,17 @@ export default function RepoItem({
           {item.name}
         </div>
         <div className="flex text-ci-modal-grey items-center">
-          {commitInfo ? commitInfo.commitMessage : "Loading..."}
+          {commitInfo ? commitInfo.commitMessage : <Spin />}
         </div>
         <div className="flex text-ci-modal-grey items-center">
-          {commitInfo
-            ? new Date(commitInfo.lastEditTime).toLocaleString("en-US", {
-                dateStyle: "medium",
-                timeStyle: "short",
-              })
-            : "Loading..."}
+          {commitInfo ? (
+            new Date(commitInfo.lastEditTime).toLocaleString("en-US", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })
+          ) : (
+            <Spin />
+          )}
         </div>
       </div>
     </div>

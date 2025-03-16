@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 
 export default function SwitchBranch({
   wide,
@@ -15,6 +16,22 @@ export default function SwitchBranch({
   onSelectBranch: (branch: string) => void;
   onClose: () => void;
 }) {
+  const router = useRouter();
+  const { orgId, projSpaceId, repoId, branch, path } = useParams();
+
+  if (typeof orgId === "undefined" || Array.isArray(orgId)) {
+    throw new Error("Invalid orgId");
+  }
+
+  if (typeof projSpaceId === "undefined" || Array.isArray(projSpaceId)) {
+    throw new Error("Invalid projSpaceId");
+  }
+
+  if (typeof repoId === "undefined" || Array.isArray(repoId)) {
+    throw new Error("Invalid repoId");
+  }
+
+  const filePath = Array.isArray(path) ? path.join("/") : null;
   return (
     <div
       className={`absolute ${
@@ -42,6 +59,19 @@ export default function SwitchBranch({
             onClick={() => {
               onSelectBranch(branch);
               onClose();
+              if (filePath) {
+                router.push(
+                  `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branch}/${filePath}`
+                );
+              } else if (branch !== "main") {
+                router.push(
+                  `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branch}`
+                );
+              } else {
+                router.push(
+                  `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}`
+                );
+              }
             }}
           >
             <span className="text-sm">

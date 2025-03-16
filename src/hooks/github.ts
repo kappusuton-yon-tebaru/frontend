@@ -42,7 +42,7 @@ const fetchCommitMetadata = async (owner: string, repo: string, token: string | 
 
 export const useCommitMetadata = (owner: string, repo: string, token: string, path?: string, branch?: string) => {
     return useQuery({
-        queryKey: ["repoContents", owner, repo, token, path, branch],
+        queryKey: ["metadata", owner, repo, token, path, branch],
         queryFn: () => fetchCommitMetadata(owner, repo, token, path, branch),
       });
 }

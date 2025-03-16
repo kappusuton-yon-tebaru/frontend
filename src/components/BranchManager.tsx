@@ -1,6 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import BranchButton from "./BranchButton";
 import MergeButton from "./MergeButton";
 

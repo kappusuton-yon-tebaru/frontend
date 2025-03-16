@@ -21,7 +21,7 @@ export default function FileAndFolderBar({
   currentBranch: string;
 }) {
   const router = useRouter();
-  const { orgId, projSpaceId, repoId } = useParams();
+  const { orgId, projSpaceId, repoId, branch } = useParams();
   const pathname = usePathname();
   const [fileTree, setFileTree] = useState<FileOrFolder[]>([]);
   const [folderState, setFolderState] = useState<{
@@ -31,7 +31,7 @@ export default function FileAndFolderBar({
 
   let filePath = "";
   if (pathname) {
-    const baseUrl = `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/`;
+    const baseUrl = `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branch}/`;
     if (pathname.startsWith(baseUrl)) {
       filePath = pathname.substring(baseUrl.length);
     }
@@ -236,7 +236,7 @@ export default function FileAndFolderBar({
 
   const handleFolderClick = (folderPath: string) => {
     router.push(
-      `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${folderPath}`,
+      `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branch}/${folderPath}`,
       { scroll: false }
     );
 
@@ -327,7 +327,7 @@ export default function FileAndFolderBar({
 
   const handleFileClick = (filePath: string) => {
     router.push(
-      `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${filePath}`
+      `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branch}/${filePath}`
     );
   };
 
