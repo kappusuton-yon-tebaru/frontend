@@ -16,7 +16,7 @@ export default function RenamePopup({
   setNewName: Dispatch<SetStateAction<string>>;
   setRename: Dispatch<SetStateAction<boolean>>;
 }) {
-  const handleRename = async () => {
+  const handleRename = () => {
     try {
       const renamePayload = {
         resource_name: newName,
@@ -53,7 +53,6 @@ export default function RenamePopup({
           <button
             className="px-4 py-2 text-white font-semibold bg-ci-bg-dark-blue rounded-md w-full"
             onClick={() => {
-              console.log("Renaming to:", newName);
               setRename(false);
               handleRename();
             }}

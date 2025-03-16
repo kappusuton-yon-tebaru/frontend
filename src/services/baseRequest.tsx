@@ -91,3 +91,23 @@ export async function putData(url: string, data: any, token?: string) {
     throw error;
   }
 }
+
+export async function deleteData(url: string, token?: string) {
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting data:", error);
+    throw error;
+  }
+}
