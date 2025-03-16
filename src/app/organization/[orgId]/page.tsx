@@ -7,7 +7,6 @@ import ProjectSpaceButton from "@/components/ProjectSpaceButton";
 import { useResource, useProjectSpaces } from "@/hooks/workspace";
 import { Pagination, Spin, Button } from "antd";
 import Image from "next/image";
-import SortButton from "@/components/SortButton";
 import SortManager from "@/components/SortManager";
 
 export default function Organization() {

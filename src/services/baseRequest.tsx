@@ -69,3 +69,25 @@ export async function patchData(url: string, data: any, token?: string) {
     throw error;
   }
 }
+
+export async function putData(url: string, data: any, token?: string) {
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error updating data:", error);
+    throw error;
+  }
+}

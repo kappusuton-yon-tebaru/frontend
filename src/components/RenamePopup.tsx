@@ -1,5 +1,7 @@
 import { Resource } from "@/interfaces/workspace";
+import { putData } from "@/services/baseRequest";
 import { Dispatch, RefObject, SetStateAction } from "react";
+import toast from "react-hot-toast";
 
 export default function RenamePopup({
   renameModalRef,
@@ -14,6 +16,20 @@ export default function RenamePopup({
   setNewName: Dispatch<SetStateAction<string>>;
   setRename: Dispatch<SetStateAction<boolean>>;
 }) {
+  const handleRename = async () => {
+    try {
+      const renamePayload = {
+        resource_name: newName,
+      };
+      const operation = putData(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${projectSpace.id}`,
+        renamePayload
+      );
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default z-30"
@@ -39,6 +55,7 @@ export default function RenamePopup({
             onClick={() => {
               console.log("Renaming to:", newName);
               setRename(false);
+              handleRename();
             }}
           >
             Confirm
