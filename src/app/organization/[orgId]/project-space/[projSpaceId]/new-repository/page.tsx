@@ -2,11 +2,20 @@
 
 import InputField from "@/components/InputField";
 import RadioSelection from "@/components/RadioSelection";
+import { postData } from "@/services/baseRequest";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Check } from "lucide-react";
 
 export default function NewRepository() {
+  const router = useRouter();
+  const { orgId, projSpaceId } = useParams();
+  const token = localStorage.getItem("access_token");
+  let tokenAuth = "";
+  if (token !== null) {
+    tokenAuth = token;
+  }
   const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const options = [
     {
       label: "Public",
@@ -20,8 +29,26 @@ export default function NewRepository() {
       description: "You choose who can see and commit to this repository.",
     },
   ];
-  const [type, setType] = useState<string>(options[0].value);
-  const [readme, setReadme] = useState<boolean>(false);
+  const [repoType, setRepoType] = useState<string>(options[0].value);
+
+  const onClickCreateButton = async () => {
+    if (name !== "") {
+      try {
+        const response = await postData(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/create-repo/${projSpaceId}/resource`,
+          {
+            name: name,
+            description: description,
+            private: repoType === "private",
+          },
+          tokenAuth
+        );
+        router.push(`/organization/${orgId}/project-space/${projSpaceId}`);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col gap-12">
@@ -36,33 +63,30 @@ export default function NewRepository() {
           />
         </div>
         <hr className="w-3/5 border-ci-modal-grey my-8" />
+        <div className="w-1/2">
+          <div className="flex flex-col gap-y-6">
+            <label className="text-base font-semibold">Description</label>
+            <textarea
+              className="px-4 py-2 bg-ci-modal-black hover:bg-ci-modal border border-ci-modal-grey rounded-lg text-base placeholder:text-sm resize-none h-20"
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+        </div>
+        <hr className="w-3/5 border-ci-modal-grey my-8" />
         <RadioSelection
           options={options}
-          selectedOption={type}
-          onChange={setType}
+          selectedOption={repoType}
+          onChange={setRepoType}
         />
-        <hr className="w-3/5 border-ci-modal-grey my-8" />
-        <div
-          className="flex items-center gap-3 cursor-pointer"
-          onClick={() => {
-            setReadme(!readme);
-          }}
-        >
-          {readme ? (
-            <Check
-              size={20}
-              className="text-ci-modal-light-blue bg-ci-modal-white border-4 border-ci-modal-light-blue rounded-sm"
-            />
-          ) : (
-            <div className="w-5 h-5 border-2 rounded-sm flex justify-center items-center border-gray-400"></div>
-          )}
-
-          <span className="text-ci-modal-white">Add a README file</span>
-        </div>
       </div>
 
       <div className="flex justify-end mt-8">
-        <button className="text-ci-modal-white text-base font-bold border-ci-modal-grey border w-36 rounded-md px-3 py-2 bg-ci-modal-black hover:bg-ci-modal-blue">
+        <button
+          className="text-ci-modal-white text-base font-bold border-ci-modal-grey border w-36 rounded-md px-3 py-2 bg-ci-modal-black hover:bg-ci-modal-blue"
+          onClick={onClickCreateButton}
+        >
           Create
         </button>
       </div>

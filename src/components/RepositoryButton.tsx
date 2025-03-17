@@ -1,4 +1,4 @@
-import { useBranches } from "@/hooks/github";
+import { useAllUserRepos, useBranches } from "@/hooks/github";
 import { useProjectRepo } from "@/hooks/workspace";
 import { Resource } from "@/interfaces/workspace";
 import { Spin } from "antd";
@@ -15,18 +15,34 @@ export default function RepositoryButton({
   const gitRepoUrl = projectRepo?.git_repo_url;
   const owner = gitRepoUrl?.split("/").at(-2);
   const repo = gitRepoUrl?.split("/").at(-1);
+  const [repoType, setRepoType] = useState<string>("");
 
   let tokenAuth = "";
   if (token !== null) {
     tokenAuth = token;
   }
   const { data: branches } = useBranches(owner, repo, tokenAuth);
-
+  const { data: userRepos } = useAllUserRepos(tokenAuth);
   useEffect(() => {
     if (typeof branches !== "undefined" && branches.data) {
       setBranchNum(branches.data.length);
     }
   }, [branches]);
+
+  useEffect(() => {
+    if (userRepos) {
+      for (const r of userRepos) {
+        if (r.full_name === `${owner}/${repo}`) {
+          if (r.private === false) {
+            setRepoType("public");
+          } else {
+            setRepoType("private");
+          }
+          break;
+        }
+      }
+    }
+  }, [userRepos]);
 
   if (isLoading || !owner || !repo) return <Spin />;
   return (
@@ -37,7 +53,7 @@ export default function RepositoryButton({
             {repository.resource_name}
           </div>
           <div className="flex rounded-full px-2 border text-[14px] items-center">
-            private
+            {repoType}
           </div>
         </div>
         <div className="flex flex-row text-ci-modal-grey font-medium gap-4 text-[14px]">

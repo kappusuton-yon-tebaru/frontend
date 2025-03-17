@@ -46,3 +46,16 @@ export const useCommitMetadata = (owner: string, repo: string, token: string, pa
         queryFn: () => fetchCommitMetadata(owner, repo, token, path, branch),
       });
 }
+
+const fetchAllUserRepos = async (token: string) => {
+    if (token === null) return new Error("token is null")
+    const response = await getData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/github/userrepos`, token);
+    return response.data
+}
+
+export const useAllUserRepos = (token: string) => {
+    return useQuery({
+        queryKey: ["userRepos", token],
+        queryFn: () => fetchAllUserRepos(token),
+    });
+}

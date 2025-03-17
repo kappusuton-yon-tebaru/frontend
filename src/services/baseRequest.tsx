@@ -28,9 +28,18 @@ export async function getData(url: string, token?: string) {
 
 export async function postData(url: string, data: any, token?: string) {
   try {
+    let authToken;
+    if (token) {
+      authToken = token || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      if (!authToken) {
+        throw new Error("No valid token provided");
+      }
+    }
+
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),

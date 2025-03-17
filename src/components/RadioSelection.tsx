@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface RadioSelectionProps {
   options: { label: string; value: string; description?: string }[];
   selectedOption: string;
@@ -18,7 +16,10 @@ export default function RadioSelection({
       {label && <label className="font-bold text-[18px]">{label}</label>}
       <div className="flex flex-col gap-4">
         {options.map((option) => (
-          <label key={option.value} className="flex flex-col cursor-pointer">
+          <label
+            key={option.value}
+            className="flex flex-col cursor-pointer w-fit"
+          >
             <div className="flex items-center gap-4">
               <input
                 type="radio"
@@ -26,7 +27,7 @@ export default function RadioSelection({
                 value={option.value}
                 checked={selectedOption === option.value}
                 onChange={() => onChange(option.value)}
-                className="hidden"
+                className="hidden w-full"
               />
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center ${
