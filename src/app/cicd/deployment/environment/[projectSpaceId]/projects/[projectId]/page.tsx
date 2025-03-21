@@ -41,7 +41,14 @@ export default function DeploymentEnvironmentProjectPage() {
     dockerfile: string;
   }) => {
     return (
-      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center">
+      <div
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center"
+        onClick={() =>
+          router.push(
+            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services`
+          )
+        }
+      >
         <Image
           src={"/images/cicd/env.svg"}
           alt={"disk"}

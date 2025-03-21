@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ServicePage() {
-  const { registryId } = useParams();
+  const { serviceId } = useParams();
   const { triggerToast } = useToast();
 
   const organizationId = "678fcf897c67bca50cfae34e";
@@ -15,7 +15,7 @@ export default function ServicePage() {
   const router = useRouter();
 
   const endpoints = {
-    deleteDeployment: `${baseUrl}/deployment/${registryId}`,
+    deleteDeployment: `${baseUrl}/deployment/${serviceId}`,
   };
 
   const [textDelete, setTextDelete] = useState("");

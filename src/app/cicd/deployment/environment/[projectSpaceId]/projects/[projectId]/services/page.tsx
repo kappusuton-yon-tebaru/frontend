@@ -3,7 +3,7 @@ import EntityIndex from "@/components/cicd/EntityIndex";
 import { SelectorOption } from "@/components/cicd/Selector";
 import formatDate from "@/hooks/cicd";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const sortBy: SelectorOption[] = [
   { label: "Project Name", id: "project.name" },
@@ -13,7 +13,10 @@ const sortBy: SelectorOption[] = [
 
 export default function DeployedServiceListPage() {
   const router = useRouter();
+  const { projectSpaceId, projectId } = useParams();
+
   const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs`;
+  // const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/deployment?`;
   const operationUrl = "/cicd/operation/operate?ops=DEPLOY";
 
   const renderEntity = (entity: {
@@ -28,7 +31,11 @@ export default function DeployedServiceListPage() {
     return (
       <div
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
-        onClick={() => router.push(`/cicd/deployment/services/${entity.id}`)}
+        onClick={() =>
+          router.push(
+            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${entity.id}`
+          )
+        }
       >
         <div className="flex flex-row gap-x-12 items-center">
           <Image
@@ -75,7 +82,7 @@ export default function DeployedServiceListPage() {
         operationUrl={operationUrl}
         searchUrl={searchUrl}
         renderEntity={renderEntity}
-        queryKey="jobs"
+        queryKey="deployments"
         sortByOptions={sortBy}
       />
     </div>

@@ -34,10 +34,6 @@ const menuItems: MenuItem[] = [
     href: "#",
     subMenu: [
       {
-        name: "Deployment List",
-        href: "http://localhost:3000/cicd/deployment/services",
-      },
-      {
         name: "Environment",
         href: "http://localhost:3000/cicd/deployment/environment",
       },
