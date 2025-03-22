@@ -20,20 +20,19 @@ export default function DeployedServiceListPage() {
   const operationUrl = "/cicd/operation/operate?ops=DEPLOY";
 
   const renderEntity = (entity: {
-    id: string;
-    job_status: string;
-    created_at: string;
-    project: {
-      id: string;
-      name: string;
-    };
+    project_id: string;
+    deployment_env: string;
+    deployment_status: string;
+    age: string;
+    project_name: string;
+    service_name: string;
   }) => {
     return (
       <div
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
         onClick={() =>
           router.push(
-            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${entity.id}/edit`
+            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${entity.deployment_env}/${entity.service_name}`
           )
         }
       >
@@ -45,28 +44,34 @@ export default function DeployedServiceListPage() {
             height={32}
           />
           <div className="flex flex-col justify-center">
-            <h3 className="text-lg">service1</h3>
-            <div className="text-sm text-ci-modal-grey">test project</div>
+            <h3 className="text-lg">{entity.service_name}</h3>
             <div className="text-sm text-ci-modal-grey">
-              Deployment environment: staging
+              {entity.project_name}
+            </div>
+            <div className="text-sm text-ci-modal-grey">
+              Deployment environment: {entity.deployment_env}
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center w-1/6">
           <h3 className="text-base text-ci-modal-grey">Service URL: </h3>
           <a href="www.test.com" className="text-ci-modal-light-blue underline">
             www.test.com
           </a>
         </div>
-        <div className="text-base text-ci-modal-grey">Age: 24 day</div>
+        <div className="text-base text-ci-modal-grey w-1/6">
+          Age: {entity.age}
+        </div>
         <div className="flex flex-row gap-x-12 items-center px-8 justify-around w-1/5">
           <Image
-            src={`/images/cicd/${entity.job_status}.svg`}
+            src={`/images/cicd/${entity.deployment_status}.svg`}
             alt={"disk"}
             width={20}
             height={20}
           />
-          <h3 className="text-base w-1/2 text-ci-modal-grey">healthy</h3>
+          <h3 className="text-base w-1/2 text-ci-modal-grey">
+            {entity.deployment_status}
+          </h3>
         </div>
       </div>
     );

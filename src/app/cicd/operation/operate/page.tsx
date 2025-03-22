@@ -243,13 +243,12 @@ function OperationPage() {
           endpoints.env,
           process.env.NEXT_PUBLIC_GITHUB_TOKEN
         );
-        setDeploymentEnvOptions([
-          { id: "default", label: "default" },
-          ...data.data.map((item: any) => ({
+        setDeploymentEnvOptions(
+          data.data.map((item: any) => ({
             label: item,
             id: item,
-          })),
-        ]);
+          }))
+        );
       } catch (error) {
         setError(error instanceof Error ? error.message : "Unknown error");
       }

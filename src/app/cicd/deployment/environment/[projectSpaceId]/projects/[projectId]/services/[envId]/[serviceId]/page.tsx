@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ServicePage() {
-  const { serviceId } = useParams();
+  const { projectSpaceId, projectId, envId, serviceId } = useParams();
   const { triggerToast } = useToast();
 
   const organizationId = "678fcf897c67bca50cfae34e";
@@ -15,7 +15,7 @@ export default function ServicePage() {
   const router = useRouter();
 
   const endpoints = {
-    deleteDeployment: `${baseUrl}/deployment/${serviceId}`,
+    deleteDeployment: `${baseUrl}/project/${projectId}/deploy`,
   };
 
   const [textDelete, setTextDelete] = useState("");
@@ -29,9 +29,18 @@ export default function ServicePage() {
 
   const handleDelete = async () => {
     try {
-      const response = await deleteData(endpoints.deleteDeployment);
+      const deletePayload = {
+        deployment_env: envId,
+        service_name: serviceId,
+      };
+      const response = await deleteData(
+        endpoints.deleteDeployment,
+        deletePayload
+      );
       triggerToast("Delete deployment success!", "success");
-      router.push("/cicd/deployment/services");
+      router.push(
+        `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${envId}`
+      );
     } catch (error) {
       triggerToast(`Delete deployment failed.\n${error}`, "error");
     }
