@@ -1,90 +1,91 @@
 "use client";
 import EntityIndex from "@/components/cicd/EntityIndex";
-import { SelectorOption } from "@/components/cicd/Selector";
-import formatDate from "@/hooks/cicd";
+import InputField from "@/components/cicd/InputField";
+import Selector from "@/components/cicd/Selector";
+import { useToast } from "@/context/ToastContext";
+import { postData } from "@/services/baseRequest";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
-const sortBy: SelectorOption[] = [
-  { label: "Project Name", id: "project.name" },
-  // { label: "status", id: "status" },
-  { label: "Created At", id: "created_at" },
-];
-
-export default function DeployedServiceListPage() {
+export default function DeploymentEnvironmentProjectPage() {
   const router = useRouter();
   const { projectSpaceId, projectId } = useParams();
+  const { triggerToast } = useToast();
 
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs`;
-  // const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/deployment?`;
-  const operationUrl = "/cicd/operation/operate?ops=DEPLOY";
+  const organizationId = "678fcf897c67bca50cfae34e";
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  const renderEntity = (entity: {
-    id: string;
-    job_status: string;
-    created_at: string;
-    project: {
-      id: string;
-      name: string;
-    };
-  }) => {
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/project/${projectId}/deployenv`;
+  const endpoints = {
+    createDeployEnv: `${baseUrl}/project/${projectId}/deployenv`,
+  };
+
+  const [createEnvName, setCreateEnvName] = useState<string>("");
+
+  const handleSaveSubmit = () => {
+    try {
+      const createPayload = {
+        name: createEnvName,
+      };
+      const operation = postData(endpoints.createDeployEnv, createPayload);
+      triggerToast("Edit registry success!", "success");
+    } catch (error) {
+      triggerToast(`Edit registry failed.\n${error}`, "error");
+    }
+  };
+
+  const renderEntity = (entity: any) => {
     return (
       <div
-        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center"
         onClick={() =>
           router.push(
-            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${entity.id}`
+            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${entity}`
           )
         }
       >
-        <div className="flex flex-row gap-x-12 items-center">
-          <Image
-            src={"/images/cicd/server.svg"}
-            alt={"disk"}
-            width={32}
-            height={32}
-          />
-          <div className="flex flex-col justify-center">
-            <h3 className="text-lg">service1</h3>
-            <div className="text-sm text-ci-modal-grey">test project</div>
-            <div className="text-sm text-ci-modal-grey">
-              Deployment environment: staging
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col justify-center items-center">
-          <h3 className="text-base text-ci-modal-grey">Service URL: </h3>
-          <a href="www.test.com" className="text-ci-modal-light-blue underline">
-            www.test.com
-          </a>
-        </div>
-        <div className="text-base text-ci-modal-grey">Age: 24 day</div>
-        <div className="flex flex-row gap-x-12 items-center px-8 justify-around w-1/5">
-          <Image
-            src={`/images/cicd/${entity.job_status}.svg`}
-            alt={"disk"}
-            width={20}
-            height={20}
-          />
-          <h3 className="text-base w-1/2 text-ci-modal-grey">healthy</h3>
-        </div>
+        <Image
+          src={"/images/cicd/env.svg"}
+          alt={"disk"}
+          width={32}
+          height={32}
+        />
+        <h3 className="text-base w-4/5">{entity}</h3>
       </div>
     );
   };
   return (
-    <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
+    <div className="min-h-screen bg-ci-bg-dark-blue px-16 pt-8 pb-16 flex flex-col gap-y-12">
       <EntityIndex
-        topic={"Deployed Services List"}
-        description={
-          "This is the list of all services that you have deployed from operation page."
-        }
-        operationTopic={"Deploy"}
-        operationUrl={operationUrl}
+        topic={"Environment List"}
+        description={`This is the list of all deployment environment from project ID: ${projectId}.`}
         searchUrl={searchUrl}
         renderEntity={renderEntity}
-        queryKey="deployments"
-        sortByOptions={sortBy}
+        queryKey="environment"
       />
+      <hr className="border-t border-gray-300 col-span-6" />
+      <div className="grid grid-cols-6 gap-x-12 gap-y-10">
+        <h2 className="text-xl font-bold col-span-6">
+          Add Deployment Environment
+        </h2>
+        <div className="col-span-6">
+          <InputField
+            label="Environment Name"
+            placeholder="Environment Name"
+            value={createEnvName}
+            onChange={setCreateEnvName}
+          />
+        </div>
+        <div className="col-start-6">
+          <button
+            className="bg-ci-modal-black hover:bg-ci-modal-blue border border-ci-modal-grey py-2 rounded-lg text-base w-full"
+            onClick={handleSaveSubmit}
+          >
+            Add
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

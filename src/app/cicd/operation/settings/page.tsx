@@ -5,21 +5,21 @@ import { getData, postData } from "@/services/baseRequest";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
-export default function ImageWorkerSettingPage() {
+export default function MaxWorkerSettingPage() {
   const [worker, setWorker] = useState();
   const [loading, setLoading] = useState<boolean>(true);
 
   const { triggerToast } = useToast();
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const getUrl = `${baseUrl}/setting/maxworker`;
-  const updateUrl = `${baseUrl}/setting/maxworker`;
+  const getUrl = `${baseUrl}/setting/workerpool`;
+  const updateUrl = `${baseUrl}/setting/workerpool`;
 
   useEffect(() => {
     const fetchMaxWworker = async () => {
       try {
         const data = await getData(getUrl);
-        setWorker(data.max_worker);
+        setWorker(data.pool_size);
       } catch (error) {
         const errMessage =
           error instanceof Error ? error.message : "Unknown error";
@@ -36,7 +36,7 @@ export default function ImageWorkerSettingPage() {
   const handleSubmit = async () => {
     try {
       const data = {
-        max_worker: Number(worker),
+        pool_size: Number(worker),
       };
       const post = await postData(updateUrl, data);
       triggerToast("Setting max worker success!", "success");
@@ -63,12 +63,12 @@ export default function ImageWorkerSettingPage() {
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
       <div className="flex flex-col gap-y-16">
-        <h2 className="text-xl font-bold">Image Builder Setting</h2>
+        <h2 className="text-xl font-bold">Max Worker Pool Setting</h2>
         <div className="grid grid-cols-6 gap-x-12 gap-y-10">
           <div className="col-span-3">
             <InputField
-              label="Max Worker"
-              placeholder="Max Worker"
+              label="Max Worker Pool"
+              placeholder="Max Worker Pool"
               value={worker}
               onChange={setWorker}
             />

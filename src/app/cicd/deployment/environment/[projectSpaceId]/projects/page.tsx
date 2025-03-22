@@ -28,7 +28,7 @@ export default function DeploymentProjectsListPage() {
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
         onClick={() =>
           router.push(
-            `/cicd/deployment/environment/${projectSpaceId}/projects/${entity.id}`
+            `/cicd/deployment/environment/${projectSpaceId}/projects/${entity.id}/services`
           )
         }
       >

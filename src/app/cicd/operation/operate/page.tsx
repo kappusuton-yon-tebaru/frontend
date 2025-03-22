@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export interface BuildPayload {
-  project_id: string;
+  project_id?: string;
   deployment_env?: string;
   services: ServiceInfo[];
 }
@@ -20,8 +20,18 @@ export interface ServiceInfo {
 }
 
 const operationOptions: SelectorOption[] = [
-  { id: "build", label: "Build Image", type: "BUILD", data: { url: "/build" } },
-  { id: "deploy", label: "Deploy", type: "DEPLOY", data: { url: "/deploy" } },
+  {
+    id: "build",
+    label: "Build Image",
+    type: "BUILD",
+    data: { url: "/project/projectId/build" },
+  },
+  {
+    id: "deploy",
+    label: "Deploy",
+    type: "DEPLOY",
+    data: { url: "/project/projectId/deploy" },
+  },
   {
     id: "both",
     label: "Build & Deploy",
@@ -46,6 +56,9 @@ function OperationPage() {
   >([]);
   const [projectOptions, setProjectOptions] = useState<SelectorOption[]>([]);
   const [serviceOptions, setServiceOptions] = useState<SelectorOption[]>([]);
+  const [deploymentEnvOptions, setDeploymentEnvOptions] = useState<
+    SelectorOption[]
+  >([]);
 
   const [selectedOperation, setSelectedOperation] = useState(
     operationOptions[0]
@@ -60,13 +73,14 @@ function OperationPage() {
     []
   );
   const [projectRepo, setProjectRepo] = useState<string>();
-  const [devEnvName, setDevEnvName] = useState<string>("default");
+  const [devEnvName, setDevEnvName] = useState<SelectorOption | undefined>();
 
   const endpoints = {
     projectSpace: `${baseUrl}/resources/children/${organizationId}`,
     project: `${baseUrl}/resources/children/${selectedProjectSpace?.id}`,
     registry: `${baseUrl}/regproviders`,
     service: `${baseUrl}/project/${selectedProject?.id}/services `,
+    env: `${baseUrl}/project/${selectedProject?.id}/deployenv`,
     image: `${baseUrl}/ecr/images?project_id=${selectedProject?.id}`,
   };
 
@@ -105,7 +119,6 @@ function OperationPage() {
         );
         const buildPayload: BuildPayload = {
           project_id: selectedProject?.data.id,
-          deployment_env: devEnvName,
           services: services,
         };
 
@@ -115,27 +128,28 @@ function OperationPage() {
           ({ data: { service_name, tag, port, secret_name } }) => ({
             service_name: service_name,
             tag: tag,
-            port: port,
+            port: Number(port),
             secret_name: secret_name,
           })
         );
         const deployPayload: BuildPayload = {
-          project_id: selectedProject?.data.id,
-          deployment_env: devEnvName,
+          deployment_env: devEnvName?.id,
           services: services,
         };
-
         operationPayload = deployPayload;
       }
-      console.log(operationPayload);
-      // const operation = await postData(
-      //   baseUrl + selectedOperation.data.url,
-      //   operationPayload
-      // );
-      // triggerToast("Create operation success!", "success");
-      // router.push(`/cicd/operation/jobs/${operation.parent_id}`);
+      const operation = await postData(
+        baseUrl +
+          selectedOperation.data.url.replace(
+            /projectId/g,
+            selectedProject?.data.id
+          ),
+        operationPayload
+      );
+      triggerToast("Create operation success!", "success");
+      router.push(`/cicd/operation/jobs/${operation.parent_id}`);
     } catch (error) {
-      // triggerToast(`Create operation failed.\n${error}`, "error");
+      triggerToast(`Create operation failed.\n${error}`, "error");
     }
   };
 
@@ -220,6 +234,29 @@ function OperationPage() {
 
     fetchServices();
   }, [endpoints.service, selectedProject]);
+
+  useEffect(() => {
+    if (!selectedProject) return;
+    const fetchDeploymentEnv = async () => {
+      try {
+        const data = await getData(
+          endpoints.env,
+          process.env.NEXT_PUBLIC_GITHUB_TOKEN
+        );
+        setDeploymentEnvOptions([
+          { id: "default", label: "default" },
+          ...data.data.map((item: any) => ({
+            label: item,
+            id: item,
+          })),
+        ]);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Unknown error");
+      }
+    };
+
+    fetchDeploymentEnv();
+  }, [endpoints.env, selectedProject]);
 
   useEffect(() => {
     if (selectedServices.length === 0) return;
@@ -321,11 +358,19 @@ function OperationPage() {
           </div>
 
           <div className="col-span-2 flex flex-col gap-y-6 z-10">
-            <InputField
+            <label className="text-base font-semibold">
+              Deployment Environment
+            </label>
+            {/* <InputField
               label={"Deployment Environment Name"}
               placeholder="Image version"
               value={devEnvName}
               onChange={setDevEnvName}
+            /> */}
+            <Selector
+              options={deploymentEnvOptions}
+              initialOption={null}
+              onSelect={setDevEnvName}
             />
           </div>
 

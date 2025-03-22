@@ -23,10 +23,6 @@ const menuItems: MenuItem[] = [
         name: "Registry List",
         href: "http://localhost:3000/cicd/images/registry",
       },
-      {
-        name: "Images Setting",
-        href: "http://localhost:3000/cicd/images/settings",
-      },
     ],
   },
   {
@@ -36,10 +32,6 @@ const menuItems: MenuItem[] = [
       {
         name: "Environment",
         href: "http://localhost:3000/cicd/deployment/environment",
-      },
-      {
-        name: "Deployment Setting",
-        href: "http://localhost:3000/cicd/deployment/settings",
       },
     ],
   },
@@ -54,6 +46,10 @@ const menuItems: MenuItem[] = [
       {
         name: "Jobs Status",
         href: "http://localhost:3000/cicd/operation/jobs",
+      },
+      {
+        name: "Operation Setting",
+        href: "http://localhost:3000/cicd/operation/settings",
       },
     ],
   },
