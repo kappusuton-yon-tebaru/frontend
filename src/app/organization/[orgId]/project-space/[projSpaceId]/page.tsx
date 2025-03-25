@@ -121,15 +121,7 @@ export default function ProjectSpace() {
               .includes(searchTerm);
             if (isMatch) {
               return (
-                <div
-                  key={index}
-                  onClick={() =>
-                    router.push(
-                      `/organization/${orgId}/project-space/${projSpaceId}/repository/${repo.id}`
-                    )
-                  }
-                  className="cursor-pointer"
-                >
+                <div key={index}>
                   <RepositoryButton repository={repo} />
                 </div>
               );
