@@ -2,9 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
-import { dracula } from "@uiw/codemirror-theme-dracula";
 import BranchButton from "@/components/BranchButton";
 import { useParams, useRouter } from "next/navigation";
 import { useProjectRepo, useResource } from "@/hooks/workspace";
@@ -17,9 +14,9 @@ import { Branch, Content } from "@/interfaces/github";
 import { Spin } from "antd";
 import FileAndFolderBar from "@/components/FileAndFolderBar";
 import RepoItem from "@/components/RepoItem";
+import CodeEditor from "@/components/CodeEditor";
 
 export default function FileAndFolder() {
-  const [code, setCode] = useState("// Start typing...");
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const router = useRouter();
@@ -117,6 +114,11 @@ export default function FileAndFolder() {
     fullPath,
     currentBranch
   );
+
+  const handleSave = (content: string) => {
+    setIsEditing(false);
+  };
+
   if (
     isLoading ||
     !owner ||
@@ -160,8 +162,8 @@ export default function FileAndFolder() {
           {repository?.resource_name}
         </h1>
       </div>
-      <div className="grid grid-cols-[25%_75%] gap-4">
-        <div className="flex flex-col gap-y-4">
+      <div className="grid grid-cols-[25%_75%] gap-4 h-full">
+        <div className="flex flex-col gap-y-4 h-full">
           <div className="relative w-full">
             <BranchButton
               wide={false}
@@ -174,7 +176,6 @@ export default function FileAndFolder() {
               pushRoute={true}
             />
           </div>
-
           <FileAndFolderBar
             repoContents={fullRepoContents}
             owner={owner}
@@ -182,20 +183,10 @@ export default function FileAndFolder() {
             tokenAuth={tokenAuth}
             currentBranch={currentBranch}
           />
-
-          <textarea
-            name=""
-            id=""
-            placeholder="Commit Message"
-            className="rounded-lg flex items-center text-black p-2 h-10"
-          />
-          <button className="bg-ci-bg-dark-blue w-full border border-ci-modal-grey py-2 rounded-lg">
-            Commit and Push
-          </button>
         </div>
 
         <div className="p-4 bg-ci-modal-black rounded-lg border border-ci-modal-grey h-full">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center pb-2">
             <div className="flex flex-row gap-6 items-center">
               <div>{fullPath}</div>
               <div className="text-ci-modal-grey">
@@ -203,37 +194,21 @@ export default function FileAndFolder() {
               </div>
             </div>
             <div className="flex flex-row gap-6 items-center">
-              {isEditing && (
-                <>
-                  <button
-                    className="border rounded-md px-4 py-1 bg-ci-modal-light-blue"
-                    onClick={() => setIsEditing(false)}
-                  >
-                    Confirm
-                  </button>
-                  <button
-                    className="border rounded-md px-4 py-1 bg-ci-modal-red"
-                    onClick={() => setIsEditing(false)}
-                  >
-                    Cancel
-                  </button>
-                </>
+              {!isEditing && path[path.length - 1].split(".").length !== 1 && (
+                <button
+                  className="border rounded-lg p-2 hover:bg-ci-modal-blue transition-colors group"
+                  onClick={() => setIsEditing(true)}
+                  aria-label="Edit"
+                >
+                  <Image
+                    src="/edit-icon.svg"
+                    alt="Edit"
+                    width={16}
+                    height={16}
+                    className="group-hover:scale-110 transition-transform"
+                  />
+                </button>
               )}
-              <button
-                className={`border rounded-lg p-2 ${
-                  isEditing && "bg-ci-modal-light-blue"
-                }`}
-                onClick={() => {
-                  setIsEditing(true);
-                }}
-              >
-                <Image
-                  src={`/edit-icon.svg`}
-                  alt={`edit-icon`}
-                  width={16}
-                  height={16}
-                />
-              </button>
               <div className="text-ci-modal-grey">
                 {commitInfo ? (
                   new Date(commitInfo.lastEditTime).toLocaleString("en-US", {
@@ -295,13 +270,14 @@ export default function FileAndFolder() {
               ))}
             </div>
           ) : (
-            <CodeMirror
-              value={code}
-              // height="660px"
-              theme={dracula}
-              extensions={[javascript()]}
-              onChange={(value) => setCode(value)}
-              className="mt-4"
+            <CodeEditor
+              owner={owner}
+              repo={repo}
+              token={tokenAuth}
+              path={fullPath}
+              branch={branch}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
             />
           )}
         </div>

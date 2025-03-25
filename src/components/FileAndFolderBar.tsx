@@ -414,7 +414,7 @@ export default function FileAndFolderBar({
   };
 
   return (
-    <div className="border border-ci-modal-grey rounded-lg p-2 overflow-y-auto bg-ci-modal-black h-[30vw]">
+    <div className="border border-ci-modal-grey rounded-lg p-2 overflow-y-auto bg-ci-modal-black h-full">
       {loading ? <Spin /> : renderTree(fileTree)}
     </div>
   );

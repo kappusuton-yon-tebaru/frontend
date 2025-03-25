@@ -81,9 +81,18 @@ export async function patchData(url: string, data: any, token?: string) {
 
 export async function putData(url: string, data: any, token?: string) {
   try {
+    let authToken;
+    if (token) {
+      authToken = token || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      if (!authToken) {
+        throw new Error("No valid token provided");
+      }
+    }
+
     const response = await fetch(url, {
       method: "PUT",
       headers: {
+        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),

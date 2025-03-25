@@ -59,3 +59,19 @@ export const useAllUserRepos = (token: string) => {
         queryFn: () => fetchAllUserRepos(token),
     });
 }
+
+const fetchFileContent = async (owner: string, repo: string, token: string, path: string, branch: string) => {
+    if (owner === undefined || repo === undefined) return {data:null}
+    if (path === undefined) path = ""
+    if (branch === undefined) branch = ""
+    if (token === null) return new Error("token is null")
+    const response = await getData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/file-content?path=${path}&branch=${branch}`, token);
+    return response.data
+}
+
+export const useFileContent = (owner: string, repo: string, token: string, path: string, branch: string) => {
+    return useQuery({
+        queryKey: ["fileContent", owner, repo, token, path, branch],
+        queryFn: () => fetchFileContent(owner, repo, token, path, branch),
+    })
+}
