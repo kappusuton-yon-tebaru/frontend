@@ -118,6 +118,8 @@ export default function RepositoryPage({ branchURL }: { branchURL?: string }) {
               branches={branchesStr}
               currentBranch={currentBranch}
               setCurrentBranch={setCurrentBranch}
+              owner={owner}
+              repo={repo}
             />
           ) : (
             <Spin />

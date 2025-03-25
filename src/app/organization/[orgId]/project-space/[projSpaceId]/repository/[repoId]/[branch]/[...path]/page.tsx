@@ -168,6 +168,10 @@ export default function FileAndFolder() {
               branches={branchesStr}
               currentBranch={currentBranch}
               onSelectBranch={setCurrentBranch}
+              owner={owner}
+              repo={repo}
+              withCreate={false}
+              pushRoute={true}
             />
           </div>
 

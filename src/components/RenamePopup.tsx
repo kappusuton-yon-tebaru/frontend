@@ -1,7 +1,6 @@
 import { Resource } from "@/interfaces/workspace";
 import { putData } from "@/services/baseRequest";
 import { Dispatch, RefObject, SetStateAction } from "react";
-import toast from "react-hot-toast";
 
 export default function RenamePopup({
   renameModalRef,
