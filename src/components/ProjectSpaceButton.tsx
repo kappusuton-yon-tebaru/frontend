@@ -20,7 +20,12 @@ export default function ProjectSpaceButton({
   const renameModalRef = useRef<HTMLDivElement>(null);
   const deleteModalRef = useRef<HTMLDivElement>(null);
 
-  const { data: repositories } = useRepositories(projectSpace.id, 1);
+  const { data: repositories } = useRepositories(
+    projectSpace.id,
+    1,
+    "resource_name",
+    "asc"
+  );
 
   useEffect(() => {
     setRepoNum(repositories?.total);

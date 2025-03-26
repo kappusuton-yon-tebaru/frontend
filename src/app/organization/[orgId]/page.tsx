@@ -15,13 +15,20 @@ export default function Organization() {
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const [searchTerm, setSearchTerm] = useState("");
+  const [sorting, setSorting] = useState<string>("resource_name");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
 
   if (typeof orgId === "undefined" || Array.isArray(orgId)) {
     throw new Error("Invalid orgId");
   }
 
   const { data: organization } = useResource(orgId);
-  const { data: projectSpaces, isLoading } = useProjectSpaces(orgId, page);
+  const { data: projectSpaces, isLoading } = useProjectSpaces(
+    orgId,
+    page,
+    sorting,
+    sortOrder
+  );
 
   return (
     <div>
@@ -69,7 +76,12 @@ export default function Organization() {
               className="flex-grow bg-transparent text-white outline-none h-full"
             />
           </div>
-          <SortManager />
+          <SortManager
+            sorting={sorting}
+            setSorting={setSorting}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+          />
         </div>
       </div>
 

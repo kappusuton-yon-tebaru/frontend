@@ -25,10 +25,17 @@ export default function ProjectSpace() {
   const [page, setPage] = useState(1);
   const pageSize = 4;
   const [searchTerm, setSearchTerm] = useState("");
+  const [sorting, setSorting] = useState<string>("resource_name");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
 
   const { data: organization } = useResource(orgId);
   const { data: projectSpace } = useResource(projSpaceId);
-  const { data: repositories, isLoading } = useRepositories(projSpaceId, page);
+  const { data: repositories, isLoading } = useRepositories(
+    projSpaceId,
+    page,
+    sorting,
+    sortOrder
+  );
 
   const [rename, setRename] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>(projectSpace?.resource_name);
@@ -108,7 +115,12 @@ export default function ProjectSpace() {
               className="flex-grow bg-transparent text-white outline-none h-full"
             />
           </div>
-          <SortManager />
+          <SortManager
+            sorting={sorting}
+            setSorting={setSorting}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+          />
         </div>
       </div>
 
