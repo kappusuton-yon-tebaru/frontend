@@ -27,7 +27,8 @@ export default function Organization() {
     orgId,
     page,
     sorting,
-    sortOrder
+    sortOrder,
+    searchTerm
   );
 
   return (
@@ -88,26 +89,17 @@ export default function Organization() {
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
       {projectSpaces && !isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {projectSpaces?.data.map((space: Resource, index: number) => {
-            const isMatch = space.resource_name
-              .toLowerCase()
-              .includes(searchTerm);
-            if (isMatch) {
-              return (
-                <div
-                  key={index}
-                  onClick={() =>
-                    router.push(
-                      `/organization/${orgId}/project-space/${space.id}`
-                    )
-                  }
-                  className="cursor-pointer"
-                >
-                  <ProjectSpaceButton projectSpace={space} />
-                </div>
-              );
-            }
-          })}
+          {projectSpaces?.data.map((space: Resource, index: number) => (
+            <div
+              key={index}
+              onClick={() =>
+                router.push(`/organization/${orgId}/project-space/${space.id}`)
+              }
+              className="cursor-pointer"
+            >
+              <ProjectSpaceButton projectSpace={space} />
+            </div>
+          ))}
         </div>
       ) : (
         <Spin />

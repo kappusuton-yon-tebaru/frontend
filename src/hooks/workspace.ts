@@ -15,9 +15,9 @@ export const useResource = (resourceId: string) => {
   });
 };
 
-const fetchProjectSpaces = async (orgId: string, page: number, sortBy: string, sortOrder: string) => {
+const fetchProjectSpaces = async (orgId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
   const response = await getData(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}?page=${page}&limit=8&sort_by=${sortBy}&sort_order=${sortOrder}`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}?page=${page}&limit=8&sort_by=${sortBy}&sort_order=${sortOrder}&query=${search}`
   );
   return {
     data: response.data,
@@ -27,16 +27,16 @@ const fetchProjectSpaces = async (orgId: string, page: number, sortBy: string, s
   };
 };
 
-export const useProjectSpaces = (orgId: string, page: number, sortBy: string, sortOrder: string) => {
+export const useProjectSpaces = (orgId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
   return useQuery({
-    queryKey: ["projectSpaces", orgId, page, sortBy, sortOrder],
-    queryFn: () => fetchProjectSpaces(orgId, page, sortBy, sortOrder),
+    queryKey: ["projectSpaces", orgId, page, sortBy, sortOrder, search],
+    queryFn: () => fetchProjectSpaces(orgId, page, sortBy, sortOrder, search),
   });
 };
 
-const fetchRepositories = async (projectSpaceId: string, page: number, sortBy: string, sortOrder: string) => {
+const fetchRepositories = async (projectSpaceId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
   const response = await getData(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}?page=${page}&limit=4&sort_by=${sortBy}&sort_order=${sortOrder}`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}?page=${page}&limit=4&sort_by=${sortBy}&sort_order=${sortOrder}&query=${search}`
   );
   return {
     data: response.data,
@@ -46,10 +46,10 @@ const fetchRepositories = async (projectSpaceId: string, page: number, sortBy: s
   };
 };
 
-export const useRepositories = (projectSpaceId: string, page: number, sortBy: string, sortOrder: string) => {
+export const useRepositories = (projectSpaceId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
   return useQuery({
-    queryKey: ["repositories", projectSpaceId, page, sortBy, sortOrder],
-    queryFn: () => fetchRepositories(projectSpaceId, page, sortBy, sortOrder),
+    queryKey: ["repositories", projectSpaceId, page, sortBy, sortOrder, search],
+    queryFn: () => fetchRepositories(projectSpaceId, page, sortBy, sortOrder, search),
   });
 };
 

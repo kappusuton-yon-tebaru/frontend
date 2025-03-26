@@ -24,7 +24,8 @@ export default function ProjectSpaceButton({
     projectSpace.id,
     1,
     "resource_name",
-    "asc"
+    "asc",
+    ""
   );
 
   useEffect(() => {

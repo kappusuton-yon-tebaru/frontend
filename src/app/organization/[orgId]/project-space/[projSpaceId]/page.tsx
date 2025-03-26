@@ -34,7 +34,8 @@ export default function ProjectSpace() {
     projSpaceId,
     page,
     sorting,
-    sortOrder
+    sortOrder,
+    searchTerm
   );
 
   const [rename, setRename] = useState<boolean>(false);
@@ -127,18 +128,11 @@ export default function ProjectSpace() {
       <hr className="my-6 mx-[-20px] border-ci-modal-grey"></hr>
       {repositories && !isLoading ? (
         <div className="grid grid-cols-2 gap-8">
-          {repositories?.data.map((repo: Resource, index: number) => {
-            const isMatch = repo.resource_name
-              .toLowerCase()
-              .includes(searchTerm);
-            if (isMatch) {
-              return (
-                <div key={index}>
-                  <RepositoryButton repository={repo} />
-                </div>
-              );
-            }
-          })}
+          {repositories?.data.map((repo: Resource, index: number) => (
+            <div key={index}>
+              <RepositoryButton repository={repo} />
+            </div>
+          ))}
         </div>
       ) : (
         <Spin />
