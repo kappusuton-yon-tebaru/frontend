@@ -132,7 +132,7 @@ export default function LoginPage() {
                 </form>
 
                 <div className="flex items-center gap-2">
-                    <div>Don't have an account?</div>
+                    <div>Don&apos;t have an account?</div>
                     <Link className="text-ci-modal-light-blue" href="/register">
                         Register
                     </Link>

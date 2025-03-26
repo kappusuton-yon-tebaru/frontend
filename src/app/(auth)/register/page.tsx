@@ -6,7 +6,6 @@ import Input from "antd/es/input/Input";
 import { Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { postData } from "@/services/baseRequest";
