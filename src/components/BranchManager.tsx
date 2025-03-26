@@ -27,7 +27,7 @@ export default function BranchManager({
         withCreate={true}
         pushRoute={true}
       />
-      <MergeButton branches={branches} currentBranch={currentBranch} />
+      {/* <MergeButton branches={branches} currentBranch={currentBranch} /> */}
     </div>
   );
 }
