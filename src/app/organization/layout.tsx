@@ -2,6 +2,7 @@
 import { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConfigProvider } from "antd";
+import NavigationBar from "@/components/NavigationBar";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
         }}
       >
         <QueryClientProvider client={queryClient}>
+          <NavigationBar/>
           {children}
         </QueryClientProvider>
       </ConfigProvider>
