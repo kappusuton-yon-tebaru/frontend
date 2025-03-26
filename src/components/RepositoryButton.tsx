@@ -45,6 +45,20 @@ export default function RepositoryButton({
     }
   }, [userRepos]);
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear();
+    const hours = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return `${day} ${month} ${year} ${hours}`;
+  };
+
   if (isLoading || !owner || !repo) return <Spin />;
   return (
     <div
@@ -76,14 +90,8 @@ export default function RepositoryButton({
             <>
               <div>{branchNum !== -1 && branchNum} Branches</div>
               <div>Owner: user 1234567890</div>
-              <div>
-                Last Update:{" "}
-                {new Date(repository.updated_at).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </div>
+              <div>Last Updated: {formatDate(repository.updated_at)}</div>
+              <div>Date Created: {formatDate(repository.created_at)}</div>
             </>
           )}
         </div>

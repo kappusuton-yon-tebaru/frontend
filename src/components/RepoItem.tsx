@@ -4,7 +4,6 @@ import { useCommitMetadata } from "@/hooks/github";
 import { Content } from "@/interfaces/github";
 import { Spin } from "antd";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
 export default function RepoItem({
   item,
@@ -27,6 +26,20 @@ export default function RepoItem({
   );
   if (isLoading || currentBranch === "" || !currentBranch) return <Spin />;
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear();
+    const hours = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return `${day} ${month} ${year} ${hours}`;
+  };
+
   return (
     <div key={item.path} className="flex items-center p-4 cursor-pointer">
       <div className="grid grid-cols-[35%_48%_27%] w-full">
@@ -46,14 +59,7 @@ export default function RepoItem({
           {commitInfo ? commitInfo.commitMessage : <Spin />}
         </div>
         <div className="flex text-ci-modal-grey items-center">
-          {commitInfo ? (
-            new Date(commitInfo.lastEditTime).toLocaleString("en-US", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            })
-          ) : (
-            <Spin />
-          )}
+          {commitInfo ? formatDate(commitInfo.lastEditTime) : <Spin />}
         </div>
       </div>
     </div>

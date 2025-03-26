@@ -58,6 +58,20 @@ export default function ProjectSpaceButton({
     };
   }, [rename, del]);
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear();
+    const hours = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return `${day} ${month} ${year} ${hours}`;
+  };
+
   return (
     <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg hover:bg-ci-modal-blue">
       <div className="flex flex-col px-4 py-3">
@@ -67,6 +81,8 @@ export default function ProjectSpaceButton({
         <div className="text-ci-modal-grey font-medium gap-4 text-[14px]">
           <div>{repoNum !== -1 && repoNum} Repositories</div>
           <div>Owner: user 1234567890</div>
+          <div>Last Updated: {formatDate(projectSpace.updated_at)}</div>
+          <div>Date Created: {formatDate(projectSpace.created_at)}</div>
         </div>
       </div>
 

@@ -128,6 +128,20 @@ export default function FileAndFolder() {
     return <Spin />;
   }
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear();
+    const hours = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return `${day} ${month} ${year} ${hours}`;
+  };
+
   return (
     <div>
       <div className="flex flex-row font-bold text-[24px] ml-[-8px] mb-2">
@@ -207,14 +221,7 @@ export default function FileAndFolder() {
                 </button>
               )}
               <div className="text-ci-modal-grey">
-                {commitInfo ? (
-                  new Date(commitInfo.lastEditTime).toLocaleString("en-US", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })
-                ) : (
-                  <Spin />
-                )}
+                {commitInfo ? formatDate(commitInfo.lastEditTime) : <Spin />}
               </div>
             </div>
           </div>

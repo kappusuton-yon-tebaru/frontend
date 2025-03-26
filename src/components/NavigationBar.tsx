@@ -5,8 +5,12 @@ import OrganizationButton from "./OrganizationButton";
 import { getData } from "@/services/baseRequest";
 import { useState, useEffect } from "react";
 import { Resource } from "@/interfaces/workspace";
+import { useParams } from "next/navigation";
 
 export default function NavigationBar() {
+  const { orgId } = useParams();
+  if (typeof orgId !== "undefined") {
+  }
   const temp: Resource = {
     id: "0",
     resource_name: "Organization",
@@ -33,8 +37,15 @@ export default function NavigationBar() {
   }, []);
 
   useEffect(() => {
-    setSelectedOrganization(temp);
-  }, [organizations]);
+    if (typeof orgId !== "undefined") {
+      const selectedOrg = organizations.find((org) => org.id === orgId);
+      if (selectedOrg) {
+        setSelectedOrganization(selectedOrg);
+      }
+    } else {
+      setSelectedOrganization(temp);
+    }
+  }, [organizations, orgId]);
 
   return (
     <div className="flex flex-row h-16 bg-[#081126] fixed top-0 left-0 right-0 z-30 items-center px-9 justify-between font-bold">
