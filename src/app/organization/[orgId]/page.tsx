@@ -11,8 +11,8 @@ export default function Organization() {
   const router = useRouter();
   const { orgId } = useParams();
   const [page, setPage] = useState(1);
-  const pageSize = 2;
   const [searchTerm, setSearchTerm] = useState("");
+  const pageSize = 10;
 
   if (typeof orgId === "undefined" || Array.isArray(orgId)) {
     throw new Error("Invalid orgId");
@@ -34,13 +34,13 @@ export default function Organization() {
         </div>
         <div className="flex gap-8 my-2">
           <Button
-            className="h-full text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+            className="h-full text-[14px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() => router.push(`/organization/${orgId}/manage`)}
           >
             Manage Organization
           </Button>
           <Button
-            className="h-full text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
+            className="h-full text-[14px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
             onClick={() =>
               router.push(`/organization/${orgId}/new-project-space`)
             }
