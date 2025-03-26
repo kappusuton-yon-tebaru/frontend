@@ -6,18 +6,17 @@ import { fetchRepoContents } from "@/hooks/github";
 import { Spin } from "antd";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { FileOrFolder } from "@/interfaces/github";
+import { useToken } from "@/context/TokenContext";
 
 export default function FileAndFolderBar({
   repoContents,
   owner,
   repo,
-  tokenAuth,
   currentBranch,
 }: {
   repoContents: Content[];
   owner: string;
   repo: string;
-  tokenAuth: string;
   currentBranch: string;
 }) {
   const router = useRouter();
@@ -28,6 +27,8 @@ export default function FileAndFolderBar({
     [key: string]: { isOpen: boolean; isLoading: boolean };
   }>({});
   const [loading, setLoading] = useState<boolean>(false);
+
+  const { tokenAuth } = useToken();
 
   let filePath = "";
   if (pathname) {

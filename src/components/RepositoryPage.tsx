@@ -1,6 +1,7 @@
 "use client";
 import BranchManager from "@/components/BranchManager";
 import RepoItem from "@/components/RepoItem";
+import { useToken } from "@/context/TokenContext";
 import { useBranches, useRepoContents } from "@/hooks/github";
 import { useProjectRepo, useResource } from "@/hooks/workspace";
 import { Branch, Content } from "@/interfaces/github";
@@ -33,11 +34,8 @@ export default function RepositoryPage({ branchURL }: { branchURL?: string }) {
   const { data: projectSpace } = useResource(projSpaceId);
   const { data: repository } = useResource(repoId);
 
-  const token = localStorage.getItem("access_token");
-  let tokenAuth = "";
-  if (token !== null) {
-    tokenAuth = token;
-  }
+  const { tokenAuth } = useToken();
+
   const { data: branches } = useBranches(owner, repo, tokenAuth);
   const [branchesStr, setBranchesStr] = useState<string[]>([]);
   const [currentBranch, setCurrentBranch] = useState<string>("");
@@ -162,7 +160,6 @@ export default function RepositoryPage({ branchURL }: { branchURL?: string }) {
               item={item}
               owner={owner}
               repo={repo}
-              tokenAuth={tokenAuth}
               currentBranch={currentBranch}
             />
           </div>

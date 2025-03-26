@@ -1,7 +1,14 @@
 import { postData } from "@/services/baseRequest";
-import { Dispatch, RefObject, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import BranchButton from "./BranchButton";
 import { useParams, useRouter } from "next/navigation";
+import { useToken } from "@/context/TokenContext";
 
 export default function CreateBranchPopup({
   createBranchModalRef,
@@ -22,20 +29,18 @@ export default function CreateBranchPopup({
 }) {
   const router = useRouter();
   const { orgId, projSpaceId, repoId } = useParams();
-  const token = localStorage.getItem("access_token");
-  let tokenAuth = "";
-  if (token !== null) {
-    tokenAuth = token;
-  }
+  const { tokenAuth } = useToken();
   const [currentBranch, setCurrentBranch] = useState<string>(branches[0]);
-  const handleCreateBranch = () => {
+  const handleCreateBranch = async () => {
     try {
-      const operation = postData(
+      const operation = await postData(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/create-branch?branch_name=${branchName}&selected_branch=${currentBranch}`,
         "",
         tokenAuth
       );
-      window.location.reload();
+      router.push(
+        `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branchName}`
+      );
     } catch (error) {
       console.log(error);
     }

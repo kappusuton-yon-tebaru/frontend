@@ -15,6 +15,7 @@ import { Spin } from "antd";
 import FileAndFolderBar from "@/components/FileAndFolderBar";
 import RepoItem from "@/components/RepoItem";
 import CodeEditor from "@/components/CodeEditor";
+import { useToken } from "@/context/TokenContext";
 
 export default function FileAndFolder() {
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -57,11 +58,8 @@ export default function FileAndFolder() {
   const { data: projectSpace } = useResource(projSpaceId);
   const { data: repository } = useResource(repoId);
 
-  const token = localStorage.getItem("access_token");
-  let tokenAuth = "";
-  if (token !== null) {
-    tokenAuth = token;
-  }
+  const { tokenAuth } = useToken();
+
   const { data: branches } = useBranches(owner, repo, tokenAuth);
   const [branchesStr, setBranchesStr] = useState<string[]>([]);
   const [currentBranch, setCurrentBranch] = useState<string>(branch);
@@ -180,7 +178,6 @@ export default function FileAndFolder() {
             repoContents={fullRepoContents}
             owner={owner}
             repo={repo}
-            tokenAuth={tokenAuth}
             currentBranch={currentBranch}
           />
         </div>
@@ -263,7 +260,6 @@ export default function FileAndFolder() {
                     item={item}
                     owner={owner}
                     repo={repo}
-                    tokenAuth={tokenAuth}
                     currentBranch={currentBranch}
                   />
                 </div>

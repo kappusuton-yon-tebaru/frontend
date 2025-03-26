@@ -1,3 +1,5 @@
+"use client";
+import { useToken } from "@/context/TokenContext";
 import { useAllUserRepos, useBranches } from "@/hooks/github";
 import { useProjectRepo } from "@/hooks/workspace";
 import { Resource } from "@/interfaces/workspace";
@@ -10,20 +12,16 @@ export default function RepositoryButton({
 }: {
   repository: Resource;
 }) {
+  const { tokenAuth } = useToken();
   const router = useRouter();
   const { orgId, projSpaceId } = useParams();
   const [branchNum, setBranchNum] = useState(-1);
-  const token = localStorage.getItem("access_token");
   const { data: projectRepo, isLoading } = useProjectRepo(repository.id);
   const gitRepoUrl = projectRepo?.git_repo_url;
   const owner = gitRepoUrl?.split("/").at(-2);
   const repo = gitRepoUrl?.split("/").at(-1);
   const [repoType, setRepoType] = useState<string>("");
 
-  let tokenAuth = "";
-  if (token !== null) {
-    tokenAuth = token;
-  }
   const { data: branches } = useBranches(owner, repo, tokenAuth);
   const { data: userRepos } = useAllUserRepos(tokenAuth);
   useEffect(() => {

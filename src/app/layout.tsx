@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavigationBar from "../components/NavigationBar";
+import { TokenProvider } from "@/context/TokenContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,9 +29,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-ci-bg-dark-blue`}
       >
-        <NavigationBar />
-        {/* <Sidebar /> */}
-        <main className="flex-1 mx-36 mt-16 p-8">{children}</main>
+        <TokenProvider>
+          <NavigationBar />
+          {/* <Sidebar /> */}
+          <main className="flex-1 mx-36 mt-16 p-8">{children}</main>
+        </TokenProvider>
       </body>
     </html>
   );

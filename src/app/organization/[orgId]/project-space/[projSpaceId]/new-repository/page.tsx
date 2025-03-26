@@ -2,6 +2,7 @@
 
 import InputField from "@/components/InputField";
 import RadioSelection from "@/components/RadioSelection";
+import { useToken } from "@/context/TokenContext";
 import { postData } from "@/services/baseRequest";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,11 +10,7 @@ import { useState } from "react";
 export default function NewRepository() {
   const router = useRouter();
   const { orgId, projSpaceId } = useParams();
-  const token = localStorage.getItem("access_token");
-  let tokenAuth = "";
-  if (token !== null) {
-    tokenAuth = token;
-  }
+  const { tokenAuth } = useToken();
   const [name, setName] = useState<string>("");
   const options = [
     {

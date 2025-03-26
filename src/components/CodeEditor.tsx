@@ -13,6 +13,7 @@ import { json } from "@codemirror/lang-json";
 import { EditorState } from "@codemirror/state";
 import { putData } from "@/services/baseRequest";
 import { Spin } from "antd";
+import { useToken } from "@/context/TokenContext";
 
 export default function CodeEditor({
   owner,
@@ -47,10 +48,7 @@ export default function CodeEditor({
   ]);
   const [isCommitting, setIsCommitting] = useState(false);
   const [sha, setSha] = useState<string>("");
-  let tokenAuth = "";
-  if (token !== null) {
-    tokenAuth = token;
-  }
+  const { tokenAuth } = useToken();
   const getFileExtension = (filePath: string) => {
     return filePath.split(".").pop()?.toLowerCase() || "";
   };

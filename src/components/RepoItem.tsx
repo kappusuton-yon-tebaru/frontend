@@ -1,21 +1,23 @@
+"use client";
+import { useToken } from "@/context/TokenContext";
 import { useCommitMetadata } from "@/hooks/github";
 import { Content } from "@/interfaces/github";
 import { Spin } from "antd";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function RepoItem({
   item,
   owner,
   repo,
-  tokenAuth,
   currentBranch,
 }: {
   item: Content;
   owner: string;
   repo: string;
-  tokenAuth: string;
   currentBranch: string;
 }) {
+  const { tokenAuth } = useToken();
   const { data: commitInfo, isLoading } = useCommitMetadata(
     owner,
     repo,
