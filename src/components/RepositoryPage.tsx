@@ -1,5 +1,4 @@
 "use client";
-import BranchManager from "@/components/BranchManager";
 import RepoItem from "@/components/RepoItem";
 import { useToken } from "@/context/TokenContext";
 import { useBranches, useRepoContents } from "@/hooks/github";
@@ -8,6 +7,7 @@ import { Branch, Content } from "@/interfaces/github";
 import { Spin } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import BranchButton from "./BranchButton";
 
 export default function RepositoryPage({ branchURL }: { branchURL?: string }) {
   const router = useRouter();
@@ -112,12 +112,15 @@ export default function RepositoryPage({ branchURL }: { branchURL?: string }) {
         </div>
         <div className="relative">
           {!isLoading && branches ? (
-            <BranchManager
+            <BranchButton
+              wide={true}
               branches={branchesStr}
               currentBranch={currentBranch}
-              setCurrentBranch={setCurrentBranch}
+              onSelectBranch={setCurrentBranch}
               owner={owner}
               repo={repo}
+              withCreate={true}
+              pushRoute={true}
             />
           ) : (
             <Spin />
