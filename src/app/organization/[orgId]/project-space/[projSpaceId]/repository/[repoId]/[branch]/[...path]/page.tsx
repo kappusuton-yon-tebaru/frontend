@@ -86,16 +86,18 @@ export default function FileAndFolder() {
     currentBranch
   );
 
-  const shouldFetch = path[path.length - 1].split(".").length === 1;
+  const shouldFetch = fullPath.includes(".");
 
-  const repoContentsResult = shouldFetch
-    ? useRepoContents(owner, repo, tokenAuth, fullPath, currentBranch)
-    : { data: [] };
-
-  const { data: repoContents } = repoContentsResult;
+  const { data: repoContents } = useRepoContents(
+    owner,
+    repo,
+    tokenAuth,
+    fullPath,
+    currentBranch
+  );
 
   useEffect(() => {
-    if (shouldFetch && Array.isArray(repoContents)) {
+    if (!shouldFetch && Array.isArray(repoContents)) {
       const sortedContents = [...repoContents].sort((a, b) => {
         return a.download_url === "" && b.download_url !== "" ? -1 : 1;
       });
@@ -111,10 +113,6 @@ export default function FileAndFolder() {
     fullPath,
     currentBranch
   );
-
-  const handleSave = (content: string) => {
-    setIsEditing(false);
-  };
 
   if (
     isLoading ||
@@ -224,7 +222,7 @@ export default function FileAndFolder() {
               </div>
             </div>
           </div>
-          {shouldFetch ? (
+          {!shouldFetch ? (
             <div className="bg-ci-modal-black text-white rounded-lg w-full mt-4">
               <div className="grid grid-cols-[35%_48%_27%] w-full h-12 px-4 items-center border border-ci-modal-grey rounded-t-lg">
                 <div className="text-ci-modal-grey">Name</div>

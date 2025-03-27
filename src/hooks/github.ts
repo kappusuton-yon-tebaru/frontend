@@ -20,6 +20,7 @@ export const fetchRepoContents = async (owner: string, repo: string, token: stri
     if (path === undefined) path = ""
     if (branch === undefined) branch = ""
     if (token === null) return new Error("token is null")
+    if (path.includes(".")) return []
     const response = await getData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/contents?path=${path}&branch=${branch}`, token);
     return response.data
 }
