@@ -64,7 +64,7 @@ export default function FileAndFolder() {
   const [branchesStr, setBranchesStr] = useState<string[]>([]);
   const [currentBranch, setCurrentBranch] = useState<string>(branch);
   useEffect(() => {
-    let branchList: string[] = [];
+    const branchList: string[] = [];
     if (typeof branches !== "undefined" && branches.data) {
       branches.data.map((br: Branch) => {
         if (br.name === "main") {
@@ -85,25 +85,24 @@ export default function FileAndFolder() {
     "",
     currentBranch
   );
-  if (path[path.length - 1].split(".").length === 1) {
-    const { data: repoContents } = useRepoContents(
-      owner,
-      repo,
-      tokenAuth,
-      fullPath,
-      currentBranch
-    );
-    useEffect(() => {
-      if (Array.isArray(repoContents)) {
-        const sortedContents = [...repoContents].sort((a, b) => {
-          return a.download_url === "" && b.download_url !== "" ? -1 : 1;
-        });
-        setContents(sortedContents);
-      } else {
-        setContents([]);
-      }
-    }, [repoContents]);
-  }
+
+  const shouldFetch = path[path.length - 1].split(".").length === 1;
+
+  const repoContentsResult = shouldFetch
+    ? useRepoContents(owner, repo, tokenAuth, fullPath, currentBranch)
+    : { data: [] };
+
+  const { data: repoContents } = repoContentsResult;
+
+  useEffect(() => {
+    if (shouldFetch && Array.isArray(repoContents)) {
+      const sortedContents = [...repoContents].sort((a, b) => {
+        return a.download_url === "" && b.download_url !== "" ? -1 : 1;
+      });
+      setContents(sortedContents);
+    }
+  }, [repoContents]);
+
   const [contents, setContents] = useState<Content[]>([]);
   const { data: commitInfo } = useCommitMetadata(
     owner,
@@ -225,7 +224,7 @@ export default function FileAndFolder() {
               </div>
             </div>
           </div>
-          {path[path.length - 1].split(".").length === 1 ? (
+          {shouldFetch ? (
             <div className="bg-ci-modal-black text-white rounded-lg w-full mt-4">
               <div className="grid grid-cols-[35%_48%_27%] w-full h-12 px-4 items-center border border-ci-modal-grey rounded-t-lg">
                 <div className="text-ci-modal-grey">Name</div>

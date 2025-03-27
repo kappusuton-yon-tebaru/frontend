@@ -40,7 +40,7 @@ export default function RepositoryPage({ branchURL }: { branchURL?: string }) {
   const [branchesStr, setBranchesStr] = useState<string[]>([]);
   const [currentBranch, setCurrentBranch] = useState<string>("");
   useEffect(() => {
-    let branchList: string[] = [];
+    const branchList: string[] = [];
     if (typeof branches !== "undefined" && branches.data) {
       branches.data.map((br: Branch) => {
         if (br.name === "main") {
