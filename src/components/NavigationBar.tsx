@@ -6,6 +6,7 @@ import { getData } from "@/services/baseRequest";
 import { useState, useEffect } from "react";
 import { Resource } from "@/interfaces/workspace";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 export default function NavigationBar() {
   const { orgId } = useParams();
@@ -48,11 +49,13 @@ export default function NavigationBar() {
   }, [organizations, orgId]);
 
   return (
-    <div className="flex flex-row h-16 bg-[#081126] fixed top-0 left-0 right-0 z-30 items-center px-9 justify-between font-bold">
+    <div className="flex flex-row h-16 bg-[#081126] fixed top-0 left-0 right-0 z-40 items-center px-9 justify-between font-bold">
       <div className="flex flex-row gap-x-12 items-center h-12">
         <Image src={"/logo.svg"} alt="logo" width={44} height={44} />
         <div>Project</div>
-        <div>Image and Deployment</div>
+        <div>
+          <Link href={"/cicd"}>Image and Deployment</Link>
+        </div>
       </div>
       <div className="flex flex-row gap-x-12 items-center">
         {selectedOrganization && (

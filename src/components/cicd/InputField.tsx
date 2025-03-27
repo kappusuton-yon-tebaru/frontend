@@ -1,16 +1,29 @@
-import { Dispatch, SetStateAction } from "react";
+"use client";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export default function InputField({
   label,
   placeholder,
   value,
   onChange,
+  required = false,
 }: {
   label: string;
   placeholder: string;
   value: any;
   onChange: Dispatch<SetStateAction<any>>;
+  required?: boolean;
 }) {
+  const [error, setError] = useState(false);
+
+  const handleBlur = () => {
+    if (required && !value) {
+      setError(true);
+    } else {
+      setError(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-y-6">
       <label className="text-base font-semibold">{label}</label>
@@ -20,7 +33,11 @@ export default function InputField({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onBlur={handleBlur}
       />
+      {error && (
+        <span className="text-red-500 text-sm">The field is required</span>
+      )}
     </div>
   );
 }

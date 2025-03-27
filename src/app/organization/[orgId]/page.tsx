@@ -13,7 +13,7 @@ export default function Organization() {
   const router = useRouter();
   const { orgId } = useParams();
   const [page, setPage] = useState(1);
-  const pageSize = 8;
+  const pageSize = 10;
   const [searchTerm, setSearchTerm] = useState("");
   const [sorting, setSorting] = useState<string>("resource_name");
   const [sortOrder, setSortOrder] = useState<string>("asc");
