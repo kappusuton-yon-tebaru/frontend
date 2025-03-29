@@ -110,13 +110,14 @@ export async function putData(url: string, data: any, token?: string) {
   }
 }
 
-export async function deleteData(url: string, token?: string) {
+export async function deleteData(url: string, data?: any, token?: string) {
   try {
     const response = await fetch(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {
