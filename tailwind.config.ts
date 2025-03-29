@@ -16,6 +16,7 @@ export default {
         "ci-modal-white": "#F2F9FF",
         "ci-modal-black": "#161F3A",
         "ci-modal-blue": "#245FA1",
+        "ci-modal-timmid-blue": "#274A87",
         "ci-modal-light-blue": "#006DF5",
         "ci-modal-cyan-blue": "#4691A9",
         "ci-modal-grey": "#999999",
@@ -34,7 +35,5 @@ export default {
     },
   },
   plugins: [],
-  safelist: [
-    "inline-block",
-  ]
+  safelist: ["inline-block"],
 } satisfies Config;
