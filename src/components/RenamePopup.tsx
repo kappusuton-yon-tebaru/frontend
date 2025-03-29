@@ -1,4 +1,5 @@
 import { Resource } from "@/interfaces/workspace";
+import { putData } from "@/services/baseRequest";
 import { Dispatch, RefObject, SetStateAction } from "react";
 
 export default function RenamePopup({
@@ -14,6 +15,20 @@ export default function RenamePopup({
   setNewName: Dispatch<SetStateAction<string>>;
   setRename: Dispatch<SetStateAction<boolean>>;
 }) {
+  const handleRename = () => {
+    try {
+      const renamePayload = {
+        resource_name: newName,
+      };
+      const operation = putData(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${projectSpace.id}`,
+        renamePayload
+      );
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default z-30"
@@ -37,8 +52,8 @@ export default function RenamePopup({
           <button
             className="px-4 py-2 text-white font-semibold bg-ci-bg-dark-blue rounded-md w-full"
             onClick={() => {
-              console.log("Renaming to:", newName);
               setRename(false);
+              handleRename();
             }}
           >
             Confirm

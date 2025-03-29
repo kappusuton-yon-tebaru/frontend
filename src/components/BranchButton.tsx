@@ -10,11 +10,19 @@ export default function BranchButton({
   branches,
   currentBranch,
   onSelectBranch,
+  owner,
+  repo,
+  withCreate,
+  pushRoute,
 }: {
   wide: boolean;
   branches: string[];
   currentBranch: string;
   onSelectBranch: (branch: string) => void;
+  owner: string;
+  repo: string;
+  withCreate: boolean;
+  pushRoute: boolean;
 }) {
   const [isOpened, setIsOpened] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -64,6 +72,10 @@ export default function BranchButton({
             setIsOpened(false);
           }}
           onClose={() => setIsOpened(false)}
+          owner={owner}
+          repo={repo}
+          withCreate={withCreate}
+          pushRoute={pushRoute}
         />
       )}
     </div>

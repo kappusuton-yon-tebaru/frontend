@@ -1,4 +1,5 @@
 import { Resource } from "@/interfaces/workspace";
+import { deleteData } from "@/services/baseRequest";
 import { Dispatch, RefObject, SetStateAction } from "react";
 
 export default function DeletePopup({
@@ -10,6 +11,16 @@ export default function DeletePopup({
   projectSpace: Resource;
   setDel: Dispatch<SetStateAction<boolean>>;
 }) {
+  const handleDelete = () => {
+    try {
+      const operation = deleteData(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/cascade/${projectSpace.id}?type=ORGANIZATION`
+      );
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-default z-30"
@@ -39,8 +50,8 @@ export default function DeletePopup({
           <button
             className="px-4 py-2 text-white font-semibold bg-ci-modal-red rounded-md w-full"
             onClick={() => {
-              console.log("Project Deleted");
               setDel(false);
+              handleDelete();
             }}
           >
             Delete

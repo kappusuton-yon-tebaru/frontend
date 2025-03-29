@@ -15,53 +15,54 @@ export const useResource = (resourceId: string) => {
   });
 };
 
-const fetchProjectSpaces = async (orgId: string, page: number) => {
-    const response = await getData(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}?page=${page}&limit=2`
-    );
-    return {
-      data: response.data,
-      total: response.total,
-      limit: response.limit,
-      page: response.page,
-    };
+const fetchProjectSpaces = async (orgId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
+  const response = await getData(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${orgId}?page=${page}&limit=8&sort_by=${sortBy}&sort_order=${sortOrder}&query=${search}`
+  );
+  return {
+    data: response.data,
+    total: response.total,
+    limit: response.limit,
+    page: response.page,
   };
+};
 
-export const useProjectSpaces = (orgId: string, page: number) => {
+export const useProjectSpaces = (orgId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
   return useQuery({
-    queryKey: ["projectSpaces", orgId, page],
-    queryFn: () => fetchProjectSpaces(orgId, page),
+    queryKey: ["projectSpaces", orgId, page, sortBy, sortOrder, search],
+    queryFn: () => fetchProjectSpaces(orgId, page, sortBy, sortOrder, search),
   });
 };
 
-
-const fetchRepositories = async (projectSpaceId: string, page: number) => {
+const fetchRepositories = async (projectSpaceId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
   const response = await getData(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}?page=${page}&limit=2`
-    );
-    return {
-      data: response.data,
-      total: response.total,
-      limit: response.limit,
-      page: response.page,
-    };
-}
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}?page=${page}&limit=4&sort_by=${sortBy}&sort_order=${sortOrder}&query=${search}`
+  );
+  return {
+    data: response.data,
+    total: response.total,
+    limit: response.limit,
+    page: response.page,
+  };
+};
 
-export const useRepositories = (projectSpaceId: string, page: number) => {
+export const useRepositories = (projectSpaceId: string, page: number, sortBy: string, sortOrder: string, search: string) => {
   return useQuery({
-    queryKey: ["repositories", projectSpaceId, page],
-    queryFn: () => fetchRepositories(projectSpaceId, page),
-  })
-}
+    queryKey: ["repositories", projectSpaceId, page, sortBy, sortOrder, search],
+    queryFn: () => fetchRepositories(projectSpaceId, page, sortBy, sortOrder, search),
+  });
+};
 
 const fetchProjectRepo = async (projectId: string) => {
-  const response = await getData(`${process.env.NEXT_PUBLIC_BACKEND_URL}/projrepos/project/${projectId}`)
-  return response
-}
+  const response = await getData(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/projrepos/project/${projectId}`
+  );
+  return response;
+};
 
 export const useProjectRepo = (projectId: string) => {
   return useQuery({
     queryKey: ["projectRepo", projectId],
     queryFn: () => fetchProjectRepo(projectId),
-  })
-}
+  });
+};
