@@ -29,7 +29,10 @@ export default function SubJobsListPage() {
     };
   }) => {
     return (
-      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between">
+      <div
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
+        onClick={() => router.push(`/cicd/operation/jobs/${entity.id}/logs`)}
+      >
         <div className="flex flex-row gap-x-12 items-center">
           <Image
             src={"/images/cicd/jobs.svg"}
