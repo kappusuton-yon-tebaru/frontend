@@ -15,7 +15,7 @@ const sortBy: SelectorOption[] = [
 export default function SubJobsListPage() {
   const router = useRouter();
   const { jobId } = useParams();
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs/${jobId}`;
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs/${jobId}/parent`;
 
   const renderEntity = (entity: {
     id: string;
@@ -29,8 +29,13 @@ export default function SubJobsListPage() {
     };
   }) => {
     return (
-      <div className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between">
-        <div className="flex flex-row gap-x-12 items-center">
+      <div
+        className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
+        onClick={() =>
+          router.push(`/cicd/operation/jobs/${jobId}/logs/${entity.id}`)
+        }
+      >
+        <div className="flex flex-row gap-x-12 items-center w-1/4">
           <Image
             src={"/images/cicd/jobs.svg"}
             alt={"disk"}
@@ -39,10 +44,10 @@ export default function SubJobsListPage() {
           />
           <h3 className="text-base w-full">{entity.service_name}</h3>
         </div>
-        <h3 className="text-base text-ci-modal-grey">
+        <h3 className="text-base text-ci-modal-grey w-1/5">
           Job type: {entity.job_type}
         </h3>
-        <h3 className="text-base text-ci-modal-grey">
+        <h3 className="text-base text-ci-modal-grey w-1/5">
           Created at: {formatDate(entity.created_at)}
         </h3>
         <div className="flex flex-row gap-x-12 items-center px-8 justify-around w-1/5">

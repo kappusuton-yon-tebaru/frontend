@@ -100,19 +100,12 @@ export default function EditImageRegistryPage() {
         name: registryData.name,
         provider_type: selectedRegistry.id,
         uri: registryData.registryUrl,
-        json_credential: JSON.stringify(
-          selectedRegistry.id === "ECR"
-            ? {
-                access_key: registryData.accessKey,
-                secret_access_key: registryData.secretKey,
-                aws_region: registryData.awsRegion,
-              }
-            : selectedRegistry.id === "DOCKER"
-            ? {
-                token: registryData.dockerToken,
-              }
-            : {}
-        ),
+        ecr_credential: {
+          access_key: registryData.accessKey || null,
+          secret_access_key: registryData.secretKey || null,
+          aws_region: registryData.awsRegion || null,
+        },
+        docker_credential: registryData.dockerToken || null,
         organization_id: "678fd29c7c67bca50cfae354",
       };
       const operation = postData(endpoints.updateRegUrl, createPayload);
