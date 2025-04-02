@@ -32,7 +32,7 @@ export default function DeployedServiceListPage() {
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
         onClick={() =>
           router.push(
-            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${entity.deployment_env}/${entity.service_name}`
+            `/cicd/deployment/environment/${projectSpaceId}/projects/${projectId}/services/${entity.deployment_env}/${entity.service_name}/logs`
           )
         }
       >

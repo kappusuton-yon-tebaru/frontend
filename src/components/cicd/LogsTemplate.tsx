@@ -2,11 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const mockLogs = Array.from({ length: 100 }).map((_, i) => ({
-  id: 100 - i, // Latest logs first
-  message: `Log entry #${100 - i}`,
-  timestamp: new Date().toISOString(),
-}));
+type LogEntry = {
+  id: string;
+  timestamp: string;
+  log: string;
+};
+
+type LogsResponse = {
+  data: LogEntry[];
+};
 
 export default function LogsTemplate({
   topic,
@@ -17,61 +21,119 @@ export default function LogsTemplate({
   description: string;
   logsUrl: string;
 }) {
-  const [logs, setLogs] = useState<typeof mockLogs>([]);
-  const [cursor, setCursor] = useState<number | null>(mockLogs.length); // Start from latest log
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const topObserverRef = useRef<HTMLDivElement | null>(null);
+  const bottomObserverRef = useRef<HTMLDivElement | null>(null);
   const limit = 10;
-  const prevScrollHeight = useRef(0);
 
-  const loadOlderLogs = useCallback(() => {
-    if (cursor === null || loading) return;
+  // Function to calculate the distance from the top of the container to the first log item
+  const getTopLogOffset = () => {
+    if (containerRef.current) {
+      const firstLog = containerRef.current.querySelector(
+        ".log-item"
+      ) as HTMLElement | null;
+      if (firstLog) {
+        return firstLog.offsetTop;
+      }
+    }
+    return 0;
+  };
 
-    setLoading(true);
-    prevScrollHeight.current = containerRef.current?.scrollHeight || 0; // Store scroll height before loading
+  // Function to set the scroll position
+  const setScrollPosition = (offset: number) => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = offset;
+    }
+  };
 
-    setTimeout(() => {
-      const newCursor = Math.max(cursor - limit, 0);
-      const newLogs = mockLogs.slice(newCursor, cursor);
-      setLogs((prev) => [...newLogs, ...prev]); // Prepend older logs
-      setCursor(newCursor > 0 ? newCursor : null);
-      setLoading(false);
+  const fetchLogs = useCallback(
+    async (direction: "older" | "newer") => {
+      if (loading) return;
+      setLoading(true);
 
-      // Maintain scroll position
-      setTimeout(() => {
-        if (containerRef.current) {
-          containerRef.current.scrollTop +=
-            containerRef.current.scrollHeight - prevScrollHeight.current;
+      try {
+        const params = new URLSearchParams({
+          limit: limit.toString(),
+          direction,
+          ...(cursor && { cursor }),
+        });
+
+        const response = await fetch(`${logsUrl}?${params}`);
+        const { data }: LogsResponse = await response.json();
+
+        if (data.length === 0) {
+          setLoading(false);
+          return;
         }
-      }, 0);
-    }, 500);
-  }, [cursor, loading]);
+
+        setLogs((prevLogs) => {
+          const newLogs = data.filter(
+            (log) => !prevLogs.some((l) => l.id === log.id)
+          );
+          return direction === "older"
+            ? [...newLogs, ...prevLogs]
+            : [...prevLogs, ...newLogs];
+        });
+
+        if (data.length > 0) {
+          setCursor(data[data.length - 1].id);
+        }
+      } catch (error) {
+        console.error("Failed to fetch logs:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cursor, logsUrl, loading]
+  );
 
   useEffect(() => {
-    setLogs(mockLogs.slice(mockLogs.length - limit)); // Load latest logs initially
-    setCursor(mockLogs.length - limit); // Set cursor for older logs
+    fetchLogs("older"); // Load latest logs initially
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      containerRef.current?.scrollTo(0, containerRef.current.scrollHeight); // Scroll to bottom initially
-    }, 100);
-  }, []); // Runs only on first load
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
+    const topObserver = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && cursor !== null) {
-          loadOlderLogs();
+        if (entries[0].isIntersecting) {
+          fetchLogs("older");
         }
       },
       { threshold: 1 }
     );
 
-    if (topObserverRef.current) observer.observe(topObserverRef.current);
-    return () => observer.disconnect();
-  }, [cursor, loadOlderLogs]);
+    if (topObserverRef.current) topObserver.observe(topObserverRef.current);
+    return () => topObserver.disconnect();
+  }, [fetchLogs]);
+
+  useEffect(() => {
+    const bottomObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchLogs("newer");
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (bottomObserverRef.current)
+      bottomObserver.observe(bottomObserverRef.current);
+    return () => bottomObserver.disconnect();
+  }, [fetchLogs]);
+
+  useEffect(() => {
+    if (containerRef.current && initialLoad) {
+      // Use setTimeout to ensure DOM is rendered before scrolling
+      setTimeout(() => {
+        containerRef.current!.scrollTop = containerRef.current!.scrollHeight;
+        setInitialLoad(false); // Set initialLoad to false after scrolling
+      }, 100); // Delay it slightly
+    }
+  }, [logs, initialLoad]);
 
   return (
     <div className="flex flex-col gap-y-8">
@@ -88,15 +150,15 @@ export default function LogsTemplate({
         {logs.map((log) => (
           <div
             key={`log-${log.id}`}
-            className="p-2 border-b bg-ci-modal-black hover:bg-ci-modal-blue"
+            className="p-2 border-b bg-ci-modal-black hover:bg-ci-modal-blue log-item"
           >
-            <p>{log.message}</p>
+            <p>{log.log}</p>
             <small className="text-gray-500">
               {new Date(log.timestamp).toLocaleString()}
             </small>
           </div>
         ))}
-        {loading && <p>Loading older logs...</p>}
+        <div ref={bottomObserverRef} className="h-4" />
       </div>
     </div>
   );

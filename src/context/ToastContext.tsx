@@ -12,7 +12,7 @@ const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const triggerToast = (
     message: string,
-    type: "success" | "error" = "success"
+    type: "success" | "error" | undefined
   ) => {
     if (type === "success") {
       return toast.success(message);
