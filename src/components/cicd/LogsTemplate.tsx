@@ -28,28 +28,7 @@ export default function LogsTemplate({
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const topObserverRef = useRef<HTMLDivElement | null>(null);
-  const bottomObserverRef = useRef<HTMLDivElement | null>(null);
   const limit = 10;
-
-  // Function to calculate the distance from the top of the container to the first log item
-  const getTopLogOffset = () => {
-    if (containerRef.current) {
-      const firstLog = containerRef.current.querySelector(
-        ".log-item"
-      ) as HTMLElement | null;
-      if (firstLog) {
-        return firstLog.offsetTop;
-      }
-    }
-    return 0;
-  };
-
-  // Function to set the scroll position
-  const setScrollPosition = (offset: number) => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = offset;
-    }
-  };
 
   const fetchLogs = useCallback(
     async (direction: "older" | "newer") => {
@@ -93,7 +72,7 @@ export default function LogsTemplate({
   );
 
   useEffect(() => {
-    fetchLogs("older"); // Load latest logs initially
+    fetchLogs("older");
   }, []);
 
   useEffect(() => {
@@ -111,27 +90,18 @@ export default function LogsTemplate({
   }, [fetchLogs]);
 
   useEffect(() => {
-    const bottomObserver = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchLogs("newer");
-        }
-      },
-      { threshold: 1 }
-    );
-
-    if (bottomObserverRef.current)
-      bottomObserver.observe(bottomObserverRef.current);
-    return () => bottomObserver.disconnect();
+    const intervalId = setInterval(() => {
+      fetchLogs("newer");
+    }, 5000);
+    return () => clearInterval(intervalId);
   }, [fetchLogs]);
 
   useEffect(() => {
     if (containerRef.current && initialLoad) {
-      // Use setTimeout to ensure DOM is rendered before scrolling
       setTimeout(() => {
         containerRef.current!.scrollTop = containerRef.current!.scrollHeight;
-        setInitialLoad(false); // Set initialLoad to false after scrolling
-      }, 100); // Delay it slightly
+        setInitialLoad(false);
+      }, 100);
     }
   }, [logs, initialLoad]);
 
@@ -158,7 +128,6 @@ export default function LogsTemplate({
             </small>
           </div>
         ))}
-        <div ref={bottomObserverRef} className="h-4" />
       </div>
     </div>
   );
