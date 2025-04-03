@@ -30,10 +30,23 @@ export default function LogsTemplate({
   const topObserverRef = useRef<HTMLDivElement | null>(null);
   const limit = 10;
 
+  const isScrolledToBottom = () => {
+    if (containerRef.current) {
+      return (
+        containerRef.current.scrollHeight - containerRef.current.scrollTop <=
+        containerRef.current.clientHeight + 5 // Adding a small margin
+      );
+    }
+    return false;
+  };
+
   const fetchLogs = useCallback(
     async (direction: "older" | "newer") => {
       if (loading) return;
       setLoading(true);
+
+      let previousScrollHeight = containerRef.current?.scrollHeight || 0;
+      const wasAtBottom = direction === "newer" && isScrolledToBottom();
 
       try {
         const params = new URLSearchParams({
@@ -42,7 +55,7 @@ export default function LogsTemplate({
           ...(cursor && { cursor }),
         });
 
-        const response = await fetch(`${logsUrl}?${params}`);
+        const response = await fetch(`${logsUrl}&${params}`);
         const { data }: LogsResponse = await response.json();
 
         if (data.length === 0) {
@@ -61,6 +74,21 @@ export default function LogsTemplate({
 
         if (data.length > 0) {
           setCursor(data[data.length - 1].id);
+        }
+
+        if (direction === "older" && containerRef.current) {
+          setTimeout(() => {
+            const newScrollHeight = containerRef.current!.scrollHeight;
+            containerRef.current!.scrollTop +=
+              newScrollHeight - previousScrollHeight;
+          }, 100); // Small delay to ensure DOM updates
+        }
+
+        if (wasAtBottom && containerRef.current) {
+          setTimeout(() => {
+            containerRef.current!.scrollTop =
+              containerRef.current!.scrollHeight;
+          }, 100);
         }
       } catch (error) {
         console.error("Failed to fetch logs:", error);

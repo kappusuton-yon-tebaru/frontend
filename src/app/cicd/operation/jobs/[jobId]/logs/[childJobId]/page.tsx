@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 export default function JobLogsPage() {
   const { jobId, childJobId } = useParams();
-  const logUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs/${childJobId}/log`;
+  const logUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs/${childJobId}/log?`;
   return (
     <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8">
       <LogsTemplate
