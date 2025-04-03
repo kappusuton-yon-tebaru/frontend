@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import AnsiToHtml from "ansi-to-html";
 
 type LogEntry = {
   id: string;
@@ -29,6 +30,8 @@ export default function LogsTemplate({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const topObserverRef = useRef<HTMLDivElement | null>(null);
   const limit = 10;
+
+  const ansiConverter = new AnsiToHtml();
 
   const isScrolledToBottom = () => {
     if (containerRef.current) {
@@ -104,6 +107,8 @@ export default function LogsTemplate({
   }, []);
 
   useEffect(() => {
+    if (logs.length === 0) return;
+
     const topObserver = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -115,7 +120,7 @@ export default function LogsTemplate({
 
     if (topObserverRef.current) topObserver.observe(topObserverRef.current);
     return () => topObserver.disconnect();
-  }, [fetchLogs]);
+  }, [fetchLogs, logs]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -145,17 +150,27 @@ export default function LogsTemplate({
         className="border rounded p-2 h-96 overflow-y-auto bg-ci-modal-black"
       >
         <div ref={topObserverRef} className="h-4" />
-        {logs.map((log) => (
-          <div
-            key={`log-${log.id}`}
-            className="p-2 border-b bg-ci-modal-black hover:bg-ci-modal-blue log-item"
-          >
-            <p>{log.log}</p>
-            <small className="text-gray-500">
-              {new Date(log.timestamp).toLocaleString()}
-            </small>
+        {logs.length === 0 ? (
+          <div className="text-center text-gray-500 mt-4">
+            No logs available
           </div>
-        ))}
+        ) : (
+          logs.map((log) => (
+            <div
+              key={`log-${log.id}`}
+              className="p-2 border-b bg-ci-modal-black hover:bg-ci-modal-blue log-item"
+            >
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: ansiConverter.toHtml(log.log),
+                }}
+              />
+              <small className="text-gray-500">
+                {new Date(log.timestamp).toLocaleString()}
+              </small>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
