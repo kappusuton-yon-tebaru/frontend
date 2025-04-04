@@ -29,7 +29,7 @@ export default function JobsListPage() {
         className="flex flex-row px-6 py-3 gap-x-12 cursor-default select-none items-center justify-between"
         onClick={() => router.push(`/cicd/operation/jobs/${entity.id}`)}
       >
-        <div className="flex flex-row gap-x-12 items-center">
+        <div className="flex flex-row gap-x-12 items-center w-1/4">
           <Image
             src={"/images/cicd/jobs.svg"}
             alt={"disk"}
@@ -38,7 +38,7 @@ export default function JobsListPage() {
           />
           <h3 className="text-base">{entity.project.name}</h3>
         </div>
-        <h3 className="text-base text-ci-modal-grey">
+        <h3 className="text-base text-ci-modal-grey w-1/5">
           Created at: {formatDate(entity.created_at)}
         </h3>
         <div className="flex flex-row gap-x-12 items-center px-8 justify-around w-1/5">

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import AnsiToHtml from "ansi-to-html";
+import { getData } from "@/services/baseRequest";
 
 type LogEntry = {
   id: string;
@@ -17,15 +18,18 @@ export default function LogsTemplate({
   topic,
   description,
   logsUrl,
+  statusCheckUrl,
 }: {
   topic: string;
   description: string;
   logsUrl: string;
+  statusCheckUrl?: string;
 }) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
+  const [isLogging, setIsLogging] = useState<boolean>(true);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const topObserverRef = useRef<HTMLDivElement | null>(null);
@@ -37,7 +41,7 @@ export default function LogsTemplate({
     if (containerRef.current) {
       return (
         containerRef.current.scrollHeight - containerRef.current.scrollTop <=
-        containerRef.current.clientHeight + 5 // Adding a small margin
+        containerRef.current.clientHeight + 5
       );
     }
     return false;
@@ -58,8 +62,7 @@ export default function LogsTemplate({
           ...(cursor && { cursor }),
         });
 
-        const response = await fetch(`${logsUrl}&${params}`);
-        const { data }: LogsResponse = await response.json();
+        const { data }: LogsResponse = await getData(`${logsUrl}&${params}`);
 
         if (data.length === 0) {
           setLoading(false);
@@ -84,7 +87,7 @@ export default function LogsTemplate({
             const newScrollHeight = containerRef.current!.scrollHeight;
             containerRef.current!.scrollTop +=
               newScrollHeight - previousScrollHeight;
-          }, 100); // Small delay to ensure DOM updates
+          }, 100);
         }
 
         if (wasAtBottom && containerRef.current) {
@@ -123,10 +126,12 @@ export default function LogsTemplate({
   }, [fetchLogs, logs]);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchLogs("newer");
-    }, 5000);
-    return () => clearInterval(intervalId);
+    if (isLogging) {
+      const intervalId = setInterval(() => {
+        fetchLogs("newer");
+      }, 5000);
+      return () => clearInterval(intervalId);
+    }
   }, [fetchLogs]);
 
   useEffect(() => {
@@ -137,6 +142,19 @@ export default function LogsTemplate({
       }, 100);
     }
   }, [logs, initialLoad]);
+
+  useEffect(() => {
+    if (statusCheckUrl) {
+      getData(statusCheckUrl)
+        .then((data) => {
+          console.log("Status check response:", data);
+          if (data.job_status === "success") {
+            setIsLogging(false);
+          }
+        })
+        .catch((err) => console.error("Status check failed:", err));
+    }
+  }, [statusCheckUrl]);
 
   return (
     <div className="flex flex-col gap-y-8">
