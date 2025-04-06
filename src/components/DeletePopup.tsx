@@ -1,6 +1,7 @@
 import { Resource } from "@/interfaces/workspace";
 import { deleteData } from "@/services/baseRequest";
 import { Dispatch, RefObject, SetStateAction } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function DeletePopup({
   deleteModalRef,
@@ -17,8 +18,11 @@ export default function DeletePopup({
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/cascade/${projectSpace.id}?type=ORGANIZATION`
       );
       window.location.reload();
-    } catch (error) {
-      console.log(error);
+      toast.success("Delete Project Space successfully");
+    } catch (e: any) {
+      const errorMessage =
+        e?.response?.data?.message || e?.message || "Something went wrong.";
+      toast.error(errorMessage);
     }
   };
   return (
@@ -58,6 +62,24 @@ export default function DeletePopup({
           </button>
         </div>
       </div>
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#4CAF50",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#F44336",
+              color: "white",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

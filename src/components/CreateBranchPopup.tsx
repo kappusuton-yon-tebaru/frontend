@@ -3,6 +3,7 @@ import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import BranchButton from "./BranchButton";
 import { useParams, useRouter } from "next/navigation";
 import { useToken } from "@/context/TokenContext";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function CreateBranchPopup({
   createBranchModalRef,
@@ -35,8 +36,11 @@ export default function CreateBranchPopup({
       router.push(
         `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branchName}`
       );
-    } catch (error) {
-      console.log(error);
+      toast.success("Create new branch successfully");
+    } catch (e: any) {
+      const errorMessage =
+        e?.response?.data?.message || e?.message || "Something went wrong.";
+      toast.error(errorMessage);
     }
   };
   return (
@@ -94,6 +98,24 @@ export default function CreateBranchPopup({
           </button>
         </div>
       </div>
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#4CAF50",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#F44336",
+              color: "white",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

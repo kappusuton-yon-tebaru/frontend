@@ -3,9 +3,11 @@
 import InputField from "@/components/InputField";
 import RadioSelection from "@/components/RadioSelection";
 import { useToken } from "@/context/TokenContext";
+import { checkGitHubRepoExists } from "@/hooks/github";
 import { postData } from "@/services/baseRequest";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function NewRepository() {
   const router = useRouter();
@@ -53,11 +55,34 @@ export default function NewRepository() {
           tokenAuth
         );
         router.push(`/organization/${orgId}/project-space/${projSpaceId}`);
-      } catch (e) {
-        console.error(e);
+        toast.success("Create new Repository successfully");
+      } catch (e: any) {
+        const errorMessage =
+          e?.response?.data?.message || e?.message || "Something went wrong.";
+        toast.error(errorMessage);
       }
-    } else if (name !== "" && type === "exist" && gitRepoURL !== "") {
+    } else if (name !== "" && type === "exist") {
       try {
+        if (!gitRepoURL.trim()) {
+          toast.error("GitHub Repository is empty.");
+          return;
+        }
+
+        const match = gitRepoURL.match(/github\.com\/([^/]+)\/([^/]+)/);
+        if (!match) {
+          toast.error("Invalid GitHub repository URL.");
+          return;
+        }
+
+        const owner = match[1];
+        const repo = match[2];
+
+        const isValidRepo = await checkGitHubRepoExists(owner, repo, tokenAuth);
+        if (!isValidRepo) {
+          toast.error("GitHub repository does not exist or is inaccessible.");
+          return;
+        }
+
         const repository = await postData(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources?parent_id=${projSpaceId}`,
           {
@@ -65,20 +90,19 @@ export default function NewRepository() {
             resource_type: "PROJECT",
           }
         );
-        if (!gitRepoURL.trim()) {
-          console.error("GitHub Repository URL is empty.");
-          return;
-        }
+
         const gitRepository = await postData(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/projrepos/${repository.resourceId}`,
           {
             git_repo_url: gitRepoURL,
           }
         );
-        console.log("Git Repository Response:", gitRepository);
         router.push(`/organization/${orgId}/project-space/${projSpaceId}`);
-      } catch (e) {
-        console.error(e);
+        toast.success("Create new Repository successfully");
+      } catch (e: any) {
+        const errorMessage =
+          e?.response?.data?.message || e?.message || "Something went wrong.";
+        toast.error(errorMessage);
       }
     }
   };
@@ -117,8 +141,8 @@ export default function NewRepository() {
             </div>
           ) : (
             <InputField
-              label="GitHub reposity URL"
-              placeholder="e.g. https://github.com/user/repo"
+              label="GitHub repository URL"
+              placeholder="e.g. https://github.com/user/repo (no .git at the end)"
               value={gitRepoURL}
               onChange={setGitRepoURL}
             />
@@ -142,6 +166,24 @@ export default function NewRepository() {
           Create
         </button>
       </div>
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#4CAF50",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#F44336",
+              color: "white",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

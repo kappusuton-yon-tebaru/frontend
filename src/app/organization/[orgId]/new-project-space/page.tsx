@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { postData } from "@/services/baseRequest";
 import { ResourceType } from "@/interfaces/workspace";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function NewProjectSpace() {
   const [name, setName] = useState<string>("");
@@ -22,8 +23,11 @@ export default function NewProjectSpace() {
           }
         );
         router.push(`project-space/${response.resourceId}`);
-      } catch (e) {
-        console.error(e);
+        toast.success("Create new Project space successfully");
+      } catch (e: any) {
+        const errorMessage =
+          e?.response?.data?.message || e?.message || "Something went wrong.";
+        toast.error(errorMessage);
       }
     }
   };
@@ -50,6 +54,24 @@ export default function NewProjectSpace() {
           Create
         </button>
       </div>
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#4CAF50",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#F44336",
+              color: "white",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

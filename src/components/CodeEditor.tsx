@@ -14,6 +14,7 @@ import { EditorState } from "@codemirror/state";
 import { putData } from "@/services/baseRequest";
 import { Spin } from "antd";
 import { useToken } from "@/context/TokenContext";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function CodeEditor({
   owner,
@@ -111,7 +112,6 @@ export default function CodeEditor({
 
   const handleCommitAndPush = async () => {
     if (!commitMessage.trim()) {
-      alert("Please enter a commit message");
       return;
     }
 
@@ -129,9 +129,11 @@ export default function CodeEditor({
         tokenAuth
       );
       window.location.reload();
-    } catch (error) {
-      console.error("Error committing and pushing:", error);
-      alert("Failed to commit and push changes");
+      toast.success("Commit and push successfully");
+    } catch (e: any) {
+      const errorMessage =
+        e?.response?.data?.message || e?.message || "Something went wrong.";
+      toast.error(errorMessage);
     } finally {
       setIsCommitting(false);
     }
@@ -184,6 +186,24 @@ export default function CodeEditor({
           </button>
         </div>
       )}
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#4CAF50",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#F44336",
+              color: "white",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

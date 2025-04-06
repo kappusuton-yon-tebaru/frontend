@@ -1,6 +1,7 @@
 import { Resource } from "@/interfaces/workspace";
 import { putData } from "@/services/baseRequest";
 import { Dispatch, RefObject, SetStateAction } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function RenamePopup({
   renameModalRef,
@@ -25,8 +26,11 @@ export default function RenamePopup({
         renamePayload
       );
       window.location.reload();
-    } catch (error) {
-      console.log(error);
+      toast.success("Rename Project Space successfully");
+    } catch (e: any) {
+      const errorMessage =
+        e?.response?.data?.message || e?.message || "Something went wrong.";
+      toast.error(errorMessage);
     }
   };
   return (
@@ -69,6 +73,24 @@ export default function RenamePopup({
           </button>
         </div>
       </div>
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#4CAF50",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#F44336",
+              color: "white",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

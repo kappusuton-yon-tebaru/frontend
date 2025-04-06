@@ -15,6 +15,15 @@ export const useBranches = (owner: string, repo: string, token: string) => {
       });
 }
 
+export const checkGitHubRepoExists = async (owner: string, repo: string, token: string) => {
+    try {
+      const result = await fetchBranches(owner, repo, token);
+      return result?.data && Array.isArray(result.data);
+    } catch (e) {
+      return false;
+    }
+  };
+
 export const fetchRepoContents = async (owner: string, repo: string, token: string | null, path?: string, branch?: string) => {
     if (owner === undefined || repo === undefined) return {data:null}
     if (path === undefined) path = ""
