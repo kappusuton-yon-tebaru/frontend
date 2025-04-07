@@ -92,11 +92,15 @@ export default function SwitchBranch({
               if (pushRoute) {
                 if (filePath) {
                   router.push(
-                    `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branch}/${filePath}`
+                    `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${encodeURIComponent(
+                      branch
+                    )}/${filePath}`
                   );
                 } else if (branch !== "main") {
                   router.push(
-                    `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branch}`
+                    `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${encodeURIComponent(
+                      branch
+                    )}`
                   );
                 } else {
                   router.push(

@@ -155,7 +155,9 @@ export default function RepositoryPage({ branchURL }: { branchURL?: string }) {
             key={item.path}
             onClick={() => {
               router.push(
-                `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${currentBranch}/${item.path}`
+                `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${encodeURIComponent(
+                  currentBranch
+                )}/${item.path}`
               );
             }}
           >

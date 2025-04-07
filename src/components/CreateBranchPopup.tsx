@@ -28,13 +28,23 @@ export default function CreateBranchPopup({
   const [currentBranch, setCurrentBranch] = useState<string>(branches[0]);
   const handleCreateBranch = async () => {
     try {
+      // Replace spaces with dashes or underscores and trim whitespace
+      const sanitizedBranchName = branchName.trim().replace(/\s+/g, "-");
+
       const operation = await postData(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/${owner}/${repo}/create-branch?branch_name=${branchName}&selected_branch=${currentBranch}`,
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL
+        }/github/${owner}/${repo}/create-branch?branch_name=${encodeURIComponent(
+          sanitizedBranchName
+        )}&selected_branch=${encodeURIComponent(currentBranch)}`,
         "",
         tokenAuth
       );
+
       router.push(
-        `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${branchName}`
+        `/organization/${orgId}/project-space/${projSpaceId}/repository/${repoId}/${encodeURIComponent(
+          sanitizedBranchName
+        )}`
       );
       toast.success("Create new branch successfully");
     } catch (e: any) {

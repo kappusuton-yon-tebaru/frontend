@@ -4,8 +4,6 @@ import { useParams } from "next/navigation";
 
 export default function RepositoryWithBranch() {
   const { branch } = useParams();
-  if (typeof branch === "undefined" || Array.isArray(branch)) {
-    throw new Error("Invalid branch");
-  }
-  return <RepositoryPage branchURL={branch} />;
+  const decodedBranch = decodeURIComponent(branch as string);
+  return <RepositoryPage branchURL={decodedBranch} />;
 }

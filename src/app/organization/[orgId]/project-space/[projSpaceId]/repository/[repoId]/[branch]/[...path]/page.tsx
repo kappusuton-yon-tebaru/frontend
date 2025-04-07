@@ -22,6 +22,7 @@ export default function FileAndFolder() {
 
   const router = useRouter();
   const { orgId, projSpaceId, repoId, branch, path } = useParams();
+  const decodedBranch = decodeURIComponent(branch as string);
 
   if (typeof orgId === "undefined" || Array.isArray(orgId)) {
     throw new Error("Invalid orgId");
@@ -33,10 +34,6 @@ export default function FileAndFolder() {
 
   if (typeof repoId === "undefined" || Array.isArray(repoId)) {
     throw new Error("Invalid repoId");
-  }
-
-  if (typeof branch === "undefined" || Array.isArray(branch)) {
-    throw new Error("Invalid branch");
   }
 
   if (typeof path === "undefined") {
@@ -62,7 +59,7 @@ export default function FileAndFolder() {
 
   const { data: branches } = useBranches(owner, repo, tokenAuth);
   const [branchesStr, setBranchesStr] = useState<string[]>([]);
-  const [currentBranch, setCurrentBranch] = useState<string>(branch);
+  const [currentBranch, setCurrentBranch] = useState<string>(decodedBranch);
   useEffect(() => {
     const branchList: string[] = [];
     if (typeof branches !== "undefined" && branches.data) {
@@ -74,7 +71,7 @@ export default function FileAndFolder() {
         }
       });
       setBranchesStr(branchList);
-      setCurrentBranch(branch);
+      setCurrentBranch(decodedBranch);
     }
   }, [branches]);
 
@@ -275,7 +272,7 @@ export default function FileAndFolder() {
               repo={repo}
               token={tokenAuth}
               path={fullPath}
-              branch={branch}
+              branch={decodedBranch}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
             />
