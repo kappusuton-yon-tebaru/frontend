@@ -24,6 +24,7 @@ export default function SortManager({
             setSortOrder("asc");
           }
         }}
+        data-testid="sort-order"
       >
         {sortOrder === "asc" ? "Ascending" : "Descending"}
       </Button>

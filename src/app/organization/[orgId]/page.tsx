@@ -36,10 +36,13 @@ export default function Organization() {
       <div className="flex flex-col">
         <div className="flex justify-between mb-4">
           <div className="flex flex-col">
-            <h1 className="font-bold text-[24px]">
+            <h1 className="font-bold text-[24px]" data-testid="org-title">
               {organization?.resource_name}
             </h1>
-            <h2 className="font-medium text-[16px] text-ci-modal-grey">
+            <h2
+              className="font-medium text-[16px] text-ci-modal-grey"
+              data-testid="org-owner"
+            >
               Owner: user 1
             </h2>
           </div>
@@ -47,6 +50,7 @@ export default function Organization() {
             <Button
               className="h-10 w-60 text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-semibold hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
               onClick={() => router.push(`/organization/${orgId}/manage`)}
+              data-testid="manage-org"
             >
               Manage Organization
             </Button>
@@ -55,19 +59,24 @@ export default function Organization() {
               onClick={() =>
                 router.push(`/organization/${orgId}/new-project-space`)
               }
+              data-testid="new-projspace"
             >
               New Project Space
             </Button>
           </div>
         </div>
         <div className="flex flex-row items-center gap-8 w-full h-10">
-          <div className="flex items-center border p-2 rounded-md border-ci-modal-grey bg-ci-modal-black flex-grow h-full">
+          <div
+            className="flex items-center border p-2 rounded-md border-ci-modal-grey bg-ci-modal-black flex-grow h-full"
+            data-testid="search-bar"
+          >
             <Image
               src="/search-icon.svg"
               alt="search-icon"
               width={20}
               height={20}
               className="mr-2"
+              data-testid="search-icon"
             />
             <input
               type="text"
@@ -75,6 +84,7 @@ export default function Organization() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
               className="flex-grow bg-transparent text-white outline-none h-full"
+              data-testid="search-text"
             />
           </div>
           <SortManager
@@ -110,6 +120,7 @@ export default function Organization() {
           total={projectSpaces?.total}
           pageSize={pageSize}
           onChange={setPage}
+          data-testid="pagination"
         />
       </div>
     </div>

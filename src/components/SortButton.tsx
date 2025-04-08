@@ -46,14 +46,20 @@ export default function SortButton({
         ref={buttonRef}
         className="h-full w-60 text-[18px] border border-ci-modal-grey px-6 py-1 bg-ci-modal-black rounded-md font-medium hover:bg-ci-modal-blue transition-all duration-300 ease-in-out"
         onClick={toggleDropdown}
+        data-testid="sort-button"
       >
-        <div className="text-ci-modal-grey">Sort by: </div>
-        <div className="ml-1 text-white">{optionLabels[sorting]}</div>
+        <div className="text-ci-modal-grey" data-testid="sort-by">
+          Sort by:{" "}
+        </div>
+        <div className="ml-1 text-white" data-testid="sorting">
+          {optionLabels[sorting]}
+        </div>
       </Button>
       {isOpen && (
         <div
           ref={dropdownRef}
           className="absolute left-0 mt-2 w-full bg-ci-bg-dark-blue border border-ci-modal-grey rounded-md shadow-lg z-10"
+          data-testid="sorting-dropdown"
         >
           {Object.keys(optionLabels).map((option, index) => (
             <button
@@ -69,6 +75,7 @@ export default function SortButton({
                 setSorting(option);
                 setIsOpen(false);
               }}
+              data-testid="sorting-option"
             >
               {optionLabels[option]}
             </button>
