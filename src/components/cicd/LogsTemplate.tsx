@@ -159,9 +159,34 @@ export default function LogsTemplate({
   return (
     <div className="flex flex-col gap-y-8">
       <h2 className="text-xl font-bold">{topic}</h2>
-      {description && (
-        <div className="text-base text-ci-modal-grey">{description}</div>
-      )}
+      <div className="flex flex-row justify-between items-center">
+        {description && (
+          <div className="text-base text-ci-modal-grey">{description}</div>
+        )}
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={() => {
+              if (containerRef.current) {
+                containerRef.current.scrollTop = 0;
+              }
+            }}
+            className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey py-2 px-4 rounded-lg text-base"
+          >
+            Go to Top
+          </button>
+          <button
+            onClick={() => {
+              if (containerRef.current) {
+                containerRef.current.scrollTop =
+                  containerRef.current.scrollHeight;
+              }
+            }}
+            className="bg-ci-modal-black hover:bg-ci-modal-blue border-y border-x border-ci-modal-grey py-2 px-4 rounded-lg text-base"
+          >
+            Go to Bottom
+          </button>
+        </div>
+      </div>
       <hr className="border-t border-gray-300 col-span-6" />
       <div
         ref={containerRef}
