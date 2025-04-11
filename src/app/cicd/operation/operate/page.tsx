@@ -260,7 +260,7 @@ function OperationPage() {
   }, [endpoints.service, selectedProject]);
 
   useEffect(() => {
-    if (!selectedProject) return;
+    if (!selectedProject || selectedOperation.type !== "DEPLOY") return;
     const fetchDeploymentEnv = async () => {
       try {
         const data = await getData(
