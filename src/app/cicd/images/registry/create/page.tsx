@@ -28,6 +28,8 @@ export default function AddImageRegistryPage() {
     secretKey: "",
     awsRegion: "",
     dockerToken: "",
+    dockerUsername: "",
+    dockerPassword: "",
   });
 
   const handleChange = (field: keyof typeof registryData, value: string) => {
@@ -48,7 +50,8 @@ export default function AddImageRegistryPage() {
     }
 
     if (selectedRegistry.id === "DOCKER") {
-      if (!registryData.dockerToken) return false;
+      if (!registryData.dockerUsername || !registryData.dockerPassword)
+        return false;
     }
 
     return true;
@@ -56,19 +59,30 @@ export default function AddImageRegistryPage() {
 
   const handleSubmit = async () => {
     try {
-      const createPayload = {
+      const basePayload: any = {
         name: registryData.name,
         provider_type: selectedRegistry.id,
         uri: registryData.registryUrl,
-        ecr_credential: {
-          access_key: registryData.accessKey || null,
-          secret_access_key: registryData.secretKey || null,
-          aws_region: registryData.awsRegion || null,
-        },
-        docker_credential: registryData.dockerToken || null,
+        credential: {},
         organization_id: "678fd29c7c67bca50cfae354",
       };
-      const operation = await postData(createUrl, createPayload);
+
+      if (selectedRegistry.id === "ECR") {
+        basePayload.credential.ecr_credential = {
+          access_key: registryData.accessKey,
+          secret_access_key: registryData.secretKey,
+          aws_region: registryData.awsRegion,
+        };
+      }
+
+      if (selectedRegistry.id === "DOCKER") {
+        basePayload.credential.dockerhub_credential = {
+          username: registryData.dockerUsername,
+          personal_access_token: registryData.dockerPassword,
+        };
+      }
+
+      const operation = await postData(createUrl, basePayload);
       triggerToast("Add registry success!", "success");
       router.push("/cicd/images/registry");
     } catch (error) {
@@ -151,14 +165,22 @@ export default function AddImageRegistryPage() {
             <>
               <div className="col-span-3">
                 <InputField
-                  label="Token"
-                  placeholder="Docker Hub Token"
-                  value={registryData.dockerToken}
-                  onChange={(value) => handleChange("dockerToken", value)}
+                  label="Username"
+                  placeholder="Docker Hub Username"
+                  value={registryData.dockerUsername}
+                  onChange={(value) => handleChange("dockerUsername", value)}
                   required={true}
                 />
               </div>
-              <div className="col-span-3"></div>
+              <div className="col-span-3">
+                <InputField
+                  label="Password"
+                  placeholder="Docker Hub Password"
+                  value={registryData.dockerPassword}
+                  onChange={(value) => handleChange("dockerPassword", value)}
+                  required={true}
+                />
+              </div>
             </>
           )}
 
