@@ -28,9 +28,18 @@ export async function getData(url: string, token?: string) {
 
 export async function postData(url: string, data: any, token?: string) {
   try {
+    let authToken;
+    if (token) {
+      authToken = token || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      if (!authToken) {
+        throw new Error("No valid token provided");
+      }
+    }
+
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
@@ -70,13 +79,45 @@ export async function patchData(url: string, data: any, token?: string) {
   }
 }
 
-export async function deleteData(url: string, token?: string) {
+export async function putData(url: string, data: any, token?: string) {
+  try {
+    let authToken;
+    if (token) {
+      authToken = token || process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      if (!authToken) {
+        throw new Error("No valid token provided");
+      }
+    }
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error updating data:", error);
+    throw error;
+  }
+}
+
+export async function deleteData(url: string, data?: any, token?: string) {
   try {
     const response = await fetch(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {

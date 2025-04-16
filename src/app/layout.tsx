@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import NavigationBar from "../components/NavigationBar";
+import { TokenProvider } from "@/context/TokenContext";
 import { I18nProvider } from "@/components/lib/I18nProvider";
 import "@ant-design/v5-patch-for-react-19";
 import { Toaster } from "react-hot-toast";
@@ -48,7 +50,9 @@ export default function RootLayout({
                             },
                         }}
                     />
-                    <I18nProvider>{children}</I18nProvider>
+                    <TokenProvider>
+                        <I18nProvider>{children}</I18nProvider>
+                    </TokenProvider>
                 </main>
             </body>
         </html>

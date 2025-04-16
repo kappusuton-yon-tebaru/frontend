@@ -107,12 +107,12 @@ export default function Selector({
       )}
 
       {isOpen && options && (
-        <ul className="absolute left-0 w-full mt-1 bg-ci-modal-black rounded-lg shadow-lg overflow-y-auto max-h-60 z-10">
+        <ul className="absolute left-0 w-full mt-1 bg-ci-modal-black rounded-lg shadow-lg overflow-y-auto max-h-60">
           {options.map((option) => (
             <li
               key={option.id || option.label}
               onClick={() => handleSelect(option)}
-              className={`px-4 py-2 cursor-pointer hover:bg-ci-modal-blue rounded-lg flex items-center truncate ${
+              className={`px-4 py-2 cursor-pointer hover:bg-ci-modal-blue rounded-lg flex items-center truncate z-auto ${
                 selected.has(option) ? "bg-ci-modal-blue" : ""
               }`}
             >
