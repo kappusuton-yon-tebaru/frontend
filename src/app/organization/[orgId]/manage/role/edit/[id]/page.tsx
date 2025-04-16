@@ -147,7 +147,7 @@ export default function EditRole() {
         const permissions = selectedPermissions.map((perm: any) => ({
             action: perm.action,
             resource_id: perm.resourceId,
-            permission_name: perm.action + " " + perm.resourceName,
+            permission_name: perm.resourceName,
         }));
 
         const userIds = selectedUsers.map((user: any) => user.userId);
@@ -284,7 +284,7 @@ export default function EditRole() {
                 onClose={() => setIsModalOpen(false)}
                 title="Select Resources"
             >
-                <div className="flex flex-col space-y-4 bg-ci-modal-black">
+                {resources?.organization && <div className="flex flex-col space-y-4 bg-ci-modal-black">
                     <div
                         key={resources?.organization.id}
                         className="flex justify-between items-center p-2 border border-ci-modal-grey rounded-md bg-ci-modal-black"
@@ -376,7 +376,7 @@ export default function EditRole() {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div>}
             </CustomModal>
             <CustomModal
                 isOpen={isUserModalOpen}

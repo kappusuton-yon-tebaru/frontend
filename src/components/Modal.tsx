@@ -33,9 +33,9 @@ export default function CustomModal({
                 <div className="flex justify-end space-x-4 mt-6">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 rounded-lg border border-ci-modal-grey bg-ci-modal-red text-white"
+                        className="px-4 py-2 rounded-lg border border-ci-modal-grey bg-ci-modal-black text-white"
                     >
-                        Cancel
+                        Done
                     </button>
                 </div>
             </div>

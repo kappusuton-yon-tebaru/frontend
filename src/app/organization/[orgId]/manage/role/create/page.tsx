@@ -257,7 +257,7 @@ export default function CreateRole() {
                 onClose={() => setIsModalOpen(false)}
                 title="Select Resources"
             >
-                <div className="flex flex-col space-y-4 bg-ci-modal-black">
+               {resources?.organization && <div className="flex flex-col space-y-4 bg-ci-modal-black">
                     <div
                         key={resources?.organization.id}
                         className="flex justify-between items-center p-2 border border-ci-modal-grey rounded-md bg-ci-modal-black"
@@ -349,7 +349,7 @@ export default function CreateRole() {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div>}
             </CustomModal>
             <CustomModal
                 isOpen={isUserModalOpen}
