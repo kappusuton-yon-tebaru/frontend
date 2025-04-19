@@ -50,9 +50,16 @@ export default function ManageOrganization() {
         <div>
             <div className="flex justify-between">
                 <h1 className="font-bold text-[24px]">Manage Organization</h1>
-                <Button className="rounded-lg border border-ci-modal-grey px-12 py-1 text-white bg-ci-modal-black">
-                    Save
-                </Button>
+                <div className="flex gap-2">
+                    <Link href="manage/members">
+                        <Button className="rounded-lg border border-ci-modal-grey px-12 py-1 text-white bg-ci-modal-black">
+                            Manage Members
+                        </Button>
+                    </Link>
+                    <Button className="rounded-lg border border-ci-modal-grey px-12 py-1 text-white bg-ci-modal-black">
+                        Save
+                    </Button>
+                </div>
             </div>
 
             <div className="w-1/2 mt-12">

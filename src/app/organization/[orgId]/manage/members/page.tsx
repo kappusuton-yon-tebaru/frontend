@@ -27,10 +27,10 @@ export default function ManageMembersPage() {
 
     const fetchUsers = async () => {
         const url = new URL(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${orgId}/members`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${orgId}/members/search`
         );
         if (search) {
-            url.searchParams.append("search", search);
+            url.searchParams.append("query", search);
         }
 
         const response = await getData(url.toString());
