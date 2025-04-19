@@ -15,7 +15,7 @@ export default function ServicePage() {
   const router = useRouter();
 
   const endpoints = {
-    deleteDeployment: `${baseUrl}/project/${projectId}/deploy`,
+    deleteDeployment: `${baseUrl}/project/${projectId}/deploy?org=${organizationId}`,
   };
 
   const [textDelete, setTextDelete] = useState("");

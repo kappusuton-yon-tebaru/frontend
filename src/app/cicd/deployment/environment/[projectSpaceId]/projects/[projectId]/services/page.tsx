@@ -18,9 +18,9 @@ export default function DeploymentEnvironmentProjectPage() {
   const organizationId = "678fcf897c67bca50cfae34e";
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/project/${projectId}/deployenv`;
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/project/${projectId}/deployenv?${organizationId}`;
   const endpoints = {
-    createDeployEnv: `${baseUrl}/project/${projectId}/deployenv`,
+    createDeployEnv: `${baseUrl}/project/${projectId}/deployenv?org=${organizationId}`,
   };
 
   const [createEnvName, setCreateEnvName] = useState<string>("");
@@ -48,7 +48,7 @@ export default function DeploymentEnvironmentProjectPage() {
         name: deleteEnvName,
       };
       const response = await deleteData(
-        `${baseUrl}/project/${projectId}/deployenv`,
+        `${baseUrl}/project/${projectId}/deployenv?org=${organizationId}`,
         deletePayload
       );
       setIsLoading(false);
