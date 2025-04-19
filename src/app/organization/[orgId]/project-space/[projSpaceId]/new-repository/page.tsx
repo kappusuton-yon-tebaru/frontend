@@ -84,8 +84,9 @@ export default function NewRepository() {
         }
 
         const repository = await postData(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources?parent_id=${projSpaceId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`,
           {
+            parent_id: projSpaceId,
             resource_name: name,
             resource_type: "PROJECT",
           }

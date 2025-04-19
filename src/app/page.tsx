@@ -2,7 +2,9 @@
 
 export default function Home() {
   function handleLogin() {
-    window.location.assign("http://localhost:3001/github/login");
+    window.location.assign(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/github/login`
+    );
   }
 
   return (

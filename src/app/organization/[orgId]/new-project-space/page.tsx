@@ -16,8 +16,9 @@ export default function NewProjectSpace() {
     if (name !== "") {
       try {
         const response = await postData(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources?parent_id=${orgId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources`,
           {
+            parent_id: orgId,
             resource_name: name,
             resource_type: ResourceType.ProjectSpace,
           }
