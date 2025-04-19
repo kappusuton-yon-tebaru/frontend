@@ -89,10 +89,6 @@ export default function EntityIndex({
     initialData: data,
   });
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
     <div className="flex flex-col gap-y-8">
       <div className="flex flex-col gap-y-4">
@@ -163,7 +159,8 @@ export default function EntityIndex({
         )}
       </div>
       <div className="flex flex-col">
-        {entities &&
+        {!error &&
+          entities &&
           entities.data &&
           entities.data.map(
             (entity: Entity, index: React.Key | null | undefined) => {
@@ -182,17 +179,18 @@ export default function EntityIndex({
               );
             }
           )}
-        {!entities && !isLoading && (
-          <div className="flex flex-col items-center text-lg font-bold py-4">
-            This directory is empty
-          </div>
-        )}
-        {entities && entities.data && entities.data.length == 0 && (
+        {!error ||
+          (!entities && !isLoading && (
+            <div className="flex flex-col items-center text-lg font-bold py-4">
+              This directory is empty
+            </div>
+          ))}
+        {!error && entities && entities.data && entities.data.length == 0 && (
           <div className="flex flex-col items-center text-lg font-bold py-4">
             No results found. Try refining your search or checking for typos.
           </div>
         )}
-        {isLoading && (
+        {!error && isLoading && (
           <div className="min-h-screen bg-ci-bg-dark-blue px-16 py-8 flex justify-center items-center">
             <ClipLoader
               size={100}
@@ -205,7 +203,7 @@ export default function EntityIndex({
           </div>
         )}
       </div>
-      {sortByOptions && entities && entities.data.length != 0 && (
+      {!error && sortByOptions && entities && entities.data.length != 0 && (
         <div className="mt-4 flex justify-center w-full">
           <Pagination
             current={page}

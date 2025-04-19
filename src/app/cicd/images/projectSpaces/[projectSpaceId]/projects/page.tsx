@@ -14,7 +14,8 @@ export default function ProjectsListPage() {
   const router = useRouter();
   const { projectSpaceId } = useParams();
 
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}`;
+  const searchUrl1 = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${projectSpaceId}`;
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/project/${projectSpaceId}`;
   const operationUrl = "/cicd/operation/operate?ops=BUILD";
 
   const renderEntity = (entity: {
