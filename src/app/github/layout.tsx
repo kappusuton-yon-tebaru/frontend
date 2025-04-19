@@ -21,7 +21,6 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
         }}
       >
         <QueryClientProvider client={queryClient}>
-          <NavigationBar/>
           {children}
         </QueryClientProvider>
       </ConfigProvider>

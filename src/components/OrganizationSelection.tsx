@@ -11,7 +11,6 @@ export default function OrganizationSelection({
   onClose: () => void;
 }) {
   const router = useRouter();
-  // const orgId = "1";
 
   return (
     <div className="absolute w-full bg-ci-bg-dark-blue border border-ci-modal-white mt-2 rounded-md shadow-lg z-10">

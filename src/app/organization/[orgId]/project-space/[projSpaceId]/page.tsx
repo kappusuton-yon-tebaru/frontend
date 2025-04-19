@@ -148,7 +148,8 @@ export default function ProjectSpace() {
       {rename && (
         <RenamePopup
           renameModalRef={renameModalRef}
-          projectSpace={projectSpace}
+          resource={projectSpace}
+          type="Project Space"
           newName={newName}
           setNewName={setNewName}
           setRename={setRename}

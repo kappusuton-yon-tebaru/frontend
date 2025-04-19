@@ -5,20 +5,28 @@ import toast, { Toaster } from "react-hot-toast";
 
 export default function DeletePopup({
   deleteModalRef,
-  projectSpace,
+  resource,
+  type,
   setDel,
 }: {
   deleteModalRef: RefObject<HTMLDivElement | null>;
-  projectSpace: Resource;
+  resource: Resource;
+  type: string;
   setDel: Dispatch<SetStateAction<boolean>>;
 }) {
   const handleDelete = () => {
     try {
       const operation = deleteData(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/cascade/${projectSpace.id}?type=ORGANIZATION`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/cascade/${
+          resource.id
+        }?type=${type === "Project Space" ? "PROJECT_SPACE" : "ORGANIZATION"}`
       );
       window.location.reload();
-      toast.success("Delete Project Space successfully");
+      if (type === "Project Space") {
+        toast.success("Delete Project Space successfully");
+      } else if (type === "Organization") {
+        toast.success("Delete Organization successfully");
+      }
     } catch (e: any) {
       const errorMessage =
         e?.response?.data?.message || e?.message || "Something went wrong.";
@@ -35,12 +43,12 @@ export default function DeletePopup({
         ref={deleteModalRef}
       >
         <div className="flex text-4xl font-bold text-ci-modal-white mb-3 justify-center">
-          Delete Project
+          Delete {type === "Project Space" ? "Project Space" : "Organization"}
         </div>
         <div className="flex text-xl font-bold text-ci-modal-white mb-3 justify-center">
           Are you sure you want to delete&nbsp;
           <span className="text-ci-modal-light-blue inline-block">
-            {projectSpace.resource_name}
+            {resource.resource_name}
           </span>
           &nbsp;?
         </div>

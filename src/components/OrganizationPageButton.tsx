@@ -1,36 +1,44 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Resource } from "@/interfaces/workspace";
-import { useRepositories } from "@/hooks/workspace";
 import RenamePopup from "./RenamePopup";
 import DeletePopup from "./DeletePopup";
+import { getData } from "@/services/baseRequest";
+import toast, { Toaster } from "react-hot-toast";
 
-export default function ProjectSpaceButton({
-  projectSpace,
+export default function OrganizationPageButton({
+  organization,
 }: {
-  projectSpace: Resource;
+  organization: Resource;
 }) {
   const [option, setOption] = useState<boolean>(false);
   const [rename, setRename] = useState<boolean>(false);
   const [del, setDel] = useState<boolean>(false);
-  const [newName, setNewName] = useState<string>(projectSpace.resource_name);
-  const [repoNum, setRepoNum] = useState<number>(-1);
+  const [newName, setNewName] = useState<string>(organization.resource_name);
+  const [projSpaceNum, setprojSpaceNum] = useState<number>(-1);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const renameModalRef = useRef<HTMLDivElement>(null);
   const deleteModalRef = useRef<HTMLDivElement>(null);
 
-  const { data: repositories } = useRepositories(
-    projectSpace.id,
-    1,
-    "resource_name",
-    "asc",
-    ""
-  );
-
   useEffect(() => {
-    setRepoNum(repositories?.total);
-  }, [repositories]);
+    const fetchProjectSpaceNum = async () => {
+      try {
+        const response = await getData(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/children/${organization.id}`
+        );
+        setprojSpaceNum(response?.total);
+      } catch (e: any) {
+        const errorMessage =
+          e?.response?.data?.message || e?.message || "Something went wrong.";
+        toast.error(errorMessage);
+      }
+    };
+
+    if (organization?.id) {
+      fetchProjectSpaceNum();
+    }
+  }, [organization]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -82,13 +90,13 @@ export default function ProjectSpaceButton({
     <div className="flex justify-between border border-ci-modal-grey rounded-lg bg-ci-modal-black w-full text-left shadow-lg hover:bg-ci-modal-blue">
       <div className="flex flex-col px-4 py-3">
         <div className="font-semibold text-[16px]">
-          {projectSpace.resource_name}
+          {organization.resource_name}
         </div>
         <div className="text-ci-modal-grey font-medium gap-4 text-[14px]">
-          <div>{repoNum !== -1 && repoNum} Repositories</div>
+          <div>{projSpaceNum !== -1 && projSpaceNum} Project spaces</div>
           <div>Owner: user 1234567890</div>
-          <div>Last Updated: {formatDate(projectSpace.updated_at)}</div>
-          <div>Date Created: {formatDate(projectSpace.created_at)}</div>
+          <div>Last Updated: {formatDate(organization.updated_at)}</div>
+          <div>Date Created: {formatDate(organization.created_at)}</div>
         </div>
       </div>
 
@@ -137,8 +145,8 @@ export default function ProjectSpaceButton({
       {rename && (
         <RenamePopup
           renameModalRef={renameModalRef}
-          resource={projectSpace}
-          type="Project Space"
+          resource={organization}
+          type="Organization"
           newName={newName}
           setNewName={setNewName}
           setRename={setRename}
@@ -148,11 +156,29 @@ export default function ProjectSpaceButton({
       {del && (
         <DeletePopup
           deleteModalRef={deleteModalRef}
-          resource={projectSpace}
-          type="Project Space"
+          resource={organization}
+          type="Organization"
           setDel={setDel}
         />
       )}
+
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#4CAF50",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "#F44336",
+              color: "white",
+            },
+          },
+        }}
+      />
     </div>
   );
 }

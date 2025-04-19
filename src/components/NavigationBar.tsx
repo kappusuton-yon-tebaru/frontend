@@ -52,7 +52,9 @@ export default function NavigationBar() {
     <div className="flex flex-row h-16 bg-[#081126] fixed top-0 left-0 right-0 z-40 items-center px-9 justify-between font-bold">
       <div className="flex flex-row gap-x-12 items-center h-12">
         <Image src={"/logo.svg"} alt="logo" width={44} height={44} />
-        <div>Project</div>
+        <div>
+          <Link href={"/"}>Project</Link>
+        </div>
         <div>
           <Link href={"/cicd"}>Image and Deployment</Link>
         </div>

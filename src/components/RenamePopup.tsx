@@ -5,13 +5,15 @@ import toast, { Toaster } from "react-hot-toast";
 
 export default function RenamePopup({
   renameModalRef,
-  projectSpace,
+  resource,
+  type,
   newName,
   setNewName,
   setRename,
 }: {
   renameModalRef: RefObject<HTMLDivElement | null>;
-  projectSpace: Resource;
+  resource: Resource;
+  type: string;
   newName: string;
   setNewName: Dispatch<SetStateAction<string>>;
   setRename: Dispatch<SetStateAction<boolean>>;
@@ -22,11 +24,15 @@ export default function RenamePopup({
         resource_name: newName,
       };
       const operation = putData(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${projectSpace.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/resources/${resource.id}`,
         renamePayload
       );
       window.location.reload();
-      toast.success("Rename Project Space successfully");
+      if (type === "Project Space") {
+        toast.success("Rename Project Space successfully");
+      } else if (type === "Organization") {
+        toast.success("Rename Organization successfully");
+      }
     } catch (e: any) {
       const errorMessage =
         e?.response?.data?.message || e?.message || "Something went wrong.";
@@ -43,12 +49,12 @@ export default function RenamePopup({
         ref={renameModalRef}
       >
         <div className="flex text-4xl font-bold text-ci-modal-white mb-3 justify-center">
-          Rename Project Space
+          Rename {type === "Project Space" ? "Project Space" : "Organization"}
         </div>
         <input
           type="text"
           className="mx-16 px-3 py-2 font-medium border border-ci-modal-grey rounded-md focus:outline-none bg-ci-bg-dark-blue"
-          placeholder={projectSpace.resource_name}
+          placeholder={resource?.resource_name}
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
         />
@@ -66,7 +72,7 @@ export default function RenamePopup({
             className="px-4 py-2 text-white font-semibold bg-ci-modal-red rounded-md w-full"
             onClick={() => {
               setRename(false);
-              setNewName(projectSpace.resource_name);
+              setNewName(resource.resource_name);
             }}
           >
             Cancel
