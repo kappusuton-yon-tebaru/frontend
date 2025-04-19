@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { postData } from "@/services/baseRequest";
 
 interface RegisterData {
+    name: string;
     email: string;
     password: string;
     confirm_password: string;
@@ -62,6 +63,28 @@ export default function RegisterPage() {
                     onSubmit={handleSubmit(onSubmit)}
                     className="w-full space-y-4"
                 >
+                    <div className="w-full space-y-2">
+                        <div className="font-bold">Name</div>
+                        <Controller
+                            name="name"
+                            control={control}
+                            rules={{
+                                required: "Name is required",
+                            }}
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    className="h-12 focus:bg-ci-modal-blue active:bg-ci-modal-blue hover:bg-ci-modal-blue text-white bg-ci-bg-dark-blue placeholder:text-ci-modal-grey border-ci-modal-grey"
+                                    placeholder="Name"
+                                />
+                            )}
+                        />
+                        {errors.name && (
+                            <p className="text-ci-modal-red">
+                                {errors.name.message as string}
+                            </p>
+                        )}
+                    </div>
                     <div className="w-full space-y-2">
                         <div className="font-bold">Email</div>
                         <Controller

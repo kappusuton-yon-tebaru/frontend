@@ -7,13 +7,14 @@ export async function getData(url: string, token?: string) {
         throw new Error("No valid token provided");
       }
     }
-
+    
     const response = await fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
+      credentials: 'include',
     });
     if (!response.ok) {
       throw new Error("Failed to fetch data");
@@ -42,6 +43,7 @@ export async function postData(url: string, data: any, token?: string) {
         Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
+      credentials: 'include',
       body: JSON.stringify(data),
     });
 
