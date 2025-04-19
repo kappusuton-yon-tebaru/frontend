@@ -12,11 +12,12 @@ const sortBy: SelectorOption[] = [
 ];
 
 export default function DeployedServiceListPage() {
+  const organizationId = "678fcf897c67bca50cfae34e";
+
   const router = useRouter();
   const { projectSpaceId, projectId, envId } = useParams();
 
-  // const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/jobs`;
-  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/project/${projectId}/deploy?deployment_env=${envId}&`;
+  const searchUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/project/${projectId}/deploy?org=${organizationId}&deployment_env=${envId}&`;
   const operationUrl = "/cicd/operation/operate?ops=DEPLOY";
 
   const renderEntity = (entity: {
@@ -26,6 +27,7 @@ export default function DeployedServiceListPage() {
     age: string;
     project_name: string;
     service_name: string;
+    service_url: string;
   }) => {
     return (
       <div
@@ -56,7 +58,7 @@ export default function DeployedServiceListPage() {
         <div className="flex flex-col justify-center items-center w-1/6">
           <h3 className="text-base text-ci-modal-grey">Service URL: </h3>
           <a href="www.test.com" className="text-ci-modal-light-blue underline">
-            www.test.com
+            {entity.service_url}
           </a>
         </div>
         <div className="text-base text-ci-modal-grey w-1/6">

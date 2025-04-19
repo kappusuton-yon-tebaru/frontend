@@ -6,14 +6,15 @@ import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
 export default function MaxWorkerSettingPage() {
+  const organizationId = "678fcf897c67bca50cfae34e";
   const [worker, setWorker] = useState();
   const [loading, setLoading] = useState<boolean>(true);
 
   const { triggerToast } = useToast();
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const getUrl = `${baseUrl}/setting/workerpool`;
-  const updateUrl = `${baseUrl}/setting/workerpool`;
+  const getUrl = `${baseUrl}/setting/workerpool?org=${organizationId}`;
+  const updateUrl = `${baseUrl}/setting/workerpool?org=${organizationId}`;
 
   useEffect(() => {
     const fetchMaxWworker = async () => {
